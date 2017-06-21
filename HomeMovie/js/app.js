@@ -21,5 +21,9 @@ var app=angular.module('MyApp',['ngRoute'])
                 	templateUrl: './views/Cartoon.html',
                 	controller:'CartoonCtrl'
                 })
+                .when('/Search',{
+                	templateUrl: './views/Search.html',
+//              	controller:'CartoonCtrl'
+                })
                 .otherwise({redirectTo:'/Home'});
             }]);

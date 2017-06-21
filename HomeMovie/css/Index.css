@@ -40,14 +40,33 @@
 	font-size: 0.6rem;
 	font-weight: 600;
 	text-decoration: none;
-	transform: skew(-45deg)
+	transform: skew(-45deg);
 }
 
 #Index .Logo #nav li:first-child {
 	margin-left: 17.5%;
 }
 
-#Index #View{
+#Index .Logo #Search_btn {
+	width: 1.4rem;
+	height: 1.4rem;
+	line-height: 1.4rem;
+	text-align: center;
+	background: rgba(0, 0, 0, 0.5);
+	border: 1px solid #f62329;
+	font-size: 0.5rem;
+	border-radius: 1.4rem;
+	float: right;
+	margin-top: 0.3rem;
+	margin-right: 0.1rem;
+}
+
+#Index .Logo #Search_btn a {
+	text-decoration: none;
+	color: #fff;
+}
+
+#Index #View {
 	width: 100%;
 	float: left;
 	margin-top: 0.6rem;
