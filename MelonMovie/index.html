@@ -1,0 +1,53 @@
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>瓜瓜影视</title>
+		<link rel="icon" href="img/Title/title_16X16.ico" sizes="16*16"/>
+		<link rel="stylesheet" type="text/css" href="css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="css/swiper.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Index.css" />
+		<link rel="stylesheet" type="text/css" href="css/Home.css"/>
+		<link rel="stylesheet" type="text/css" href="css/Search.css" />
+		<script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>
+		<script type="text/javascript" src="js/angular.min.js"></script>
+		<script type="text/javascript" src="js/angular-route.min.js"></script>
+		<script type="text/javascript" src="js/swiper.min.js"></script>
+	</head>
+
+	<body ng-app='MyApp'>
+		<div id="Index">
+			<!--顶部导航栏-->
+			<div class="Logo">
+				<ul id="nav">
+					<li>
+						<a href="#/Home">首页</a>
+					</li>
+					<li>
+						<a href="#/Mainland">大陆</a>
+					</li>
+					<li>
+						<a href="#/Hongkong">港台</a>
+					</li>
+					<li>
+						<a href="#/America">欧美</a>
+					</li>
+					<li>
+						<a href="#/Cartoon">动漫</a>
+					</li>
+				</ul>
+				
+				<div id="Search_btn"><a href="#/Search">搜索</a></div>
+			</div>
+
+			<div id="View">
+				<div ng-view></div>
+			</div>
+		</div>
+
+	</body>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/controller.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+
+</html>
