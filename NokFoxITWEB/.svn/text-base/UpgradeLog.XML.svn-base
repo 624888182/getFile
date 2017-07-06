@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="ForeignStaff">
+</Property><Property Name="Solution File" Value="D:\WebBack\ForeignStaff_910\ForeignStaff.sln">
+</Property><Property Name="User Options File" Value="D:\WebBack\ForeignStaff_910\ForeignStaff.suo">
+</Property><Property Name="Date" Value="2010年1月28日">
+</Property><Property Name="Time" Value="上午 11:32">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="ForeignStaff.sln" Description="File successfully backed up as D:\WebBack\ForeignStaff_910\Backup\ForeignStaff.sln">
+</Event><Event ErrorLevel="0" Project="" Source="ForeignStaff.suo" Description="File successfully backed up as D:\WebBack\ForeignStaff_910\Backup\ForeignStaff.suo">
+</Event><Event ErrorLevel="1" Project="ForeignStaff" Source="..\..\Inetpub\wwwroot\ForeignStaff" Description="Warning: The project file is being backed up to a relative path that differs from the original solution relative path.  The difference in folder hierarchy may create problems in opening or building the backed up solution and project.">
+</Event><Event ErrorLevel="2" Project="D:\Inetpub\wwwroot\ForeignStaff" Source="..\..\Inetpub\wwwroot\ForeignStaff" Description="ERROR: Failed to back up Web site D:\Inetpub\wwwroot\ForeignStaff">
+</Event><Event ErrorLevel="0" Project="" Source="ForeignStaff.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="ForeignStaff.sln" Description="Converted">
+</Event></UpgradeLog>

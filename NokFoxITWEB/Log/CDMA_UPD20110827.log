@@ -1,0 +1,30 @@
+2011/08/27 10:45:34 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/08/27 10:45:34 || UPD filename upload error! , Invoice : 81979088
+2011/08/27 10:45:38 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/08/27 10:45:38 || UPD filename upload error! , Invoice : 81979103
+2011/08/27 10:54:38 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/08/27 10:54:38 || [ERROR] Checkback Cannot find table 0.
+2011/08/27 10:54:38 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/08/27 10:54:38 || [ERROR] Checkback Cannot find table 0.
+2011/08/27 11:00:22 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/08/27 11:00:22 || [ERROR] Checkback Cannot find table 0.
+2011/08/27 11:00:23 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/08/27 11:00:23 || [ERROR] Checkback Cannot find table 0.
+2011/08/27 17:02:25 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/08/27 17:02:25 || [ERROR] Checkback Cannot find table 0.
+2011/08/27 17:02:25 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/08/27 17:02:25 || [ERROR] Checkback Cannot find table 0.
+2011/08/27 17:02:59 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/08/27 17:02:59 || [ERROR] Checkback Cannot find table 0.
+2011/08/27 17:02:59 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/08/27 17:02:59 || [ERROR] Checkback Cannot find table 0.

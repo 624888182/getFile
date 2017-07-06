@@ -1,0 +1,477 @@
+﻿using System.Globalization;
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using Economy.BLL;
+using Economy.Publibrary;
+using SCM.GSCMDKen;
+// using Prilibrary.FsplitNew;
+using System.Data.SqlClient;
+using System.IO;
+using System.Windows.Forms;
+using System.Threading;
+using EconomyUser;
+using SFC.TJWEB;
+using System.Data.OracleClient;
+using System.Collections.Generic;
+using System.Linq;
+
+
+public partial class TestMain_MainBBRY : System.Web.UI.Page
+{
+    //static string NetSqlDB4 = ConfigurationManager.AppSettings["LocalHostSqlString"]; // Local104SqlString
+    //static string RunORACLEDB = ""; // ConfigurationManager.AppSettings["NormalDbConnectionString"]; //  NormalDbConnectionString
+    //static string OraL10DBAMain  = "";      // 76  Oracle Unix
+    //static string OraL10DBAStandBy = "";    // 211 Oracle Unix
+    //static string OraL6DBAMain = "";        // 214 Oracle Unix 
+    //static string OraL6DBAStandBy = "";     // 
+    //static string OraWebCTLDBA = "";        // 221 Oracle Window
+    //static string SqlWebCTLDBA = "";        //      Control DBA 
+    //static string SqlWebDBA = "";           // 108 Main DBA 
+    //static string CallTiptoptype = ""; 
+    //string SiteName = "BBLF";
+    //public static string PPSite = "BBLF";
+
+    //static string OraBBFUSEL10ReadDBA = "";       //   
+    //static string OraBBFUSEL10WriDBA  = "";
+
+
+    //ClassLibrarySCM1.Class1 LibSCM1Pointer = new ClassLibrarySCM1.Class1();
+    //ClassLibraryUSR1.Class1 LibUSR1Pointer = new ClassLibraryUSR1.Class1();
+    //ClassLibraryPDBA1.Class1 LibPDBA1Pointer = new ClassLibraryPDBA1.Class1();
+   
+    //UsrCtllib   UsrCtllibPointer   = new UsrCtllib();
+    //AutoUpload  AutoUploadPointer  = new AutoUpload(); // CreateFile.cs
+    //TJLibZhu    TJLibZhuPointer    = new TJLibZhu();
+    //TJSY        TJSYPointer        = new TJSY();
+    //Convertlib ConvertlibPointer = new Convertlib();
+    //SFCLinkTiptop SFCLinkTiptopPointer = new SFCLinkTiptop();
+    //BBSCMlib BBSCMlibPointer = new BBSCMlib();
+           
+    //static string Username = "", FPassword = "", SPassword = "", PSDB = "", LoginEMPTYPE = "", LoginFlag = "";
+    //static string PSFlag = "", Acttype = "", FoxconnSite = "";
+    //DbAccessing myAccessing = new DbAccessing();
+    //protected string CurrDay = DateTime.Today.ToString("yyyyMMdd");  // 20100320
+    //protected string Currtime = DateTime.Now.ToString("yyyyMMddHHmmssmm");
+    //static int swflag1 = 0, swflag2 = 0, swflag3 = 0;
+    //static int arrayPicLong = 5000, DataPicLong = 0, DataNewLong, arrayPicPriLong=5000, DataPicPriLong=0;
+    //static string[,] arrayPic = new string[arrayPicLong + 1, 20 + 1];
+    //static string[,] arrayPicPri = new string[arrayPicPriLong + 1, 20 + 1];
+    //string VUrl;
+    //static string sw1 = "1", sw2 = "1", sw3 = "1", ParaAutoflag = "",tmpstr="";
+    //static int autorunflag = 0, runstep = 0, errcnt = 0;
+    //static int runstatus = 0, SysCount = 1;
+    //static int cnt1=1, cnt2=1, firstcnt=0;
+    //static int s1flag = 0;
+    //static string msgdbstr = "sql";
+    //protected string Dboracle = "oracle", DbSql = "sql";
+    //protected string Autoprg = "auto", Menuprg = "menu", PITSystem="Mot";
+    //static int ArrMax = 300;
+    //static string[] ReadTxtArray = new string[ArrMax];
+    //static string GPROLINE = "7A";
+    //string BBSCMDIR = "BBSCM";
+    //string SFCFuncIP = "http://10.83.216.137/bbryreport/webservice/bbryservice.asmx";
+
+ 
+      
+    protected void Page_Load(object sender, EventArgs e) // 23524
+    {
+        
+        if (!Page.IsPostBack)
+        {
+                
+                //FoxconnSite = "BJ"; // BBRY Test FoxconnSite
+                //TextBox9.Text = FoxconnSite;
+                Session["SysModeType"] = "TestMenu";
+                Response.Write("<script>window.open( 'MainBBRY.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+                ClientScript.RegisterStartupScript(Page.GetType(), "", "<script language=javascript>window.opener=null;window.open('','_self');window.close();</script>");
+      
+        }
+        
+
+        ClientScript.RegisterStartupScript(Page.GetType(), "", "<script language=javascript>window.opener=null;window.open('','_self');window.close();</script>");
+        
+       
+    }   // end Page_load;
+    
+
+    protected string MainLoop()
+    {
+        return ("");         
+    }
+  
+
+
+    private void InitVar()
+    {
+       
+
+       // Response.Redirect("main.aspx");   
+    }  // initvar
+
+protected void  Button1_Click(object sender, EventArgs e)
+{
+    //USERNAME    string pst1 = NetSqlDB4;
+    //  ChkUsrPS(pst1);
+    //ChkUsrPS();
+}
+
+protected void Button2_Click(object sender, EventArgs e)  // Modify 
+{
+  
+}
+
+protected void Button3_Click(object sender, EventArgs e)
+{
+    
+
+}
+    
+
+protected void TextBox2_TextChanged(object sender, EventArgs e)
+{
+    //Username = TextBox1.Text; 
+    //FPassword = TextBox2.Text;
+    // ChkUsrPS(); 
+}
+    
+protected void Button4_Click(object sender, EventArgs e)
+{
+}
+
+protected void tvManuTree_SelectedNodeChanged(object sender, EventArgs e)
+{
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+//  1000  for 1 second,  //  60000 for 1 minute, 1800000 for 30 minute
+//  
+protected void Timer1_Tick(object sender, EventArgs e)
+{
+    
+}
+
+///////////////////////////////////////////////////////////////////////
+protected void Button8_Click(object sender, EventArgs e)
+{
+    
+}
+protected void Button5_Click(object sender, EventArgs e)
+{
+    
+}
+protected void btnLogout_Click(object sender, EventArgs e)
+{
+    Response.Write("<SCRIPT   LANGUAGE='JavaScript'>window.opener=null;window.close();</SCRIPT> ");
+}
+
+protected void Button35_Click(object sender, EventArgs e)
+{
+    
+}
+
+protected void Button21_Click(object sender, EventArgs e)
+{
+    
+}
+
+// Query SFC link Tiptop
+protected void Button44_Click(object sender, EventArgs e)
+{
+    return;
+}
+
+
+protected void Button24_Click(object sender, EventArgs e)
+{
+    return;
+   
+}
+
+protected void Button26_Click(object sender, EventArgs e)
+{
+   
+}
+
+
+/////////////////////////////////////////////////////////////////////
+protected void  Button27_Click(object sender, EventArgs e)
+{
+    
+}
+
+protected void Button47_Click(object sender, EventArgs e)
+{
+   
+}
+    
+
+protected void Button49_Click(object sender, EventArgs e)
+{
+    
+}
+protected void Button17_Click(object sender, EventArgs e)
+{
+       
+}
+
+
+public string Auto_CreDN()
+{
+        return("");
+}
+
+////////////////////////////////////////////////////////////
+// Auto Generate UPD
+// 1. Use Table UPD_PODN_List_T table
+// 2. Index Invoice(DN), 
+// 3. DN, PO, UPDflag, Sapflag, 
+// 4. Auto_CreDN() -- Generate DN, PO 
+// 5. Auto_CloseSap() -- Check and Write Sap
+// 6. Auto_GenUPDEMEI() -- Check Sapclag="C" , Close , write
+// Appendix :
+// 1. Need check double or already generate UPD/EMEI
+// 2. Sap.Cmcs_pack_line_all singe DN + Multi Carton
+// 3. Sap.Sap_DN_Info singe DN + Multi Item
+// 4. Sap.Cmcs_ship_date Singe Carton + Multi PSN,EMEI
+// 5. DN Count = Sap.Sap_Invoice_Info
+///////////////////////////////////////////////////////////
+public void AutoMotProc()
+{
+    return;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMIntelAuto", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "AutoUPD", "", "", "", NetSqlDB4, msgdbstr);         // 10 Code
+    //TextBox6.Text = "系統自動 Execute" + firstcnt.ToString();
+    //string DBReadString = ConfigurationManager.AppSettings["L8StandByConnectionString"]; // bjl6testConnectionString
+    //string DBWriString = ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // bjl6testConnectionString
+    //int int1 = AutoUploadPointer.GetDnWithInsert(DBReadString, DBWriString);
+    //TJLibZhuPointer.CheckSAPClose(DBWriString, DBWriString);
+    //TJSYPointer.check3s4s(DBReadString, DBWriString);
+    //int int2 = AutoUploadPointer.GetCreateUpdFile(DBReadString, DBWriString);     
+}
+
+protected void Button51_Click(object sender, EventArgs e) // 查尋 UPD 
+{
+   
+}
+
+// Check and Get data automatic
+protected void Button52_Click(object sender, EventArgs e)
+{
+    
+}
+
+
+protected string SysAutoExec()
+{
+   
+  
+    return ("");
+}
+
+
+
+protected void Button54_Click(object sender, EventArgs e)
+{
+   
+}
+
+private string ReadParaTxt(string FilePara, string ParaNum)
+{
+      return ( "");
+}
+
+
+// select distinct INVOICE from CMCS_SFC_PACKING_LINES_ALL order by INVOICE desc
+// DeliMotchk.aspx  
+// 1.1 Check E2P      DelchkUPD.cs
+// 1.2 Check Simlock  DelchkSimLock.cs
+// 1.3 Check Qty      DelchkProductQty.cs
+// 1.4 Check PO       DelchkPO.cs
+// 1.5 Check SAP      DelchkSap.cs
+// 1.6 Write Del-time to DELITIME
+protected void Button57_Click(object sender, EventArgs e)
+{
+   
+}
+
+protected void Button62_Click(object sender, EventArgs e)
+{
+    
+
+}
+
+protected void Button36_Click(object sender, EventArgs e)
+{
+
+}
+
+protected void Button63_Click(object sender, EventArgs e)
+{
+
+   
+}
+
+protected void Button64_Click(object sender, EventArgs e)
+{
+  
+}
+protected void Button65_Click(object sender, EventArgs e)
+{
+    
+}
+protected void Button66_Click(object sender, EventArgs e)
+{
+    
+}
+
+protected void Button67_Click(object sender, EventArgs e)
+{
+   
+}
+
+
+protected void Button71_Click(object sender, EventArgs e)
+{
+    
+}
+protected void Button72_Click(object sender, EventArgs e)
+{
+   
+}
+
+public void ReaddDRAFromText( string SiteName )
+{
+    
+}
+
+public void ReaddDRAFromwebconfig(string SiteName)
+{
+
+  
+
+}  // end ReaddDRAFromwebconfig(string SiteName)
+
+
+public void GetTextFile( ref string[] ReadTxtArray, int ArrMax, string dtype  )
+    {
+ 
+   
+    }  // end GetTextFile
+
+protected void Button73_Click(object sender, EventArgs e)
+{
+   
+
+}
+
+// SFC call Tiptop
+// ReqType : "1": Day 20130626, "2" DN :/EM1-D60002 "3" WO_NO WM1-D60002, L6 "4" WO_NO L10, "5"; ReqData : 20130626/WM1-D60002/EM1-D60002 
+// Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_ALL("tjsfc", Dtype, SysDate, DBType, DBReadString, DBWriString, PCode, ReqType, ReqData); 
+protected void Button74_Click(object sender, EventArgs e)
+{
+     
+
+}
+
+// Test Only
+protected void Button75_Click(object sender, EventArgs e)
+{
+   
+}
+
+protected void Button76_Click(object sender, EventArgs e)
+{
+   
+}
+
+protected void Button77_Click(object sender, EventArgs e)
+{
+   
+}
+
+
+protected void Button78_Click(object sender, EventArgs e)
+{
+    
+}
+protected void Button79_Click(object sender, EventArgs e)
+{
+    
+
+}
+protected void Button80_Click(object sender, EventArgs e)
+{
+   
+}
+protected void Button81_Click(object sender, EventArgs e)
+{
+   
+}
+protected void TextBox8_TextChanged(object sender, EventArgs e)
+{
+   
+}
+
+//  Clear one day data
+protected void Button82_Click(object sender, EventArgs e)
+{
+  
+}
+protected void Button83_Click(object sender, EventArgs e)
+{
+  
+
+              
+}
+
+protected void Button84_Click(object sender, EventArgs e)
+{
+    
+}
+
+protected void Button85_Click(object sender, EventArgs e)
+{
+    
+}
+
+
+protected void Button86_Click(object sender, EventArgs e)
+{
+   
+
+}
+}  // end public partial class Main ////// End all SubRoutine ////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Document : Session 傳參數string Session["Param1"] = 1; tSUsername = Session["Param1"].ToString(); 
+//  Session["Param1"] = 1;         // Data Process I/O
+//  Session["Param2"] = "oracle";  // 數據庫
+//  Session["Param3"] = str1;      // DBReadString
+//  Session["Param4"] = str2;      // DBWriString Dboracle, Dbsql 
+//  Session["Param5"] = "auto";    // 自動或手動執行 Autoprg, Menuprg
+// Session["Param1"]  = 1;  代表第 1 類表傳  Session["Param2"] 為讀資料庫位置
+// Session["Param1"] = 1;  代表第 1 類表傳  Session["Param2"] 為讀資料庫位置   Session["Param3"] 為寫資料庫位置
+// Session["Param1"] = 2;  代表第 2 類表傳  Session["Param2"] ? 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Remaek
+// There are two way to proect dba password and you can get by 2 way,
+// 1.1 Put pass in web.config 
+// passDBA = passDBA + ConfigurationManager.AppSettings["LicenseString"] =  ConfigurationManager.AppSettings["Sql221StringEC"]
+// Convert program is ConvertlibPointer.DeEncCodeWithoutEclcode
+// sample :string t3 = SqlWebCTLDBA; // ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["Sql221StringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+// 1.2 Put passDBA in WebReadParam.txt  with protparamater =  "23101"
+// protect way like item 1 and you can get by function call  ReaddDRAFromwebconfig( SiteName ) return all DBA param 
+// GetTextFile( ref string[] ReadTxtArray, int ArrMax, string dtype  ) Read WebReadParam.txt and put in memory ReadTxtArray
+// and convter code from  ( code >= 23201 )  && ( code <= 23999 ) by DnCodeStr = LibUSR1Pointer.DBDeEncCode(EnCodeStr, PCode, ",", "2DBA");
+//
+//
+//

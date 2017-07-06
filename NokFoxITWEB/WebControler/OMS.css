@@ -1,0 +1,303 @@
+body
+{
+	background-color: white;
+	scrollbar-face-color: #FFFFFF;
+}
+.DataGridFont
+{
+    font-family: "Arial", "Helvetica", "sans-serif";
+    font-size: 13px;
+    font-weight: normal;
+    color:#266F95;
+}
+.DataGridFont1
+{
+    font-family: "Arial", "Helvetica", "sans-serif";
+    font-size: 13px;
+    font-weight: normal;
+    color:#ccffff;
+}
+.Button 
+{  
+	font-family: "Arial", "Helvetica", "sans-serif"; 
+	font-size: 12px; 
+	font-style: normal; 
+	color: #000000;
+	cursor: hand;	
+}
+.DoneButton 
+{  
+	font-family: "Arial", "Helvetica", "sans-serif"; 
+	font-size: 12px; 
+	font-style: normal; 
+	color: #000000;
+	cursor: wait;
+}
+.CompleteButton 
+{  
+	font-family: "Arial", "Helvetica", "sans-serif"; 
+	font-size: 12px; 
+	font-style: normal; 
+	color: #000000;
+	cursor: default;
+}
+.LinkButton
+{
+	font-family: "Arial", "Helvetica", "sans-serif"; 
+	font-size: 12px;
+	font-style: normal; 
+	color: #FF0000;
+}
+.LinkButton1
+{
+	font-family: "Arial", "Helvetica", "sans-serif"; 
+	font-size: 12px;
+	font-style: normal; 
+	color: #266F95;
+}
+.DIV
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 0px; 
+	padding-right: 0px; 
+	background-image: none; 
+	margin: 0px; 
+	overflow: scroll;
+	width: 100%; 
+	clip: rect(auto auto auto auto); 
+	position: absolute; 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #006699;
+}
+.DIV1
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 0px; 
+	padding-right: 0px; 
+	background-image: none; 
+	margin: 0px; 
+	overflow: scroll;
+	width: 100%; 
+	clip: rect(auto auto auto auto); 
+	position: static; 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #006699;
+}
+.SelectDiv
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 8px; 
+	padding-right: 0px; 
+	background-image: none; 
+	margin: 0px; 
+	overflow-x: hidden; 
+	overflow-y: scroll;
+	height: 380px;
+	width: 424px; 
+	clip: rect(auto auto auto auto); 
+	position: absolute; 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #eeeaeb; 
+	scrollbar-highlight-color: #fbfdfc; 
+	SCROLLBAR-SHADOW-COLOR: #170708; 
+	scrollbar-3dlight-color: #170708; 
+	line-height: 18px; 
+	scrollbar-arrow-color: #000000; 
+	scrollbar-darkshadow-color: #ffffff; 
+	scrollbar-base-color: #170708;
+}
+.SelectDivX
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 8px; 
+	padding-right: 0px; 
+	background-image: none; 
+	margin: 0px; 
+	overflow-x: scroll; 
+	overflow-y: scroll;
+	height: 380px;
+	width: 424px; 
+	clip: rect(auto auto auto auto); 
+	position: absolute; 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #eeeaeb; 
+	scrollbar-highlight-color: #fbfdfc; 
+	SCROLLBAR-SHADOW-COLOR: #170708; 
+	scrollbar-3dlight-color: #170708; 
+	line-height: 18px; 
+	scrollbar-arrow-color: #000000; 
+	scrollbar-darkshadow-color: #ffffff; 
+	scrollbar-base-color: #170708;
+}
+.SelectDivWider
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 8px; 
+	padding-right: 0px; 
+	background-image: none; 
+	margin: 0px; 
+	overflow-x: hidden; 
+	overflow-y: scroll;
+	height: 380px;
+	width: 470px; 
+	clip: rect(auto auto auto auto); 
+	position: absolute; 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #eeeaeb; 
+	scrollbar-highlight-color: #fbfdfc; 
+	SCROLLBAR-SHADOW-COLOR: #170708; 
+	scrollbar-3dlight-color: #170708; 
+	line-height: 18px; 
+	scrollbar-arrow-color: #000000; 
+	scrollbar-darkshadow-color: #ffffff; 
+	scrollbar-base-color: #170708;
+}
+.SelectButton
+{
+	color: #0000ff;
+	cursor: hand;
+}
+.Panel
+{
+	border-color: Blue;
+	border-style: double;
+	border-width: 3px;
+}
+.PageCursorWait
+{
+	cursor:wait;	
+}
+.PageCursorDefault
+{
+	cursor:default;
+}
+.TableLeft
+{
+	border-left-style: solid;
+	border-right-style: none;
+	border-top-style: none;
+	border-bottom-style: none;
+}
+.TableColor
+{
+	background-color:#d3d3d3;
+}
+.TreeView
+{
+	font-family:Arial;
+	font-size: 12px;
+    color: #0F0F0F;
+}
+A.DataGridFont:hover
+{
+	font-family: "Arial", "Helvetica", "sans-serif"; 
+	font-size: 13px;
+	font-style:normal; 
+	color:#FFFFFF;
+	cursor:hand;
+	background-color:Blue;
+}
+.DIVScrolling
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 0px; 
+	padding-right: 0px; 
+	background-image: none; 
+	margin: 0px; 
+	overflow: scroll;
+	width: 100%; 
+	height:280px;
+	clip: rect(auto auto auto auto); 
+	position: absolute; 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #006699;
+}
+.DIVxScroll
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 0px; 
+	padding-right: 0px; 
+	background-image: none; 
+	margin: 0px; 
+	overflow: scroll;
+	width: 980px; 
+	height:100%;
+	clip: rect(auto auto auto auto); 
+	position: relative; 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #006699;
+}
+.DIVdefine
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 0px; 
+	padding-right: 0px;
+	background-image: none; 
+	margin: 0px; 
+	overflow: scroll;
+	width: 100%; 
+	clip: rect(auto auto auto auto); 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #006699;
+}
+.DIVWidthFix
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 0px; 
+	padding-right: 0px; 
+	background-image: none; 
+	margin: 0px; 
+	overflow: scroll;
+	width: 980px; 
+	height:450px;
+	clip: rect(auto auto auto auto); 
+	position: relative; 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #006699;
+}
+.HiddedControl
+{
+	display: none;
+	visibility: hidden;
+}
+.SKUDIV
+{
+	padding-top: 0px; 
+	padding-bottom: 0px; 
+	padding-left: 0px; 
+	padding-right: 0px; 
+	background-image: none; 
+	margin: 0px; 
+	overflow: scroll;
+	width: 700px; 
+	height:350px;
+	clip: rect(auto auto auto auto); 
+	position: absolute; 
+	background-color: transparent;
+	border-width: 0px;
+	scrollbar-face-color: #006699;
+}
+.CheckBoxListbox
+{
+	border-color: Gray;
+	border-style: double;
+	border-width: 3px;
+}

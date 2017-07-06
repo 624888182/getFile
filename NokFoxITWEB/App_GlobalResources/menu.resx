@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="M100" xml:space="preserve">
+    <value>基本信息查詢</value>
+  </data>
+  <data name="M10001" xml:space="preserve">
+    <value>掃描歷史查詢</value>
+  </data>
+  <data name="M10002" xml:space="preserve">
+    <value>生產良率查詢</value>
+  </data>
+  <data name="M10003" xml:space="preserve">
+    <value>測試站數據查詢</value>
+  </data>
+  <data name="M10004" xml:space="preserve">
+    <value>Flat File下載</value>
+  </data>
+  <data name="M10005" xml:space="preserve">
+    <value>SFC配置</value>
+  </data>
+  <data name="M101" xml:space="preserve">
+    <value>SMT信息查詢</value>
+  </data>
+  <data name="M102" xml:space="preserve">
+    <value>Assembly信息查詢</value>
+  </data>
+  <data name="M103" xml:space="preserve">
+    <value>Pack信息查詢</value>
+  </data>
+  <data name="M104" xml:space="preserve">
+    <value>維修信息查詢</value>
+  </data>
+  <data name="M105" xml:space="preserve">
+    <value>幫助</value>
+  </data>
+  <data name="M10006" xml:space="preserve">
+    <value>用戶管理</value>
+  </data>
+  <data name="M106" xml:space="preserve">
+    <value>報表</value>
+  </data>
+  <data name="M10007" xml:space="preserve">
+    <value>模塊管理</value>
+  </data>
+  <data name="M10101" xml:space="preserve">
+    <value>上料結果查詢</value>
+  </data>
+  <data name="M10102" xml:space="preserve">
+    <value>大板信息查詢</value>
+  </data>
+  <data name="M10103" xml:space="preserve">
+    <value>產能分布狀況</value>
+  </data>
+  <data name="M10104" xml:space="preserve">
+    <value>生產效能查詢</value>
+  </data>
+  <data name="M10105" xml:space="preserve">
+    <value>前N項不良查詢</value>
+  </data>
+  <data name="M10201" xml:space="preserve">
+    <value>產能分布狀況</value>
+  </data>
+  <data name="M10202" xml:space="preserve">
+    <value>生產效能查詢</value>
+  </data>
+  <data name="M10203" xml:space="preserve">
+    <value>前N項不良查詢</value>
+  </data>
+  <data name="M10301" xml:space="preserve">
+    <value>產能分布狀況</value>
+  </data>
+  <data name="M10302" xml:space="preserve">
+    <value>生產效能查詢</value>
+  </data>
+  <data name="M10303" xml:space="preserve">
+    <value>前N項不良查詢</value>
+  </data>
+  <data name="M10401" xml:space="preserve">
+    <value>維修入庫明細查詢</value>
+  </data>
+  <data name="M10402" xml:space="preserve">
+    <value>維修出庫明細查詢</value>
+  </data>
+  <data name="M10501" xml:space="preserve">
+    <value>SFC查詢使用手冊</value>
+  </data>
+  <data name="M10502" xml:space="preserve">
+    <value>SFC流程圖</value>
+  </data>
+  <data name="M10503" xml:space="preserve">
+    <value>Ring4012条码列印机使用手册</value>
+  </data>
+  <data name="M10504" xml:space="preserve">
+    <value>Ring4024条码列印机使用手册</value>
+  </data>
+  <data name="M10505" xml:space="preserve">
+    <value>工站與PID編碼原則</value>
+  </data>
+  <data name="M10506" xml:space="preserve">
+    <value>UPD File Upload Requirement</value>
+  </data>
+  <data name="M10601" xml:space="preserve">
+    <value>品質日報表</value>
+  </data>
+  <data name="M10602" xml:space="preserve">
+    <value>品質周報表</value>
+  </data>
+  <data name="M10106" xml:space="preserve">
+    <value>來料DateCode查詢</value>
+  </data>
+  <data name="M10603" xml:space="preserve">
+    <value>機台良率</value>
+  </data>
+  <data name="M10604" xml:space="preserve">
+    <value>產線及首次良率</value>
+  </data>
+  <data name="M10305" xml:space="preserve">
+    <value>手機裝箱查詢</value>
+  </data>
+  <data name="M10606" xml:space="preserve">
+    <value>CPK查詢</value>
+  </data>
+  <data name="M10607" xml:space="preserve">
+    <value>機台不良項目報表</value>
+  </data>
+  <data name="M10304" xml:space="preserve">
+    <value>出入庫信息查詢</value>
+  </data>
+  <data name="M10608" xml:space="preserve">
+    <value>工站首次良率</value>
+  </data>
+  <data name="M10009" xml:space="preserve">
+    <value>SMT BOM 導入</value>
+  </data>
+  <data name="M10010" xml:space="preserve">
+    <value>SAP BOM查詢</value>
+  </data>
+  <data name="M10011" xml:space="preserve">
+    <value>BOM 比對</value>
+  </data>
+  <data name="M10008" xml:space="preserve">
+    <value>用戶權限</value>
+  </data>
+  <data name="M10609" xml:space="preserve">
+    <value>重測率周報表</value>
+  </data>
+  <data name="M10610" xml:space="preserve">
+    <value>CPK數據查詢</value>
+  </data>
+  <data name="M10012" xml:space="preserve">
+    <value>NexTest測試明細數據查詢</value>
+  </data>
+  <data name="M112" xml:space="preserve">
+    <value>3D錫膏檢測儀</value>
+  </data>
+  <data name="M11201" xml:space="preserve">
+    <value>數據導入</value>
+  </data>
+  <data name="M11202" xml:space="preserve">
+    <value>數據查詢</value>
+  </data>
+  <data name="M10013" xml:space="preserve">
+    <value>FPY查詢</value>
+  </data>
+  <data name="M10611" xml:space="preserve">
+    <value>出貨數據下載</value>
+  </data>
+  <data name="M10204" xml:space="preserve">
+    <value>HardWare 版本查詢</value>
+  </data>
+  <data name="M10014" xml:space="preserve">
+    <value>線頭看板</value>
+  </data>
+  <data name="M10612" xml:space="preserve">
+    <value>NexTest 機種CPK數據查詢</value>
+  </data>
+  <data name="M10015" xml:space="preserve">
+    <value>手機密碼查詢</value>
+  </data>
+  <data name="M10016" xml:space="preserve">
+    <value>IMEI&amp;SN綁定查詢</value>
+  </data>
+  <data name="M10017" xml:space="preserve">
+    <value>LV&amp;LX PID綁定查詢</value>
+  </data>
+  <data name="M10306" xml:space="preserve">
+    <value>出貨信息查詢</value>
+  </data>
+  <data name="M10019" xml:space="preserve">
+    <value>IMEI 比對</value>
+  </data>
+  <data name="M10020" xml:space="preserve">
+    <value>轉工單</value>
+  </data>
+  <data name="M107" xml:space="preserve">
+    <value>IT日常查詢/更新</value>
+  </data>
+  <data name="M10701" xml:space="preserve">
+    <value>S 工單擴工單</value>
+  </data>
+  <data name="M10702" xml:space="preserve">
+    <value>IMEI 轉工單</value>
+  </data>
+  <data name="M10703" xml:space="preserve">
+    <value>CIT 已 Pass Unlink</value>
+  </data>
+  <data name="M10704" xml:space="preserve">
+    <value>稱重標準維護</value>
+  </data>
+  <data name="M10705" xml:space="preserve">
+    <value>UPD信息查詢</value>
+  </data>
+  <data name="M10706" xml:space="preserve">
+    <value>AutoMail信息查詢</value>
+  </data>
+  <data name="M10707" xml:space="preserve">
+    <value>SJUG查詢</value>
+  </data>
+  <data name="M108" xml:space="preserve">
+    <value>Order_Create程式</value>
+  </data>
+  <data name="M10801" xml:space="preserve">
+    <value>S工單建立</value>
+  </data>
+  <data name="M10802" xml:space="preserve">
+    <value>A工單建立</value>
+  </data>
+  <data name="M10803" xml:space="preserve">
+    <value>Y工單建立</value>
+  </data>
+  <data name="M10023" xml:space="preserve">
+    <value>P 工單信息查詢</value>
+  </data>
+  <data name="M109" xml:space="preserve">
+    <value>出入庫程式</value>
+  </data>
+  <data name="M10901" xml:space="preserve">
+    <value>添加用戶和權限</value>
+  </data>
+  <data name="M10902" xml:space="preserve">
+    <value>條碼範圍維護</value>
+  </data>
+  <data name="M110" xml:space="preserve">
+    <value>ShipLabel-PackList_SAP程式</value>
+  </data>
+  <data name="M111" xml:space="preserve">
+    <value>OrderImport 程式</value>
+  </data>
+  <data name="M113" xml:space="preserve">
+    <value>SFC系統設置</value>
+  </data>
+  <data name="M10903" xml:space="preserve">
+    <value>SJUG維護</value>
+  </data>
+  <data name="M10904" xml:space="preserve">
+    <value>E2P維護</value>
+  </data>
+  <data name="M10905" xml:space="preserve">
+    <value>料號維護</value>
+  </data>
+  <data name="M10906" xml:space="preserve">
+    <value>HW版本維護</value>
+  </data>
+  <data name="M10907" xml:space="preserve">
+    <value>稱重信息查詢</value>
+  </data>
+  <data name="M10908" xml:space="preserve">
+    <value>配件料號設置/查詢</value>
+  </data>
+  <data name="M11001" xml:space="preserve">
+    <value>M-TRAC資料查詢/導出</value>
+  </data>
+  <data name="M11002" xml:space="preserve">
+    <value>M-TRAC資料維護</value>
+  </data>
+  <data name="M11003" xml:space="preserve">
+    <value>已列印標籤信息查詢</value>
+  </data>
+  <data name="M11101" xml:space="preserve">
+    <value>DataContainer文件導入</value>
+  </data>
+  <data name="M11102" xml:space="preserve">
+    <value>ShopOrder信息查詢</value>
+  </data>
+  <data name="M11103" xml:space="preserve">
+    <value>ShopOrder信息維護</value>
+  </data>
+  <data name="M11302" xml:space="preserve">
+    <value>PID條碼格式設置</value>
+  </data>
+  <data name="M11303" xml:space="preserve">
+    <value>料號/板序設置</value>
+  </data>
+  <data name="M11304" xml:space="preserve">
+    <value>幾種設置</value>
+  </data>
+  <data name="M11305" xml:space="preserve">
+    <value>路由設置</value>
+  </data>
+  <data name="M11306" xml:space="preserve">
+    <value>板序設置</value>
+  </data>
+  <data name="M11307" xml:space="preserve">
+    <value>工程用戶維護</value>
+  </data>
+  <data name="M11308" xml:space="preserve">
+    <value>錯誤代碼維護</value>
+  </data>
+  <data name="M11301" xml:space="preserve">
+    <value>添加用戶和權限</value>
+  </data>
+  <data name="M11309" xml:space="preserve">
+    <value>HW版本維護</value>
+  </data>
+  <data name="M10021" xml:space="preserve">
+    <value>IDEN 條碼導出</value>
+  </data>
+  <data name="M114" xml:space="preserve">
+    <value>戴爾B2B信息查詢</value>
+  </data>
+  <data name="M11401" xml:space="preserve">
+    <value>B2B PO 信息</value>
+  </data>
+  <data name="M11402" xml:space="preserve">
+    <value>B2B Label 信息</value>
+  </data>
+  <data name="M11403" xml:space="preserve">
+    <value>B2B AsBuilt 信息</value>
+  </data>
+  <data name="M11404" xml:space="preserve">
+    <value>B2B PreAsn 信息</value>
+  </data>
+  <data name="M11406" xml:space="preserve">
+    <value>B2B Invoice 信息</value>
+  </data>
+  <data name="M11407" xml:space="preserve">
+    <value>B2B OrderChange 信息</value>
+  </data>
+  <data name="M11408" xml:space="preserve">
+    <value>B2B OrderStatus 信息</value>
+  </data>
+  <data name="M11405" xml:space="preserve">
+    <value>B2B Asn 信息</value>
+  </data>
+  <data name="M115" xml:space="preserve">
+    <value>戴爾B2B信息查詢</value>
+  </data>
+  <data name="M11501" xml:space="preserve">
+    <value>B2B PO 信息</value>
+  </data>
+  <data name="M11502" xml:space="preserve">
+    <value>B2B Label 信息</value>
+  </data>
+  <data name="M11503" xml:space="preserve">
+    <value>B2B AsBuilt 信息</value>
+  </data>
+  <data name="M11504" xml:space="preserve">
+    <value>B2B PreAsn 信息</value>
+  </data>
+  <data name="M11505" xml:space="preserve">
+    <value>B2B Asn 信息</value>
+  </data>
+  <data name="M11506" xml:space="preserve">
+    <value>B2B Invoice 信息</value>
+  </data>
+  <data name="M11507" xml:space="preserve">
+    <value>B2B OrderChange 信息</value>
+  </data>
+  <data name="M11508" xml:space="preserve">
+    <value>B2B OrderStatus 信息</value>
+  </data>
+  <data name="M11509" xml:space="preserve">
+    <value>B2B Blanket PO 信息</value>
+  </data>
+  <data name="M11510" xml:space="preserve">
+    <value>B2B Blanket PO 維護</value>
+  </data>
+  <data name="M11310" xml:space="preserve">
+    <value>工程路由設置</value>
+  </data>
+  <data name="M11311" xml:space="preserve">
+    <value>IT 路由設置</value>
+  </data>
+  <data name="M10022" xml:space="preserve">
+    <value>三次鎖板解鎖</value>
+  </data>
+  <data name="M11312" xml:space="preserve">
+    <value>工程LABEL圖片上傳</value>
+  </data>
+  <data name="M10107" xml:space="preserve">
+    <value>SMT產線缺料預警</value>
+  </data>
+  <data name="M10108" xml:space="preserve">
+    <value>SMT烘烤物料過期查詢</value>
+  </data>
+  <data name="M10205" xml:space="preserve">
+    <value>機構料信息查詢</value>
+  </data>
+  <data name="M10206" xml:space="preserve">
+    <value>機構料信息維護</value>
+  </data>
+  <data name="M10024" xml:space="preserve">
+    <value>FQC工站不良信息查詢</value>
+  </data>
+  <data name="M11511" xml:space="preserve">
+    <value>B2B Carrier Code 信息</value>
+  </data>
+  <data name="M11512" xml:space="preserve">
+    <value>B2B Carrier Code 維護</value>
+  </data>
+  <data name="M10403" xml:space="preserve">
+    <value>維修超過3次查詢</value>
+  </data>
+  <data name="M10025" xml:space="preserve">
+    <value>投入/產出查詢</value>
+  </data>
+  <data name="M10026" xml:space="preserve">
+    <value>WIP狀態查詢</value>
+  </data>
+  <data name="M10027" xml:space="preserve">
+    <value>SimUnlockCode查詢</value>
+  </data>
+  <data name="M10613" xml:space="preserve">
+    <value>重測報表</value>
+  </data>
+  <data name="M10028" xml:space="preserve">
+    <value>測試值查詢</value>
+  </data>
+  <data name="M10614" xml:space="preserve">
+    <value>TopIssueReport</value>
+  </data>
+  <data name="M10029" xml:space="preserve">
+    <value>號碼預警</value>
+  </data>
+  <data name="M116" xml:space="preserve">
+    <value>SCM MGTM 信息</value>
+  </data>
+  <data name="M11601" xml:space="preserve">
+    <value>FTRAM1 維護</value>
+  </data>
+  <data name="M11602" xml:space="preserve">
+    <value>FTRAT1 維護</value>
+  </data>
+  <data name="M11603" xml:space="preserve">
+    <value>Menu Upload</value>
+  </data>
+  <data name="M11604" xml:space="preserve">
+    <value>Auto Upload</value>
+  </data>
+  <data name="M11605" xml:space="preserve">
+    <value>Auto Check</value>
+  </data>
+  <data name="M11606" xml:space="preserve">
+    <value>檢查 B2B EDI-810 數據</value>
+  </data>
+  <data name="M11607" xml:space="preserve">
+    <value>FTRAM1 查詢</value>
+  </data>
+  <data name="M11608" xml:space="preserve">
+    <value>FTRAT1 查詢</value>
+  </data>
+  <data name="M11610" xml:space="preserve">
+    <value>上傳主檔數據</value>
+  </data>
+</root>

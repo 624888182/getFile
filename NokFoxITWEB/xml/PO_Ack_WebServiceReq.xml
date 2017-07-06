@@ -1,0 +1,14 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:glob="http://sap.com/xi/SAPGlobal20/Global">
+	<soapenv:Header/>
+	<soapenv:Body>
+		<glob:PurchaseOrderConfirmBySupplierConfirmBySupplierRequest_sync>
+
+			<PurchaseOrder>
+				<!--Optional:-->
+				<!--<ID>487</ID>-->
+
+			</PurchaseOrder>
+		</glob:PurchaseOrderConfirmBySupplierConfirmBySupplierRequest_sync>
+	</soapenv:Body>
+</soapenv:Envelope>
+

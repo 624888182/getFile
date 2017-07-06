@@ -1,0 +1,55 @@
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Web;
+using System.Web.SessionState;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+using DBAccess.EAI;
+
+namespace SFCQuery.Boundary
+{
+	/// <summary>
+	/// WFrmDateCodeToImei 的摘要描述。
+	/// </summary>
+	public partial class WFrmDateCodeToImei : System.Web.UI.Page
+	{
+	
+		protected void Page_Load(object sender, System.EventArgs e)
+		{
+			// 在這裡放置使用者程式碼以初始化網頁
+			string strDateCode = Request.QueryString["DateCode"].ToString();
+            string strRcvNo = Request.QueryString["RcvNo"].ToString();
+			string strWONO = Request.QueryString["WONO"].ToString();
+			string strSql = "SELECT SUBSTR(IMEI,1,15)IMEI,'"+strDateCode+"'DATECODE,'"+strWONO+"'SORDER,E2PDATE ShipDate FROM GLM.E2PCONFIG WHERE PRODUCTID IN ( "
+				+" SELECT T.PRODUCT_ID FROM MES_PCBA_PANEL_DETAIL S,MES_PCBA_PANEL_LINK T "
+				+" WHERE S.PANEL_ID = T.PANEL_ID AND WO_NO = '"+strWONO+"') AND STATUS = 'PASS'";
+			DataTable dt = ClsGlobal.objDataConnect.DataQuery(strSql).Tables[0];
+			dgDateCodeDetail.DataSource = dt.DefaultView;
+			dgDateCodeDetail.DataBind();
+		}
+
+		#region Web Form 設計工具產生的程式碼
+		override protected void OnInit(EventArgs e)
+		{
+			//
+			// CODEGEN: 此為 ASP.NET Web Form 設計工具所需的呼叫。
+			//
+			InitializeComponent();
+			base.OnInit(e);
+		}
+		
+		/// <summary>
+		/// 此為設計工具支援所必須的方法 - 請勿使用程式碼編輯器修改
+		/// 這個方法的內容。
+		/// </summary>
+		private void InitializeComponent()
+		{    
+
+		}
+		#endregion
+	}
+}

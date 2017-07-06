@@ -1,0 +1,514 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data.OracleClient;
+
+public partial class StandByInsert : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+
+            this.tablePid.Visible = false;
+            this.tabledisay.Visible = false;
+            this.tableerror.Visible = false;
+            this.tableGrivwDisay.Visible = false;
+            this.tabDengLu.Visible = false;
+            RadioWitch.Focus();
+            txtBeginDate.Text = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+            txtDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
+        }
+    }
+
+    /// <summary>
+    /// btnInsert Click Event
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void btnInsert_Click(object sender, EventArgs e)
+    {
+
+        DateTime DaTimebegin = new DateTime();
+        DateTime DaTimeend = new DateTime();
+        DaTimebegin = Convert.ToDateTime(txtBeginDate.Text.ToString());
+        DaTimeend = Convert.ToDateTime(txtDate.Text.ToString());
+        Session["RadioSelect"] = this.RadioWitch.SelectedValue.ToString();
+        string StrError = string.Empty;
+        if (DaTimeend < DaTimebegin)
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('選擇日期次序錯誤,請從新選擇!'); </script>");
+            return;
+        }
+
+        if (RadioWitch.SelectedValue == "")
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('請選擇操作方式!'); </script>");
+            RadioWitch.Focus();
+            return;
+        }
+        if (RadioWitch.SelectedValue == "A")
+        {
+
+            string StrDbIP = this.DropDownList2.SelectedValue.ToString();
+            StandToMax myStandToMax = new StandToMax();
+            int i1 = 0; int i2 = 0; int i3 = 0; int i4 = 0; int iRet = 0;
+
+            if (DropTableList.SelectedValue == "WCDMA_TSE.R_FUNCTION_LOG_T")
+                iRet = myStandToMax.Insert_wcdma_tse_R_FUNCTION_LOG_T(StrDbIP,DaTimebegin.ToString("yyyy/MM/dd"), DaTimeend.ToString("yyyy/MM/dd"), ref i1, ref i2, ref i3);
+            else if (DropTableList.SelectedValue == "WCDMA_TSE.R_FUNCTION_HEAD_T")
+                iRet = myStandToMax.Insert_wcdma_tse_R_FUNCTION_HEAD_T(StrDbIP,DaTimebegin.ToString("yyyy/MM/dd"), DaTimeend.ToString("yyyy/MM/dd"), ref i1, ref i2, ref i3,ref i4);
+            else if (DropTableList.SelectedValue == "TESTINFO.TESTINFO_HEAD")
+                iRet = myStandToMax.Insert_testinfo_HEAD(StrDbIP,DaTimebegin.ToString("yyyy/MM/dd"), DaTimeend.ToString("yyyy/MM/dd"), ref i1, ref i2, ref i3);
+            else if (DropTableList.SelectedValue == "WCDMA_TSE.R_FUNCTION_LOG_T")
+                iRet = myStandToMax.Insert_wcdma_tse_R_FUNCTION_LOG_T(StrDbIP,DaTimebegin.ToString("yyyy/MM/dd"), DaTimeend.ToString("yyyy/MM/dd"), ref i1, ref i2, ref i3);
+            else if (DropTableList.SelectedValue == "TESTINFO.TESTINFO_DETAIL")
+                iRet = myStandToMax.Insert_testinfo_testinfo_DETAIL(StrDbIP,DaTimebegin.ToString("yyyy/MM/dd"), DaTimeend.ToString("yyyy/MM/dd"), ref i1, ref i2, ref i3);
+            else
+                iRet = myStandToMax.Insert_wcdma_tse_R_FUNCTION_DETAIL_T(StrDbIP,DaTimebegin.ToString("yyyy/MM/dd"), DaTimeend.ToString("yyyy/MM/dd"),ref i1, ref i2, ref i3);
+
+
+            if (iRet == 1)
+            {
+                StrError = myStandToMax.GetError();
+                this.Laberror.Text = StrError;
+                this.tableerror.Visible = true;
+            }
+            this.lblcolor.Text = Convert.ToString(i1);
+            this.lblcolortwo.Text = Convert.ToString(i2);
+            this.lblcolorthree.Text = Convert.ToString(i3);
+            this.lblcolorfour.Text = Convert.ToString(i4);
+            this.tabledisay.Visible = true;
+        }
+
+       
+    }
+
+    /// <summary>
+    /// FROM Db TO Insert another DB 
+    /// </summary>
+    /// <param name="testinfo"></param>
+    private void InsertFrStaBy(TESTINFO_HEAD testinfo)
+    {
+
+        string sqlinstert = @"INSERT INTO TESTINFO.TESTINFO_HEAD(ID," +
+                                                           "CREATE_DATE," +
+                                                           "UNIQUE_ID," +
+                                                           "TRACK_ID," +
+                                                           "STATION_NAME," +
+                                                           "STATUS," +
+                                                           "TH1," +
+                                                           "TH2," +
+                                                           "TH3," +
+                                                           "TH4," +
+                                                           "TH5," +
+                                                           "TH6," +
+                                                           "TH7," +
+                                                           "TH8," +
+                                                           "TH9," +
+                                                           "TH10," +
+                                                           "TH11," +
+                                                           "TH12," +
+                                                           "TH13," +
+                                                           "TH14," +
+                                                           "TH15," +
+                                                           "TH16," +
+                                                           "TH17," +
+                                                           "TH18," +
+                                                           "TH19," +
+                                                           "TH20," +
+                                                           "TH21," +
+                                                           "TH22," +
+                                                           "TH23," +
+                                                           "TH24," +
+                                                           "TH25," +
+                                                           "TH26," +
+                                                           "TH27," +
+                                                           "TH28," +
+                                                           "TH29," +
+                                                           "TH30) " +
+                                                   "VALUES(:V_ID," +
+                                                           ":V_Date," +
+                                                           ":V_UNIQUE_ID," +
+                                                           ":V_TRACK_ID," +
+                                                           ":V_STATION_NAME," +
+                                                           ":V_STATUS," +
+                                                           ":V_TH1," +
+                                                           ":V_TH2," +
+                                                           ":V_TH3," +
+                                                           ":V_TH4," +
+                                                           ":V_TH5," +
+                                                           ":V_TH6," +
+                                                           ":V_TH7," +
+                                                           ":V_TH8," +
+                                                           ":V_TH9," +
+                                                           ":V_TH10," +
+                                                           ":V_TH11," +
+                                                           ":V_TH12," +
+                                                           ":V_TH13," +
+                                                           ":V_TH14," +
+                                                           ":V_TH15," +
+                                                           ":V_TH16," +
+                                                           ":V_TH17," +
+                                                           ":V_TH18," +
+                                                           ":V_TH19," +
+                                                           ":V_TH20," +
+                                                           ":V_TH21," +
+                                                           ":V_TH22," +
+                                                           ":V_TH23," +
+                                                           ":V_TH24," +
+                                                           ":V_TH25," +
+                                                           ":V_TH26," +
+                                                           ":V_TH27," +
+                                                           ":V_TH28," +
+                                                           ":V_TH29," +
+                                                           ":V_TH30" +
+                                                           ")";
+        OracleParameter[] op = new OracleParameter[36];
+        op[0] = new OracleParameter("V_ID", testinfo.ID);
+        op[1] = new OracleParameter("V_Date", testinfo.CREATE_DATE);
+        op[2] = new OracleParameter("V_UNIQUE_ID", testinfo.UNIQUE_ID);
+        op[3] = new OracleParameter("V_TRACK_ID", testinfo.TRACK_ID);
+        op[4] = new OracleParameter("V_STATION_NAME", testinfo.STATION_NAME);
+        op[5] = new OracleParameter("V_STATUS", testinfo.STATUS);
+        op[6] = new OracleParameter("V_TH1", testinfo.TH1);
+        op[7] = new OracleParameter("V_TH2", testinfo.TH2);
+        op[8] = new OracleParameter("V_TH3", testinfo.TH3);
+        op[9] = new OracleParameter("V_TH4", testinfo.TH4);
+        op[10] = new OracleParameter("V_TH5", testinfo.TH5);
+        op[11] = new OracleParameter("V_TH6", testinfo.TH6);
+        op[12] = new OracleParameter("V_TH7", testinfo.TH7);
+        op[13] = new OracleParameter("V_TH8", testinfo.TH8);
+        op[14] = new OracleParameter("V_TH9", testinfo.TH9);
+        op[15] = new OracleParameter("V_TH10", testinfo.TH10);
+        op[16] = new OracleParameter("V_TH11", testinfo.TH11);
+        op[17] = new OracleParameter("V_TH12", testinfo.TH12);
+        op[18] = new OracleParameter("V_TH13", testinfo.TH13);
+        op[19] = new OracleParameter("V_TH14", testinfo.TH14);
+        op[20] = new OracleParameter("V_TH15", testinfo.TH15);
+        op[21] = new OracleParameter("V_TH16", testinfo.TH16);
+        op[22] = new OracleParameter("V_TH17", testinfo.TH17);
+        op[23] = new OracleParameter("V_TH18", testinfo.TH18);
+        op[24] = new OracleParameter("V_TH19", testinfo.TH19);
+        op[25] = new OracleParameter("V_TH20", testinfo.TH20);
+        op[26] = new OracleParameter("V_TH21", testinfo.TH21);
+        op[27] = new OracleParameter("V_TH22", testinfo.TH22);
+        op[28] = new OracleParameter("V_TH23", testinfo.TH23);
+        op[29] = new OracleParameter("V_TH24", testinfo.TH24);
+        op[30] = new OracleParameter("V_TH25", testinfo.TH25);
+        op[31] = new OracleParameter("V_TH26", testinfo.TH26);
+        op[32] = new OracleParameter("V_TH27", testinfo.TH27);
+        op[33] = new OracleParameter("V_TH28", testinfo.TH28);
+        op[34] = new OracleParameter("V_TH29", testinfo.TH29);
+        op[35] = new OracleParameter("V_TH30", testinfo.TH30);
+
+        if (Session["RadioSelect"] == "A")
+        {
+            OracleHelper.ExecuteSql(sqlinstert, op);
+        }
+        else
+        {
+            OracleHelper.ExcuteSqlNew(sqlinstert, op);
+        }
+
+
+
+    }
+
+    /// <summary>
+    /// Query Data From Bakup DB  to Normal DB
+    /// </summary>
+    /// <param name="PID"></param>
+    /// <returns></returns>
+    private DataSet RestoreBakData(string PID)
+    {
+        DateTime DaTimebegin = new DateTime();
+        DateTime DaTimeend = new DateTime();
+        DaTimebegin = Convert.ToDateTime(txtBeginDate.Text.ToString());
+        DaTimeend = Convert.ToDateTime(txtDate.Text.ToString());
+        string strsql = string.Empty;
+        strsql = @"select * from  TESTINFO.TESTINFO_HEAD where TRACK_ID='" + PID + "'";
+        return OracleHelper.QueryNew(strsql);
+    }
+
+    /// <summary>
+    /// 判斷另外數據庫是否是相同數據,如果有返回fale
+    /// </summary>
+    /// <param name="testinfo"></param>
+    /// <returns></returns>
+    private bool CompareStatus(TESTINFO_HEAD testinfo)
+    {
+        bool bret = false;
+        string strsql = string.Empty;
+        strsql = @"select TRACK_ID from TESTINFO.TESTINFO_HEAD where ID=:V_ID AND CREATE_DATE=:V_CREATE_DATE AND TRACK_ID=:V_TRACK_ID AND                                STATION_NAME=:V_STATION_NAME AND STATUS=:V_STATUS AND rownum <=1 ";
+        OracleParameter[] ParamOa = new OracleParameter[5];
+        ParamOa[0] = new OracleParameter("V_ID", testinfo.ID);
+        ParamOa[1] = new OracleParameter("V_CREATE_DATE", testinfo.CREATE_DATE);
+        ParamOa[2] = new OracleParameter("V_TRACK_ID", testinfo.TRACK_ID);
+        ParamOa[3] = new OracleParameter("V_STATION_NAME", testinfo.STATION_NAME);
+        ParamOa[4] = new OracleParameter("V_STATUS", testinfo.STATUS);
+
+        string strTrack_id = string.Empty;
+        if (Session["RadioSelect"] == "A")
+        {
+            OracleDataReader r = OracleHelper.ExecuteReaderNew(strsql, ParamOa);
+            while (r.Read())
+            {
+                strTrack_id = r["TRACK_ID"].ToString();
+            }
+            r.Close();
+        }
+        else
+        {
+            OracleDataReader r = OracleHelper.ExecuteReader(strsql, ParamOa);
+            while (r.Read())
+            {
+                strTrack_id = r["TRACK_ID"].ToString();
+            }
+            r.Close();
+        }
+        if (strTrack_id.Length <= 0)
+        {
+            bret = true;
+        }
+        return bret;
+    }
+
+    /// <summary>
+    /// 取前一天DB-Table中的數據
+    /// </summary>
+    /// <returns></returns>
+    private DataSet GetData()
+    {
+        DateTime DaTimebegin = new DateTime();
+        DateTime DaTimeend = new DateTime();
+        DaTimebegin = Convert.ToDateTime(txtBeginDate.Text.ToString());
+        DaTimeend = Convert.ToDateTime(txtDate.Text.ToString());
+        string strsql = @"select * from  TESTINFO.TESTINFO_HEAD where create_date >= To_Date('" + DaTimebegin.ToString("yyyy/MM/dd") + "','YYYY/MM/DD')  and create_date < To_Date('" + DaTimeend.ToString("yyyy/MM/dd") + "','YYYY/MM/DD') and rownum <=500  order by Create_date desc ";
+        return OracleHelper.Query(strsql);
+
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void RadioWitch_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (RadioWitch.SelectedValue == "B")
+        {
+            this.tabDengLu.Visible = true;
+            this.table2.Visible = false;
+            this.tabledisay.Visible = false;
+            this.tableerror.Visible = false;
+        }
+        else
+        {
+            this.tabDengLu.Visible = false;
+            this.tablePid.Visible = false;
+            this.table2.Visible = true;
+            this.tabledisay.Visible = false;
+            this.tableerror.Visible = false;
+        }
+    }
+
+    /// <summary>
+    /// RowCreated Event
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void gvProjectList_RowCreated(object sender, GridViewRowEventArgs e)
+    {
+        e.Row.Attributes.Add("onmouseover", "c=this.style.backgroundColor;this.style.backgroundColor='#0099ff'");
+        e.Row.Attributes.Add("onmouseout", "this.style.backgroundColor=c;");
+    }
+
+    /// <summary>
+    /// PageIndexChanging Event
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void gvProjectList_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        this.gvProjectList.PageIndex = e.NewPageIndex;
+        GetBind();
+    }
+
+    /// <summary>
+    /// GetBind Event
+    /// </summary>
+    private void GetBind()
+    {
+        string strsql = string.Empty;
+        DateTime DaTimebegin = Convert.ToDateTime(Session["DaTimeB"]);
+        DateTime DaTimeend = Convert.ToDateTime(Session["DaTimeE"]);
+        strsql = @"select * from  TESTINFO.TESTINFO_HEAD where TRACK_ID='" + Session["PID"] + "' AND  create_date >= To_Date('" + DaTimebegin.ToString("yyyy/MM/dd") + "','YYYY/MM/DD')  and create_date < To_Date('" + DaTimeend.ToString("yyyy/MM/dd") + "','YYYY/MM/DD') and rownum <=500  order by Create_date desc ";
+        this.gvProjectList.DataSource = OracleHelper.QueryNew(strsql).Tables[0];
+        this.gvProjectList.DataBind();
+    }
+
+    /// <summary>
+    /// ButRestore Click Event
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void ButRestore_Click(object sender, EventArgs e)
+    {
+        int scessCount = 0;
+        int errorCount = 0;
+        int reptCount = 0;
+        Session["RadioSelect"] = this.RadioWitch.SelectedValue.ToString();
+        Session["PID"] = "";
+
+        if (RadioWitch.SelectedValue == "")
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('請選擇操作方式!'); </script>");
+            RadioWitch.Focus();
+            return;
+        }
+
+        #region From BACKUP DB to NORMAL DB
+        if (RadioWitch.SelectedValue == "B")
+        {
+            this.TextInput.Focus();
+            string strInput = this.TextInput.Text.Trim();
+            string strDbIp = this.DropDownListIp.SelectedValue;
+
+            Session["PID"] = strInput;
+            if (strInput.Length == 0 || strInput == "")
+            {
+                Page.RegisterStartupScript("dd", "<script>alert('PID欄位為空,請重新輸入!'); </script>");
+                this.TextInput.Focus();
+                return;
+            }
+
+            StandToMax myStandToMax = new StandToMax();
+            int i1 = 0; int i2 = 0; int i3 = 0; int iRet = 0;
+            string StrError = string.Empty;
+
+            if (DropDownList1.SelectedValue == "WCDMA_TSE.R_FUNCTION_LOG_T")
+            {
+                iRet = myStandToMax.InsertNormal_wcdma_tse_R_FUNCTION_LOG_T(strInput, strDbIp, ref i1, ref i2, ref i3);
+            }
+            else if (DropDownList1.SelectedValue == "WCDMA_TSE.R_FUNCTION_HEAD_T")
+                iRet = myStandToMax.InsertNormal_wcdma_tse_R_FUNCTION_HEAD_T(strInput, strDbIp, ref i1, ref i2, ref i3);
+            else if (DropDownList1.SelectedValue == "TESTINFO.TESTINFO_HEAD")
+                iRet = myStandToMax.InsertNormal_testinfo_HEAD(strInput, strDbIp, ref i1, ref i2, ref i3);
+            else if (DropDownList1.SelectedValue == "WCDMA_TSE.R_FUNCTION_LOG_T")
+                iRet = myStandToMax.InsertNormal_wcdma_tse_R_FUNCTION_LOG_T(strInput, strDbIp, ref i1, ref i2, ref i3);
+            else if (DropDownList1.SelectedValue == "TESTINFO.TESTINFO_DETAIL")
+                iRet = myStandToMax.InsertNormal_testinfo_DETAIL(strInput, strDbIp, ref i1, ref i2, ref i3);
+            else if (DropDownList1.SelectedValue == "SFC.R_WIP_TRACKING_T_PID")
+                iRet = myStandToMax.InsertNormal_sfc_R_WIP_TRACKING_T_PID(strInput, strDbIp, ref i1, ref i2, ref i3);
+            else
+            {
+                iRet = myStandToMax.InsertNormal_wcdma_tse_R_FUNCTION_DETAIL_T(strInput, strDbIp, ref i1, ref i2, ref i3);
+            }
+
+            if (iRet == 1)
+            {
+                StrError = myStandToMax.GetError();
+                this.Laberror.Text = StrError;
+                this.tableerror.Visible = true;
+            }
+            
+            this.lblcolor.Text = Convert.ToString(i1);
+            this.lblcolortwo.Text = Convert.ToString(i2);
+            this.lblcolorthree.Text = Convert.ToString(i3);
+            this.tabledisay.Visible = true;
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// BtnSubmit Click Event
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void btnSubmit_Click(object sender, EventArgs e)
+    {
+
+        string strUserCode = string.Empty;
+        string strUserPwd = string.Empty;
+        strUserCode = txtUserCode.Text.ToUpper().Replace("'", "");
+        strUserPwd = txtPwd.Text.Replace("'", "");
+        if (strUserCode.Length == 0 || strUserPwd.Length == 0)
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('用戶名或密碼為空請輸入!'); </script>");
+            this.txtUserCode.Focus();
+            return;
+        }
+        if (strUserCode != "ADMIN")
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('用戶名錯誤請重新輸入!'); </script>");
+            this.txtUserCode.Focus();
+            return;
+        }
+        if (strUserPwd != "Foxconn88")
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('密碼錯誤請重新輸入!'); </script>");
+            this.txtUserCode.Focus();
+            return;
+        }
+        this.txtUserCode.Text = "";
+        this.txtPwd.Text = "";
+        this.tabDengLu.Visible = false;
+        this.tablePid.Visible = true;
+
+    }
+}
+
+    /// <summary>
+/// TESTINFO.TESTINFO_HEAD 表字段定義
+/// </summary>
+    public class TESTINFO_HEAD
+{
+    public int  ID { get; set; }
+    public DateTime  CREATE_DATE { get; set; }
+    public string UNIQUE_ID { get; set; }
+    public string TRACK_ID { get; set; }
+    public string STATION_NAME { get; set; }
+    public string STATUS { get; set; }
+    public string TH1 { get; set; }
+    public string TH2 { get; set; }
+    public string TH3 { get; set; }
+    public string TH4 { get; set; }
+    public string TH5 { get; set; }
+    public string TH6 { get; set; }
+    public string TH7 { get; set; }
+    public string TH8 { get; set; }
+    public string TH9 { get; set; }
+    public string TH10 { get; set; }
+    public string TH11 { get; set; }
+    public string TH12 { get; set; }
+    public string TH13 { get; set; }
+    public string TH14 { get; set; }
+    public string TH15 { get; set; }
+    public string TH16 { get; set; }
+    public string TH17 { get; set; }
+    public string TH18 { get; set; }
+    public string TH19 { get; set; }
+    public string  TH20 {get;set;}
+    public string TH21 { get; set; }
+    public string TH22 {get;set;}
+    public string TH23 { get; set; }
+    public string TH24 { get; set; }
+    public string TH25 { get; set; }
+    public string TH26 {get;set;}
+    public string TH27 { get; set; }
+    public string TH28 { get; set; }
+    public string TH29 { get; set; }
+    public string TH30 { get; set; }
+
+
+
+
+
+
+}
+

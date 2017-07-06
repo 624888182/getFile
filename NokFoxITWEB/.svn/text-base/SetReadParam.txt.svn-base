@@ -1,0 +1,3 @@
+DiskParam=Y Syncro programflag=3 programtype=1 programstatus=2 programnum=1 WriETAarraytransDayflag=N
+// programflag=1 ETDToETA 1. Main Action 2. Main Loop Not Login 3. Been called once Client 
+// Syncro="1", programfalg=2 ShipPlan DownLoad

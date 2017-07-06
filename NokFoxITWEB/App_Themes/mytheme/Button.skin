@@ -1,0 +1,16 @@
+﻿<%--
+<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+
+<asp:Button  runat="server" BackColor="#E0E0E0" BorderColor="#80FF80" BorderStyle="Ridge" ></asp:Button>
+               
+<asp:Button  runat="server" BackColor="#C0FFFF" BorderColor="#8080FF" BorderStyle="Solid" SkinID="bule"></asp:Button>
+        
+<asp:Button  runat="server" BackColor="#FFE0C0" BorderColor="#FF8000" BorderStyle="Dotted" SkinID="yellow"></asp:Button>
+
+--%>
+               
+<asp:Button Width="100px" Height="25px" runat="server" BackColor="#E0E0E0" BorderColor="#80FF80" BorderStyle="Ridge"></asp:Button>
+
+<asp:Button Width="175px" Height="30px" runat="server" BackColor="#C0FFFF" BorderColor="#8080FF" BorderStyle="Solid" SkinID="Function"></asp:Button>
+       
+<asp:Button Width="175px" Height="30px" runat="server" BackColor="#FF6600" BorderColor="#FF8000" BorderStyle="Dotted" SkinID="yellow"></asp:Button>

@@ -1,0 +1,32 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="TransferL6ToL8Auto.aspx.cs" Inherits="TransferL6ToL8Auto" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <asp:Timer ID="Timer2" runat="server" Interval="300000" Enabled="False" 
+        ontick="Timer2_Tick">
+    </asp:Timer>
+    <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
+    <div>
+    
+        <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+            <ContentTemplate>
+                <asp:TextBox ID="txt_Head" runat="server" Width="543px" ReadOnly="True"></asp:TextBox>
+                <br />
+                <asp:TextBox ID="txt_STATUS" runat="server" Width="542px" Height="78px" 
+                    ReadOnly="True" TextMode="MultiLine"></asp:TextBox>
+                <asp:Button ID="Button1" runat="server" Text="手動執行" Width="77px" 
+                    onclick="Button1_Click" />
+            </ContentTemplate>
+        </asp:UpdatePanel>
+    
+    </div>
+    </form>
+</body>
+</html>

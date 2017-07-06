@@ -1,0 +1,32 @@
+2011/09/04 10:24:32 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/09/04 10:24:32 || [ERROR] Checkback Cannot find table 0.
+2011/09/04 10:24:32 || [ERROR] ORA-00936: 遺漏表示式
+:GetDataReader()
+2011/09/04 10:24:32 || [ERROR] Checkback Cannot find table 0.
+2011/09/04 10:27:22 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/09/04 10:27:22 || UPD filename upload error! , Invoice : 81979088
+2011/09/04 10:27:26 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/09/04 10:27:26 || UPD filename upload error! , Invoice : 81979103
+2011/09/04 10:27:42 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/09/04 10:27:42 || UPD filename upload error! , Invoice : 81982555
+2011/09/04 10:43:01 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/09/04 10:43:01 || UPD filename upload error! , Invoice : 81979088
+2011/09/04 10:43:01 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/09/04 10:43:01 || UPD filename upload error! , Invoice : 81979103
+2011/09/04 10:43:01 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/09/04 10:43:01 || UPD filename upload error! , Invoice : 81982555
+2011/09/04 10:43:02 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/09/04 10:43:02 || UPD filename upload error! , Invoice : 86004641
+2011/09/04 10:43:02 || [SUCCEED] create file c:\mcms\gfs\to_be_processed\PROG_V01_FIHTJ_20110904104302_86004641-011.dat
+2011/09/04 10:43:51 || [ERROR] ORA-01400: 無法將 NULL 插入 ("SHP"."UPD_INVOICE_HAND_TEMP"."INVOICE")
+:ExecuteNonQuery - INSERT INTO SHP.UPD_INVOICE_HAND_TEMP (INVOICE,MESSAGE,IMEI) VALUES('','UPD filename upload error!','UPD filename upload error!')
+2011/09/04 10:43:51 || UPD filename upload error! , Invoice : 86004792
+2011/09/04 10:49:29 || [SUCCEED] create file c:\mcms\gfs\to_be_processed\PROG_V01_FIHTJ_20110904104929_86004792-001.dat

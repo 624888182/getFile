@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base
+END
+ApplyPurchaseHeadBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base/ApplyPurchaseHeadBase.cs
+END
+PubAttachmentsBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base/PubAttachmentsBase.cs
+END
+vssver2.scc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base/vssver2.scc
+END
+ApplyPurchaseDetailBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base/ApplyPurchaseDetailBase.cs
+END
+EnterFactReasonBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base/EnterFactReasonBase.cs
+END
+EnterFactApplyDetailBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base/EnterFactApplyDetailBase.cs
+END
+GatehouseBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base/GatehouseBase.cs
+END
+PubNoticeBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base/PubNoticeBase.cs
+END
+EnterFactApplyMasterBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/MainMot/!svn/ver/1/App_Code/DB/SqlServer/base/EnterFactApplyMasterBase.cs
+END

@@ -1,0 +1,367 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+
+using System.Collections.Generic;
+using System.Net.Mail;
+using System.Text;
+
+public partial class Chk_3S4SPrt : System.Web.UI.Page
+{
+    SAPOperate sapo = new SAPOperate();
+    static string dataBaseType = "";
+    static string readConnection = "";
+    static string writeConnection = "";
+    static string prgType = "";
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            if (Session["Param1"] != null)                  // 1 表示數據庫 I/O
+            {
+                dataBaseType = Session["Param2"].ToString();  // Oracle
+                readConnection = Session["Param3"].ToString();  // 讀資料庫
+                writeConnection = Session["Param4"].ToString();   // 寫資料庫
+                prgType = Session["Param5"].ToString(); // menu or auto 
+            }
+            else
+            {
+                dataBaseType = "oracle";  // Oracle
+                readConnection = ConfigurationManager.AppSettings["L8StandByConnectionString"].ToString();// 讀資料庫
+                writeConnection = ConfigurationManager.AppSettings["bjl6testConnectionString"].ToString();// 寫資料庫
+                prgType = "menu "; // menu or auto 
+            }
+            txtStartDate.Text = DateTime.Now.AddDays(-5).ToString("yyyy/MM/dd");
+            txtEndDate.Text = DateTime.Now.ToString("yyyy/MM/dd");
+        }
+    }
+    /// <summary>
+    /// 檢查日期
+    /// </summary>
+    /// <param name="checkBeginDate"></param>
+    /// <param name="checkEndDate"></param>
+    /// <returns></returns>
+    public string CheckDateFomat(ref string checkBeginDate, ref string checkEndDate)
+    {
+        DateTime dateTime1;
+        DateTime dateTime2;
+        if (DateTime.TryParse(checkBeginDate, out dateTime1) && DateTime.TryParse(checkEndDate, out dateTime2))
+        {
+            checkBeginDate = dateTime1.ToString("yyyy/MM/dd");
+            checkEndDate = dateTime2.ToString("yyyy/MM/dd");
+        }
+        else
+        {
+            return "DateIsWrong!";
+        }
+        int beginDateValue = 0;
+        int endDateValue = 0;
+        if (int.TryParse(checkBeginDate.Replace("/", ""), out beginDateValue)
+            && int.TryParse(checkEndDate.Replace("/", ""), out endDateValue))
+        {
+            if (beginDateValue > endDateValue)
+            {
+                string middleDate = string.Empty;
+                middleDate = checkEndDate;
+                checkEndDate = checkBeginDate;
+                checkBeginDate = middleDate;
+            }
+        }
+        return "DateFomartIsRight!";
+    }
+    public string ReturnDNSql(string beginDate, string endDate)
+    {
+        string queryDNSql = string.Empty;
+        queryDNSql = "SELECT DISTINCT INVOICE  FROM SAP.SAP_INVOICE_INFO" +
+                    " WHERE To_Char(LAST_UPDATE_DATE,'yyyy/MM/dd')>='" + beginDate + "'" +
+                    " AND To_Char(LAST_UPDATE_DATE,'yyyy/MM/dd')<='" + endDate + "'";
+        return queryDNSql;
+    }
+    /// <summary>
+    /// 按日期條件查詢
+    /// </summary>
+    /// <param name="DateStatus"></param>
+    /// <param name="ds"></param>
+    /// <param name="DNList"></param>
+    /// <param name="formatDN"></param>
+    /// 
+
+    public void QueryByDate(ref string DateStatus, ref DataTable dt, ref List<string> DNList, ref string formatDN)
+    {
+        string InputBeginDate = string.Empty;
+        string InputEndDate = string.Empty;
+        string getDNSql = string.Empty;
+        InputBeginDate = txtStartDate.Text.Trim();
+        InputEndDate = txtEndDate.Text.Trim();
+        int DNStatus = 2;
+        DateStatus = CheckDateFomat(ref InputBeginDate, ref InputEndDate);
+        if (DateStatus == "DateIsWrong!")
+        {
+            gvDNCheck.DataSource = null;
+            gvDNCheck.DataBind();
+            return;
+        }
+        txtStartDate.Text = InputBeginDate;
+        txtEndDate.Text = InputEndDate;
+        getDNSql = ReturnDNSql(InputBeginDate, InputEndDate);
+        dt = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, getDNSql);
+        if (dt.Rows.Count == 0)
+        {
+            gvDNCheck.DataSource = null;
+            gvDNCheck.DataBind();
+            return;
+        }
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            DNStatus = sapo.CheckDNMovementStatus(dt.Rows[i][0].ToString());
+            if (DNStatus == 0)
+            {
+                DNList.Add(dt.Rows[i][0].ToString());
+            }
+        }
+        if (DNList.Count == 0)
+        {
+            gvDNCheck.DataSource = null;
+            gvDNCheck.DataBind();
+            return;
+        }
+        formatDN = GetFormatDN(DNList);
+    }
+    /// <summary>
+    //按DN查詢
+    /// </summary>
+    /// <param name="inputDN"></param>
+    /// <param name="DNStatus"></param>
+    public void QueryByDN(string inputDN, ref int DNStatus)
+    {
+        DNStatus = sapo.CheckDNMovementStatus(inputDN);
+        if (DNStatus != 0)
+        {
+            gvDNCheck.DataSource = null;
+            gvDNCheck.DataBind();
+            return;
+        }
+    }
+
+    protected void btnQuery_Click(object sender, EventArgs e)
+    {
+        string formatDN = string.Empty;
+        if (rboSelect.SelectedValue == "0")
+        {
+            string DateStatus = string.Empty;
+            DataTable dt = new DataTable();
+            List<string> DNList = new List<string>();
+            QueryByDate(ref DateStatus, ref dt, ref DNList, ref formatDN);
+            if (DateStatus == "DateIsWrong!")
+            {
+                Page.RegisterStartupScript("aa", "<script language=javascript>alert('日期不正確！');</script>");
+                return;
+            }
+            if (dt.Rows.Count == 0)
+            {
+                Page.RegisterStartupScript("aa", "<script language=javascript>alert('沒有找到符合日期條件的DN!');</script>");
+                return;
+            }
+            if (DNList.Count == 0)
+            {
+                Page.RegisterStartupScript("aa", "<script language=javascript>alert('沒有找到符合日期條件的已出貨DN!!');</script>");
+                return;
+            }
+        }
+        else
+        {
+            string inputDN = string.Empty;
+            inputDN = txtDN.Text.Trim();
+            string queryDN = "SELECT DISTINCT INVOICE FROM SAP.SAP_INVOICE_INFO" +
+                             " WHERE INVOICE='" + inputDN + "'";
+            DataTable dtDN = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, queryDN);
+            if (dtDN.Rows.Count == 0)
+            {
+                gvDNCheck.DataSource = null;
+                gvDNCheck.DataBind();
+                Page.RegisterStartupScript("aa", "<script language=javascript>alert('DN不存在!');</script>");
+                return;
+            }
+            int DNStatus = 2;
+            QueryByDN(inputDN, ref DNStatus);
+            if (DNStatus != 0)
+            {
+                Page.RegisterStartupScript("aa", "<script language=javascript>alert('DN未出貨!');</script>");
+                return;
+            }
+            else
+            {
+                formatDN = inputDN;
+            }
+        }
+        string bindStatus = string.Empty;
+        string bindGVSql = string.Empty;
+        bindGVSql = "SELECT  a.INVOICE,a.ORDER_ITEM ,a.LAST_UPDATE_DATE,'未打印' AS PrintStaus FROM" +
+                  " (SELECT DISTINCT INVOICE,ORDER_ITEM,LAST_UPDATE_DATE FROM SAP.SAP_INVOICE_INFO" +
+                   " WHERE INVOICE IN (" + formatDN + ") AND upper(ORDER_ITEM) NOT LIKE '%GLM%') a" +
+                  "  LEFT JOIN" +
+                  " (SELECT DISTINCT INVOICE_NUMBER,ITEM_NUMBER,INTERNAL_CARTON,CARTON_NUMBER FROM CMCS_SFC_PACKING_LINES_ALL) b" +
+                  " ON a.INVOICE=b.INVOICE_NUMBER and a.ORDER_ITEM=b.ITEM_NUMBER WHERE b.INTERNAL_CARTON IS NULL" +
+                  " ORDER BY LAST_UPDATE_DATE DESC,INVOICE,ORDER_ITEM";
+        bindStatus = BindGridView(bindGVSql);
+        if (bindStatus == "NoData")
+        {
+            Page.RegisterStartupScript("aa", "<script language=javascript>alert('DN已打印了3S/4S');</script>");
+        }
+        else
+        {
+            //SendMail();//此功能暫時屏蔽
+        }
+    }
+    /// <summary>
+    /// 已出貨DN連接成字符串
+    /// </summary>
+    /// <param name="FormatDNList"></param>
+    /// <returns></returns>
+    public string GetFormatDN(List<string> FormatDNList)
+    {
+        string s = string.Empty;
+        if (FormatDNList.Count > 0)
+        {
+            foreach (var item in FormatDNList)
+            {
+                s += "'" + item.ToString() + "',";
+
+            }
+            s = s.TrimEnd((','));
+        }
+        return s;
+    }
+    /// <summary>
+    /// 用GridVie顯示數據
+    /// </summary>
+    /// <param name="DNCheckSql"></param>
+    /// <returns></returns>
+    public string BindGridView(string DNCheckSql)
+    {
+        DataTable dtCheck = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, DNCheckSql);
+        if (dtCheck.Rows.Count == 0)
+        {
+            gvDNCheck.DataSource = null;
+            gvDNCheck.DataBind();
+            return "NoData";
+        }
+        gvDNCheck.PageIndex = 0;
+        Session["queryCarton"] = dtCheck;
+        gvDNCheck.DataSource = dtCheck;
+        gvDNCheck.DataBind();
+        return "";
+    }
+
+    protected void gvDNCheck_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            for (int i = 0; i < e.Row.Cells.Count; i++)
+            {
+                e.Row.Cells[i].Attributes.Add("nowrap", "true");
+                if (e.Row.Cells[i].Text == "&nbsp;")
+                {
+                    e.Row.Cells[i].Text = "";
+                }
+            }
+            e.Row.Attributes.Add("onMouseOver", "Color=this.style.backgroundColor;this.style.backgroundColor='#EEFFCC'");
+            e.Row.Attributes.Add("onMouseOut", "this.style.backgroundColor=Color;");
+        }
+    }
+
+    protected void gvDNCheck_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        gvDNCheck.PageIndex = e.NewPageIndex;
+        gvDNCheck.DataSource = Session["queryCarton"];
+        gvDNCheck.DataBind();
+    }
+
+    protected void rboSelect_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (rboSelect.SelectedValue == "0")
+        {
+            txtDN.Text = "";
+            txtDN.Enabled = false;
+            txtStartDate.Enabled = true;
+            txtEndDate.Enabled = true;
+            txtStartDate.Text = DateTime.Now.AddDays(-5).ToString("yyyy/MM/dd");
+            txtEndDate.Text = DateTime.Now.ToString("yyyy/MM/dd");
+            gvDNCheck.DataSource = null; ;
+            gvDNCheck.DataBind();
+        }
+        else
+        {
+            txtDN.Enabled = true;
+            txtStartDate.Text = "";
+            txtEndDate.Text = "";
+            txtStartDate.Enabled = false;
+            txtEndDate.Enabled = false;
+            gvDNCheck.DataSource = null; ;
+            gvDNCheck.DataBind();
+        }
+    }
+    /// <summary>
+    /// 發送郵件
+    /// </summary>
+    public void SendMail()
+    {
+        DataTable dt = (DataTable)Session["queryCarton"];
+        dt.Columns.Add("NO");
+        dt.Columns["NO"].SetOrdinal(0);
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            dt.Rows[i][0] = i + 1;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.Append("<table width='68%' border='1' cellpadding='0' cellspacing='0' bgcolor='#99CCFF' " +
+        " bordercolor='#0099FF' align='center' style='border-collapse: collapse; text-align: center'>");
+        sb.Append("<tr style='font-size: 18px;'>");
+        sb.Append("<td width='7%'   align='center'  bgcolor='#999966'>NO</font</td>");
+        sb.Append("<td width='11%'  align='center'  bgcolor='#999966'>Shipped_DN</td>");
+        sb.Append("<td width='14%'  align='center'  bgcolor='#999966'>ITEM_NUMBER</td>");
+        sb.Append("<td width='18%'  align='center'  bgcolor='#999966'>SHIP_DATE</td>");
+        sb.Append("<td width='18%'  align='center'  bgcolor='#999966'>PRINT_3S/4S_STATUS</td>");
+        sb.Append("</tr>");
+        foreach (DataRow dr in dt.Rows)
+        {
+            sb.Append("<tr>");
+            Object[] os = dr.ItemArray;
+            foreach (Object o in os)
+            {
+                string getvalue = o.ToString();
+                sb.Append("<td>" + getvalue + "</td>");
+            }
+            sb.Append("</tr>");
+        }
+        sb.Append("</table>");
+        //Response.Write(sb);
+        MailMessage mailMsg = new MailMessage();
+        string mailFrom = "<BJ-IT-DEVELOP/FIH/FOXCONN@FOXCONN.COM>";
+        mailMsg.From = new MailAddress(mailFrom);
+        string smailToAdress = "<BJ-IT-DEVELOP/FIH/FOXCONN@FOXCONN.COM>";
+        MailAddress mailToAdress = new MailAddress(smailToAdress);
+        mailMsg.To.Add(mailToAdress);
+        string smailCcAdress = "<BJ-IT-DEVELOP/FIH/FOXCONN@FOXCONN.COM>,<Johnson_S.J._Luo/FIH/FOXCONN@FOXCONN.COM>";
+        mailMsg.CC.Add(smailCcAdress);
+        mailMsg.Subject = "已出貨DN未打印3S/4S的監控";
+        mailMsg.BodyEncoding = System.Text.ASCIIEncoding.UTF8;
+        mailMsg.IsBodyHtml = true;
+        mailMsg.Priority = MailPriority.High;
+        mailMsg.Body = sb.ToString();
+        SmtpClient smtp = new SmtpClient();
+        smtp.Host = "10.150.7.22".ToString();
+        smtp.Port = 25;
+        smtp.EnableSsl = false;
+        smtp.Send(mailMsg);
+    }
+}

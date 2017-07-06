@@ -1,0 +1,546 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="MainMot.aspx.cs" Inherits="Main"
+    StylesheetTheme="SkinFile" %>
+
+<%@ Register Assembly="C1.Web.Command.2" Namespace="C1.Web.Command" TagPrefix="c1c" %>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>SSI系统測試環境</title>
+    <style type="text/css">
+     .navPoint 
+      { FONT-SIZE: 10px; CURSOR: hand; COLOR: Blue; FONT-FAMILY: Webdings }
+        .style1
+        {
+            height: 116%;
+            width: 78px;
+        }
+        .style2
+        {
+            background-color: #F3F7F9;
+            border: solid 1px #69B2E4;
+            height: 116%;
+            width: 83%;
+        }
+        .style3
+        {
+            height: 34px;
+        }
+        .style6
+        {
+            height: 28px;
+            width: 655px;
+        }
+        .style7
+        {
+            height: 28px;
+        }
+        .style8
+        {
+            height: 34px;
+            width: 655px;
+            font-weight: 700;
+        }
+        .style9
+        {
+            width: 655px;
+        }
+    </style>
+
+       <script language="javascript" type="text/javascript">
+
+           function switchTopicBar() {
+               if (document.getElementById("TopicBar").style.display == "none") {
+                   document.getElementById("TopicBar").style.display = "";
+                   document.getElementById("switchPoint").innerText = 3;
+               }
+               else {
+                   document.getElementById("TopicBar").style.display = "none";
+                   document.getElementById("switchPoint").innerText = 4;
+               }
+           }
+
+            
+    </script>
+
+</head>
+<body>
+    <form id="fmMain" runat="server">
+        <div>
+            <table style="height: 111%">
+                <tr>
+                    <td colspan="3" class="header">
+                        <div id="logo">
+                        </div>
+                        <div class="banner">
+                            &nbsp;&nbsp;
+                        <asp:TextBox ID="TextBox3" runat="server" Height="20px" Width="235px"></asp:TextBox>
+&nbsp;&nbsp;
+                        <asp:Button ID="Button3" runat="server" Height="19px" onclick="Button3_Click" 
+                            Text="進入新網站" Width="80px" />
+                        &nbsp;&nbsp;<asp:Button ID="Button4" runat="server" Height="19px" onclick="Button4_Click" 
+                            Text="登錄使用者權限" Width="101px" BackColor="White" BorderColor="#FF99FF" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="nav">
+                        <div class="welcome" style="color: red">
+                            <asp:Label ID="lblUserName" runat="server" Text="Admin ," SkinID="lblWelcome"></asp:Label>Welcome!</div>
+                        <div class="banner02">
+                            <div id="home">
+                                <ul>
+                                    <li><a href="Main.aspx">首頁</a> | </li>
+                                    <li><a>幫助</a> | </li>
+                                    <li>
+                                        <asp:LinkButton ID="btnLogout" runat="server" Height="7px" 
+                                            onclick="btnLogout_Click"  >退出</asp:LinkButton>|</li>
+                                </ul>
+                            </div>
+                        </div>
+                    &nbsp; UserName:
+                        <asp:TextBox ID="TextBox1" runat="server" Height="20px" Width="79px"></asp:TextBox>
+&nbsp;&nbsp;&nbsp; Password:&nbsp;
+                        <asp:TextBox ID="TextBox2" runat="server" Height="20px" Width="87px" 
+                            ontextchanged="TextBox2_TextChanged" 
+                            TextMode="Password"></asp:TextBox>
+&nbsp;&nbsp;&nbsp;&nbsp;
+                        <asp:Button ID="Button1" runat="server" Height="19px" onclick="Button1_Click" 
+                            Text="登錄網站" Width="60px" />
+                    &nbsp;&nbsp;&nbsp;<asp:Button ID="Button2" runat="server" Height="19px" onclick="Button2_Click" 
+                            Text="修改" Width="35px" Visible="False" />
+                    &nbsp;&nbsp; SecPS:&nbsp;
+                        <asp:TextBox ID="TextBox5" runat="server" Height="20px" Width="87px" 
+                            TextMode="Password"></asp:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="TopicBar" class="leftMenu" style="width: 20%; height: 100%;" valign="top">
+                        <table cellpadding="0" cellspacing="0" style="width: 36%; height: 75%;">
+                            <tr>
+                                <td style="width: 100%; height: 668px;" valign="top">
+                        <div id="time">
+                            <script language="JavaScript" type="text/javascript">
+                                var enabled = 0; today = new Date();
+                                var day; var date;
+                                if(today.getDay()==0) day = "星期日"
+                                if(today.getDay()==1) day = "星期一"
+                                if(today.getDay()==2) day = "星期二"
+                                if(today.getDay()==3) day = "星期三"
+                                if(today.getDay()==4) day = "星期四"
+                                if(today.getDay()==5) day = "星期五"
+                                if(today.getDay()==6) day = "星期六"
+                                document.fgColor = "000000";
+                                date ="" + (today.getYear()) + "/" + (today.getMonth() + 1 ) + "/" + today.getDate() + " " +" ";
+                                
+                                document.write("<FONT COLOR=000000>" + date +'['+day+']'+"</FONT>");
+                            </script>
+                            <asp:Button ID="Button5" runat="server" Height="20px" onclick="Button5_Click" 
+                            Text="20110409" Width="73px" BackColor="White" />
+                            &nbsp;<asp:Button ID="Button7" runat="server" Height="20px" onclick="Button7_Click" 
+                            Text="公用磁盤" Width="73px" BackColor="White" />
+                        &nbsp;<br />
+                            <asp:Button ID="Button8" runat="server" Height="20px" onclick="Button8_Click" 
+                            Text="PC Test" Width="73px" BackColor="White" />
+                        &nbsp;<asp:Button ID="Button10" runat="server" Height="20px" onclick="Button4_Click" 
+                            Text="Picture" Width="73px" BackColor="White" />
+                        &nbsp;<br />
+                            <asp:Button ID="Button11" runat="server" Height="20px" onclick="Button4_Click" 
+                            Text="Picture" Width="73px" BackColor="White" />
+                            &nbsp;<asp:Button ID="Button12" runat="server" Height="20px" onclick="Button4_Click" 
+                            Text="Picture" Width="73px" BackColor="White" />
+                        &nbsp;
+                            <asp:Button ID="Button13" runat="server" Height="20px" onclick="Button4_Click" 
+                            Text="Picture" Width="73px" BackColor="White" />
+                            &nbsp;<asp:Button ID="Button14" runat="server" Height="20px" onclick="Button4_Click" 
+                            Text="Picture" Width="73px" BackColor="White" />
+                        &nbsp;
+                    
+                            <asp:ScriptManager ID="ScriptManager1" runat="server">
+                            </asp:ScriptManager>
+                            <asp:UpdatePanel ID="UpdatePanel1" runat="server" >
+                                <ContentTemplate>
+                                        <asp:ImageButton ID="ImageButton1" runat="server" Height="145px" 
+                                ImageUrl="~/Picture/PictS1.jpg" Width="149px" />
+                            <br />
+                            <asp:Button ID="Button15" runat="server" Text="Screen Desp" Width="160px" 
+                                BackColor="White" />
+                            <br />
+                            <asp:Button ID="Button16" runat="server" Text="Screen Desp" Width="160px" 
+                                BackColor="White" />
+                            <br />
+                                    <asp:ImageButton ID="ImageButton2" runat="server" Height="143px" 
+                                ImageUrl="~/Picture/PictS1.jpg" Width="154px" /> 
+                                        <asp:Timer ID="Timer1" runat="server" ontick="Timer1_Tick" Interval="1800000">
+                                    </asp:Timer>
+                                    <br />
+                                   
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        </div>
+                                &nbsp;&nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="copyRight">
+                                    CopyRight &copy; 2010<br />
+                                    SSI Develop</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td id="SwitchBar" onclick="switchTopicBar()" style="vertical-align: middle; " 
+                        class="style1">
+                        <span id="switchPoint" class="navPoint" style="font-size: 8px">3</span>
+                    </td>
+                    <td class="style2">
+                        
+                        <table style="width: 100%; height: 703px;">
+                            <tr>
+                                <td class="style6">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                                    TJ&nbsp; SCM, SFC&nbsp; Management System&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <asp:Button ID="Button17" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="系統自動啟動" Width="117px" onclick="Button17_Click" />
+                                </td>
+                                <td class="style7">
+                                </td>
+                                <td class="style7">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+&nbsp; 1. System Management&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <asp:Button ID="Button18" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="SetPassW" Width="71px" onclick="Button18_Click" />
+                                    &nbsp;<asp:Button ID="Button19" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="轉換表SFC" Width="78px" onclick="Button19_Click" />
+                                &nbsp;<asp:Button ID="Button42" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="客戶DV轉入" Width="81px" onclick="Button42_Click" />
+                                &nbsp;<asp:Button ID="Button61" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="轉換密瑪" Width="78px" onclick="Button61_Click" />
+                                </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;2. TJ&nbsp; Web Monitor &amp; Updtae
+                                    <asp:Button 
+                                        ID="Button20" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="Monitor SFC" Width="88px" onclick="Button20_Click" />
+&nbsp; <asp:Button ID="Button21" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="考背SFC Single" Width="92px" onclick="Button21_Click" />
+                                &nbsp;<asp:Button ID="Button41" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="DB 76 考備資料出去 " Width="126px" onclick="Button41_Click" />
+                                &nbsp;
+                                    <asp:Button ID="Button43" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="資料庫查詢" Width="84px" onclick="Button43_Click" />
+                                </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;3. TJ <a href="file://10.186.19.104/d$/Upload/TestData">
+                                    \\10.186.19.104\d$\Upload\TestData</a>
+                                    <asp:Button ID="Button22" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="1.表資料一致" Width="91px" onclick="Button22_Click" />
+&nbsp;
+                                    <asp:Button ID="Button23" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="2.表內容檢查" Width="88px" onclick="Button23_Click" />
+                                &nbsp;<asp:Button ID="Button44" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="3.收料檢查" Width="87px" onclick="Button44_Click" />
+                                &nbsp;<asp:Button ID="Button48" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="4. Test" Width="67px" onclick="Button48_Click" />
+                                </td>
+                                <td class="style3">
+                                    &nbsp;&nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;4. Traceability &amp; UPD                                      
+                                    <asp:Button ID="Button24" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="Trace System" Width="86px" onclick="Button24_Click" />
+                                    &nbsp;<asp:Button ID="Button25" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="UPD Upload" Width="79px" onclick="Button25_Click" />
+                                &nbsp;<asp:Button ID="Button45" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="UPD Modify" Width="79px" onclick="Button45_Click" />
+                                &nbsp;<asp:Button ID="Button46" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="UPD Check" Width="79px" />
+                                &nbsp;<asp:Button ID="Button50" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="AutoGeUPD" Width="79px" onclick="Button50_Click" />
+                                &nbsp;<asp:Button ID="Button51" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="查尋UPD" Width="65px" onclick="Button51_Click" />
+                                </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;5. Search Delivery Data&nbsp;<asp:Button ID="Button26" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="查尋手機" Width="67px" onclick="Button26_Click" />
+                                    &nbsp;<asp:Button ID="Button49" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="依PO/SO 查尋DN" Width="117px" onclick="Button49_Click" />
+                                    &nbsp;<asp:Button ID="Button27" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="檢查 Carton" Width="87px" onclick="Button27_Click" />
+                                &nbsp;<asp:Button ID="Button47" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="檢查出貨印3S/4S" Width="114px" onclick="Button47_Click" />
+                                &nbsp;<asp:Button ID="Button52" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="出貨明細" Width="73px" onclick="Button52_Click" />
+                                </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;6. Auto Monitor&nbsp;Middler Server&nbsp;
+                                    <asp:Button ID="Button28" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="偵測 Middler服務器" Width="130px" onclick="Button28_Click" />
+                                    &nbsp;&nbsp;<asp:Button ID="Button29" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="MonitorAuto" Width="100px" onclick="Button29_Click" />
+                                &nbsp;
+                                    &nbsp;<asp:Button ID="Button32" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="SFC查尋網站1" Width="100px" onclick="Button32_Click" />
+                                </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;7. Menu PO and NewProc&nbsp;&nbsp;&nbsp;
+                                    <asp:Button ID="Button30" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="PO Menu " Width="61px" />
+&nbsp;&nbsp;<asp:Button ID="Button31" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="DNMutlSOMap Menu" Width="129px" onclick="Button31_Click" />
+                                &nbsp;<asp:Button ID="Button53" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="DNSOMap Quy" Width="88px" onclick="Button53_Click" />
+                                &nbsp;<asp:Button ID="Button54" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="新查尋 UPD" Width="82px" onclick="Button54_Click" />
+                                &nbsp;<asp:Button ID="Button57" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="出貨前全檢" Width="80px" onclick="Button57_Click" />
+                                    </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;8. Backup Control By Delivery-&gt;Carton-&gt;EMEI&nbsp;<asp:Button ID="Button37" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="依月出貨產生管控 EMEI" Width="160px" onclick="Button37_Click" />
+                                    &nbsp;<asp:Button ID="Button38" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="查詢及產生備份記錄" Width="130px" onclick="Button38_Click" />
+                                &nbsp;<asp:Button ID="Button56" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="刪除" Width="42px" onclick="Button56_Click" />
+                                    </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;9. Delivery SHIPPING_DN_LIST Check UPD
+                                &nbsp;<asp:Button 
+                                        ID="Button39" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="單筆出貨對帳" Width="115px" onclick="Button39_Click" />
+                                    &nbsp;<asp:Button ID="Button40" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="出貨客戶日對帳UPD產生" Width="155px" onclick="Button40_Click" />
+                                &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;A. DeLinkPID解綁 :&nbsp;<asp:Button ID="Button58" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="解綁作業" Width="71px" onclick="Button58_Click" />
+                                    <asp:Button ID="Button55" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="解綁恢護,查詢" Width="90px" onclick="Button55_Click" />
+                                    <asp:Button ID="Button60" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="RouIndex維護" Width="84px" onclick="Button60_Click" />
+                                    &nbsp;<asp:Button ID="Button33" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="Routing維護" Width="88px" onclick="Button33_Click" />
+                                &nbsp;<asp:Button ID="Button59" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="ActionItem維護" Width="94px" onclick="Button59_Click" />
+                                &nbsp;<asp:Button ID="Button34" runat="server" 
+                                        BackColor="#99FF99" BorderColor="White" BorderStyle="Dotted" 
+                                        ForeColor="#CC00FF" Height="20px" Text="成批解綁" Width="64px" 
+                                        onclick="Button34_Click" />
+                                </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;B. DeLinkPID解綁 :&nbsp;&nbsp;<asp:Button ID="Button63" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="管控檔MAINPID" Width="100px" onclick="Button63_Click" />
+                                    &nbsp;<asp:Button ID="Button62" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="PID查詢" Width="56px" onclick="Button62_Click" />
+                                &nbsp;
+                                    <asp:Button ID="Button35" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text=" Quit Process" Width="100px" onclick="Button35_Click" />
+&nbsp;&nbsp;
+                                    <asp:Button ID="Button36" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="MessLog Trace" Width="100px" onclick="Button36_Click" />
+                                &nbsp;
+                                    <asp:Button ID="Button73" runat="server" 
+                                        BackColor="#99FF99" BorderColor="White" BorderStyle="Dotted" 
+                                        ForeColor="#CC00FF" Height="20px" Text="原系統解綁" Width="86px" 
+                                        onclick="Button73_Click" />
+                                </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;C. CM Delivy Query :&nbsp;<asp:Button ID="Button64" 
+                                        runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="PO 查詢" Width="70px" onclick="Button64_Click" />
+                                &nbsp;<asp:Button ID="Button65" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="DN 查詢" Width="70px" onclick="Button65_Click" />
+                                &nbsp;<asp:Button ID="Button66" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="EMEI 查詢" Width="70px" onclick="Button66_Click" />
+                                    &nbsp;<asp:Button ID="Button67" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="ReITEM" Width="70px" onclick="Button67_Click" />
+                                    &nbsp;<asp:Button ID="Button71" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="19px" 
+                                        Text="CTY&amp;PRO QTY 查詢" Width="132px" onclick="Button71_Click" />
+                                &nbsp;<asp:Button ID="Button72" runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="手動轉入" Width="70px" onclick="Button72_Click" />
+                                    </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;D. R15Project :&nbsp;&nbsp;
+                                    <asp:Button ID="Button68" 
+                                        runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="看版查詢" Width="70px" onclick="Button68_Click" />
+                                &nbsp;<asp:Button ID="Button69" 
+                                        runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="主檔維護看版查詢" Width="70px" onclick="Button69_Click" />
+                                &nbsp;<asp:Button ID="Button70" 
+                                        runat="server" BackColor="#99FF99" 
+                                        BorderColor="White" BorderStyle="Dotted" ForeColor="#CC00FF" Height="20px" 
+                                        Text="異動作業" Width="70px" onclick="Button70_Click" />
+                                &nbsp;
+                                </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style8">
+                                    &nbsp;Currency Status :&nbsp; &nbsp;<asp:TextBox ID="TextBox4" runat="server" 
+                                        Height="25px" Width="439px"></asp:TextBox>
+                                </td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                                <td class="style3">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style9">
+                                    &nbsp;</td>
+                                <td>
+                                    &nbsp;</td>
+                                <td>
+                                    &nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="style9">
+                                    &nbsp;</td>
+                                <td>
+                                    &nbsp;</td>
+                                <td>
+                                    &nbsp;</td>
+                            </tr>
+                        </table>
+                        
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+    </form>
+</body>
+</html>

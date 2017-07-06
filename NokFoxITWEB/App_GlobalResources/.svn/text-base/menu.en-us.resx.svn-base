@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="M100" xml:space="preserve">
+    <value>Base Information Query</value>
+  </data>
+  <data name="M10001" xml:space="preserve">
+    <value>Produce Scan History Query</value>
+  </data>
+  <data name="M10002" xml:space="preserve">
+    <value>Yield Rate Query</value>
+  </data>
+  <data name="M10003" xml:space="preserve">
+    <value>Test Station Data Query</value>
+  </data>
+  <data name="M10004" xml:space="preserve">
+    <value>DownLoad Flat File</value>
+  </data>
+  <data name="M10005" xml:space="preserve">
+    <value>SFC Configuration</value>
+  </data>
+  <data name="M101" xml:space="preserve">
+    <value>SMT Information Query</value>
+  </data>
+  <data name="M102" xml:space="preserve">
+    <value>Assembly Information Query</value>
+  </data>
+  <data name="M103" xml:space="preserve">
+    <value>Pack Information Query</value>
+  </data>
+  <data name="M104" xml:space="preserve">
+    <value>Repair Infromation Query</value>
+  </data>
+  <data name="M105" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="M10006" xml:space="preserve">
+    <value>User Manage</value>
+  </data>
+  <data name="M106" xml:space="preserve">
+    <value>Report</value>
+  </data>
+  <data name="M10007" xml:space="preserve">
+    <value>Module Manage</value>
+  </data>
+  <data name="M10101" xml:space="preserve">
+    <value>Material Analysis</value>
+  </data>
+  <data name="M10102" xml:space="preserve">
+    <value>Panel Information Query</value>
+  </data>
+  <data name="M10103" xml:space="preserve">
+    <value>WIP Distributed Query</value>
+  </data>
+  <data name="M10104" xml:space="preserve">
+    <value>Produce Efficiency Query</value>
+  </data>
+  <data name="M10105" xml:space="preserve">
+    <value>Defect Top N Query</value>
+  </data>
+  <data name="M10201" xml:space="preserve">
+    <value>WIP Distributed Query</value>
+  </data>
+  <data name="M10202" xml:space="preserve">
+    <value>Produce Efficiency Query</value>
+  </data>
+  <data name="M10203" xml:space="preserve">
+    <value>Defect Top N Query</value>
+  </data>
+  <data name="M10301" xml:space="preserve">
+    <value>WIP Distributed Query</value>
+  </data>
+  <data name="M10302" xml:space="preserve">
+    <value>Produce Efficiency Query</value>
+  </data>
+  <data name="M10303" xml:space="preserve">
+    <value>Defect Top N Query</value>
+  </data>
+  <data name="M10401" xml:space="preserve">
+    <value>Repair WIP Query</value>
+  </data>
+  <data name="M10402" xml:space="preserve">
+    <value>Repair History Query</value>
+  </data>
+  <data name="M10501" xml:space="preserve">
+    <value>SFC Qeury Manual</value>
+  </data>
+  <data name="M10502" xml:space="preserve">
+    <value>SFC Flow Chart.pdf</value>
+  </data>
+  <data name="M10503" xml:space="preserve">
+    <value>Ring4012 Barcode Printer Manual</value>
+  </data>
+  <data name="M10504" xml:space="preserve">
+    <value>Ring4024 Barcode Printer Manual</value>
+  </data>
+  <data name="M10505" xml:space="preserve">
+    <value>Coding Fundamental StationID And Product ID</value>
+  </data>
+  <data name="M10506" xml:space="preserve">
+    <value>UPD File Upload Requirement</value>
+  </data>
+  <data name="M10601" xml:space="preserve">
+    <value>Quality Daily Report</value>
+  </data>
+  <data name="M10602" xml:space="preserve">
+    <value>Quality Weekly Report</value>
+  </data>
+  <data name="M10106" xml:space="preserve">
+    <value>Material Query By DateCode</value>
+  </data>
+  <data name="M10603" xml:space="preserve">
+    <value>Machine Rate</value>
+  </data>
+  <data name="M10604" xml:space="preserve">
+    <value>Line And First Rate</value>
+  </data>
+  <data name="M10305" xml:space="preserve">
+    <value>Phone Pack Query</value>
+  </data>
+  <data name="M10606" xml:space="preserve">
+    <value>CPK Query</value>
+  </data>
+  <data name="M10607" xml:space="preserve">
+    <value>Machine Defect Report</value>
+  </data>
+  <data name="M10304" xml:space="preserve">
+    <value>ShipmentControl Information</value>
+  </data>
+  <data name="M10608" xml:space="preserve">
+    <value>Station First Rate</value>
+  </data>
+  <data name="M10009" xml:space="preserve">
+    <value>SMT BOM Import</value>
+  </data>
+  <data name="M10010" xml:space="preserve">
+    <value>SAP BOM Query</value>
+  </data>
+  <data name="M10011" xml:space="preserve">
+    <value>BOM ComPare</value>
+  </data>
+  <data name="M10008" xml:space="preserve">
+    <value>User Privilege</value>
+  </data>
+  <data name="M10609" xml:space="preserve">
+    <value>Restest Weekly Report</value>
+  </data>
+  <data name="M10610" xml:space="preserve">
+    <value>CPK Data Query</value>
+  </data>
+  <data name="M10012" xml:space="preserve">
+    <value>NexTest Test Detail Query</value>
+  </data>
+  <data name="M10013" xml:space="preserve">
+    <value>FPY Query</value>
+  </data>
+  <data name="M10611" xml:space="preserve">
+    <value>DownLoad Shipping Data</value>
+  </data>
+  <data name="M10204" xml:space="preserve">
+    <value>HardWare Version Query</value>
+  </data>
+  <data name="M10014" xml:space="preserve">
+    <value>Line Status Monitor</value>
+  </data>
+  <data name="M10612" xml:space="preserve">
+    <value>NexTest  CPK Query</value>
+  </data>
+  <data name="M10015" xml:space="preserve">
+    <value>MobilePhone Key Query</value>
+  </data>
+  <data name="M10016" xml:space="preserve">
+    <value>IMEI&amp;SN Link Query</value>
+  </data>
+  <data name="M10017" xml:space="preserve">
+    <value>LV&amp;LX PID Link Query</value>
+  </data>
+  <data name="M10306" xml:space="preserve">
+    <value>Ship Information Query</value>
+  </data>
+  <data name="M10019" xml:space="preserve">
+    <value>IMEI Check</value>
+  </data>
+  <data name="M10020" xml:space="preserve">
+    <value>Change Porder</value>
+  </data>
+  <data name="M107" xml:space="preserve">
+    <value>IT Daily Query/Update</value>
+  </data>
+  <data name="M10701" xml:space="preserve">
+    <value>Enlarge S Order</value>
+  </data>
+  <data name="M10702" xml:space="preserve">
+    <value>IMEI Change Porder</value>
+  </data>
+  <data name="M10703" xml:space="preserve">
+    <value>Unlink  CIT Passed</value>
+  </data>
+  <data name="M10704" xml:space="preserve">
+    <value>Measure Standard Maintenance</value>
+  </data>
+  <data name="M10705" xml:space="preserve">
+    <value>UPD Information Query</value>
+  </data>
+  <data name="M10706" xml:space="preserve">
+    <value>AutoMail Information Query</value>
+  </data>
+  <data name="M10707" xml:space="preserve">
+    <value>SJUG Query</value>
+  </data>
+  <data name="M108" xml:space="preserve">
+    <value>Order_Create Program</value>
+  </data>
+  <data name="M10801" xml:space="preserve">
+    <value>Set Up S Order</value>
+  </data>
+  <data name="M10802" xml:space="preserve">
+    <value>Set Up A Order</value>
+  </data>
+  <data name="M10803" xml:space="preserve">
+    <value>Set Up Y Order</value>
+  </data>
+  <data name="M10823" xml:space="preserve">
+    <value>P Order Information Query</value>
+  </data>
+  <data name="M109" xml:space="preserve">
+    <value>ShipmentControl Program</value>
+  </data>
+  <data name="M10901" xml:space="preserve">
+    <value>Users&amp;Privileges Add</value>
+  </data>
+  <data name="M110" xml:space="preserve">
+    <value>ShipLabel-PackList_SAP Program</value>
+  </data>
+  <data name="M111" xml:space="preserve">
+    <value>OrderImport Program</value>
+  </data>
+  <data name="M113" xml:space="preserve">
+    <value>Set Up SFC System</value>
+  </data>
+  <data name="M10902" xml:space="preserve">
+    <value>PID Ranges Maintenance</value>
+  </data>
+  <data name="M10903" xml:space="preserve">
+    <value>SJUG Maintenance</value>
+  </data>
+  <data name="M10904" xml:space="preserve">
+    <value>E2P Maintenance</value>
+  </data>
+  <data name="M10905" xml:space="preserve">
+    <value>Ros Part Maintenance</value>
+  </data>
+  <data name="M10906" xml:space="preserve">
+    <value>HW Version Maintenance</value>
+  </data>
+  <data name="M10907" xml:space="preserve">
+    <value>Weight Carton  Info Query </value>
+  </data>
+  <data name="M10908" xml:space="preserve">
+    <value>Fittings Part Maintenance/Query</value>
+  </data>
+  <data name="M11001" xml:space="preserve">
+    <value>M-TRAC Infomation Query/Export</value>
+  </data>
+  <data name="M11002" xml:space="preserve">
+    <value>M-TRAC Infomation Maintenance</value>
+  </data>
+  <data name="M11003" xml:space="preserve">
+    <value>Printed Label Infomation Query</value>
+  </data>
+  <data name="M11101" xml:space="preserve">
+    <value>DataContainer Excel Import</value>
+  </data>
+  <data name="M11102" xml:space="preserve">
+    <value>ShopOrder Information Query</value>
+  </data>
+  <data name="M11103" xml:space="preserve">
+    <value>ShopOrder Information Maintenance</value>
+  </data>
+  <data name="M11302" xml:space="preserve">
+    <value>PID Format Setting</value>
+  </data>
+  <data name="M11303" xml:space="preserve">
+    <value>Part Information &amp; Sequence Maintenance</value>
+  </data>
+  <data name="M11304" xml:space="preserve">
+    <value>Model Maintenance</value>
+  </data>
+  <data name="M11305" xml:space="preserve">
+    <value>Rount Maintenance</value>
+  </data>
+  <data name="M11306" xml:space="preserve">
+    <value>Sequence Maintenance</value>
+  </data>
+  <data name="M11307" xml:space="preserve">
+    <value>Engineer Users Maintenance</value>
+  </data>
+  <data name="M11308" xml:space="preserve">
+    <value>Error Code Maintenance</value>
+  </data>
+  <data name="M11301" xml:space="preserve">
+    <value>Users&amp;Privileges Add</value>
+  </data>
+  <data name="M11309" xml:space="preserve">
+    <value>HW Version Maintenance</value>
+  </data>
+  <data name="M10021" xml:space="preserve">
+    <value>IDEN SerialNo Export</value>
+  </data>
+  <data name="M114" xml:space="preserve">
+    <value>Dell Information Query </value>
+  </data>
+  <data name="M11401" xml:space="preserve">
+    <value>B2B Purchase Order Information </value>
+  </data>
+  <data name="M11402" xml:space="preserve">
+    <value>B2B Label Information</value>
+  </data>
+  <data name="M11403" xml:space="preserve">
+    <value>B2B AsBuilt  Information</value>
+  </data>
+  <data name="M11404" xml:space="preserve">
+    <value>B2B PreAsn Information</value>
+  </data>
+  <data name="M11406" xml:space="preserve">
+    <value>B2B Invoice Information</value>
+  </data>
+  <data name="M11407" xml:space="preserve">
+    <value>B2B Order Change Information</value>
+  </data>
+  <data name="M11408" xml:space="preserve">
+    <value>B2B Order Status  Information</value>
+  </data>
+  <data name="M11405" xml:space="preserve">
+    <value>B2B Asn Information</value>
+  </data>
+  <data name="M115" xml:space="preserve">
+    <value>Dell Information Query </value>
+  </data>
+  <data name="M11501" xml:space="preserve">
+    <value>B2B Purchase Order Information </value>
+  </data>
+  <data name="M11502" xml:space="preserve">
+    <value>B2B Label Information </value>
+  </data>
+  <data name="M11503" xml:space="preserve">
+    <value>B2B AsBuilt  Information </value>
+  </data>
+  <data name="M11504" xml:space="preserve">
+    <value>B2B PreAsn Information </value>
+  </data>
+  <data name="M11505" xml:space="preserve">
+    <value>B2B Asn Information </value>
+  </data>
+  <data name="M11506" xml:space="preserve">
+    <value>B2B Invoice Information </value>
+  </data>
+  <data name="M11507" xml:space="preserve">
+    <value>B2B Order Change Information </value>
+  </data>
+  <data name="M11508" xml:space="preserve">
+    <value>B2B Order Status  Information </value>
+  </data>
+  <data name="M11509" xml:space="preserve">
+    <value>B2B Blanket PO Information</value>
+  </data>
+  <data name="M11510" xml:space="preserve">
+    <value>B2B Blanket PO Maintain</value>
+  </data>
+  <data name="M11310" xml:space="preserve">
+    <value>Engineer Route Maintain</value>
+  </data>
+  <data name="M11311" xml:space="preserve">
+    <value>IT Route Maintain</value>
+  </data>
+  <data name="M10022" xml:space="preserve">
+    <value>Third Test Fail Unlock</value>
+  </data>
+  <data name="M11312" xml:space="preserve">
+    <value>Engineer Label Picture Upload</value>
+  </data>
+  <data name="M10107" xml:space="preserve">
+    <value>SMT Lack Part Alert</value>
+  </data>
+  <data name="M10108" xml:space="preserve">
+    <value>SMT Overdue Supplies Query</value>
+  </data>
+  <data name="M10205" xml:space="preserve">
+    <value>Materials Info Query</value>
+  </data>
+  <data name="M10206" xml:space="preserve">
+    <value>Materials Info Maintain</value>
+  </data>
+  <data name="M10024" xml:space="preserve">
+    <value>FQC Fail Information Query</value>
+  </data>
+  <data name="M11511" xml:space="preserve">
+    <value>B2B Carrier Code Information</value>
+  </data>
+  <data name="M11512" xml:space="preserve">
+    <value>B2B Carrier Code Maintain</value>
+  </data>
+  <data name="M10403" xml:space="preserve">
+    <value>Repair Beyond 3 Times Query</value>
+  </data>
+  <data name="M10025" xml:space="preserve">
+    <value>Input/Output Query</value>
+  </data>
+  <data name="M10026" xml:space="preserve">
+    <value>WIP Status Query</value>
+  </data>
+  <data name="M10027" xml:space="preserve">
+    <value>SimUnlockCode Query</value>
+  </data>
+  <data name="M10613" xml:space="preserve">
+    <value>RetestReport</value>
+  </data>
+  <data name="M10028" xml:space="preserve">
+    <value>TestValueQuery</value>
+  </data>
+  <data name="M10614" xml:space="preserve">
+    <value>TopIssueReport</value>
+  </data>
+  <data name="M10029" xml:space="preserve">
+    <value>Number Warning</value>
+  </data>
+  <data name="M116" xml:space="preserve">
+    <value>SCM MGTM</value>
+  </data>
+  <data name="M11601" xml:space="preserve">
+    <value>FTRAM1 Maintenance</value>
+  </data>
+  <data name="M11602" xml:space="preserve">
+    <value>FTRAT1 Maintenance</value>
+  </data>
+  <data name="M11603" xml:space="preserve">
+    <value>Menu Upload</value>
+  </data>
+  <data name="M11604" xml:space="preserve">
+    <value>Auto Upload</value>
+  </data>
+  <data name="M11605" xml:space="preserve">
+    <value>Auto Check</value>
+  </data>
+  <data name="M11606" xml:space="preserve">
+    <value>Check B2B EDI-810 Data</value>
+  </data>
+  <data name="M11607" xml:space="preserve">
+    <value>FTRAM1 Query</value>
+  </data>
+  <data name="M11608" xml:space="preserve">
+    <value>FTRAT1 Query</value>
+  </data>
+  <data name="M11610" xml:space="preserve">
+    <value>Upload Master Data</value>
+  </data>
+</root>

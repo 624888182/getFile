@@ -1,0 +1,32 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:glob="http://sap.com/xi/SAPGlobal20/Global">
+   <soap:Header/>
+   <soap:Body>
+           <glob:DeliveryDespatchAdviceNotification>
+         <MessageHeader>
+            <CreationDateTime>?</CreationDateTime>
+            <SenderParty>
+               <InternalID schemeID="CommunicationPartyID" schemeAgencyID="_LOCAL_SYSTEM_ALIAS_SAP_INTERNAL_CONSTANT_VALUE_">100055</InternalID>
+               <!-- Communication Partner Id:-->
+            </SenderParty>
+            <RecipientParty>
+               <InternalID schemeID="CommunicationPartyID" schemeAgencyID="_LOCAL_SYSTEM_ALIAS_SAP_INTERNAL_CONSTANT_VALUE_">HMDOGB</InternalID>
+               <!-- Company ID :-->
+            </RecipientParty>
+         </MessageHeader>
+         <DeliveryDespatchAdvice reconciliationPeriodCounterValue="1" actionCode="01">
+            <ID>?</ID>
+            <TypeCode>TPDI</TypeCode>
+            <CancellationDocumentIndicator>false</CancellationDocumentIndicator>
+            <VendorParty>
+               <InternalID>?</InternalID>
+               <!-- Supplier Id :-->
+            </VendorParty>
+            <ProductRecipientParty>
+               <InternalID>?</InternalID>
+               <!-- Ship-To Party :-->
+            </ProductRecipientParty>           
+         </DeliveryDespatchAdvice>
+      </glob:DeliveryDespatchAdviceNotification>
+
+   </soap:Body>
+</soap:Envelope>

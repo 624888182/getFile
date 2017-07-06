@@ -1,0 +1,209 @@
+<%@ Page Title="" Language="C#" MasterPageFile="~/Web.Master" AutoEventWireup="true" CodeFile="StandByInsert.aspx.cs" Inherits="StandByInsert" %>
+
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    
+    <script language="javascript" type="text/javascript" src="~/Javascript/JSCommon.js"></script>
+    <script language="javascript" type="text/javascript" src="~/Javascript/Calendar.js"></script>
+<div style="border: solid 1px #6A84BF; ">
+    <div>
+             <table>
+        <tr>
+            <td>
+                <div style="background-color: #B1C7FF; text-align: center; padding: 5px 0px 5px 0px;
+                                                            border-bottom: 1px solid #6A84BF; font-size:larger; font-weight:bold">
+                                                            DATA OPERATE CAPABILITY
+                                                            </div>
+            </td>
+        </tr>
+        </table>
+
+</div>
+    <div id="divshow" style="border: solid 1px #6A84BF; " >
+             <table id="showTable" >
+                 <tr>
+                    <td>
+                        
+                        <asp:RadioButtonList ID="RadioWitch" runat="server" 
+                            RepeatDirection="Horizontal" AutoPostBack="True" 
+                            onselectedindexchanged="RadioWitch_SelectedIndexChanged" Font-Bold="True" 
+                            ForeColor="#3366FF">
+                            <asp:ListItem Value="A">Standy--&gt;BakDB</asp:ListItem>
+                            <asp:ListItem Value="B">BakDB--&gt;Normal DB</asp:ListItem>
+                        </asp:RadioButtonList>
+                        
+                    </td>
+                 </tr>
+             </table>
+             <table id ="tabDengLu" runat="server" width="250" border="0" cellspacing="0" cellpadding="0"  style="border: solid 1px #6A84BF">
+                                                    <tr>
+                                                        <td width="57" align="right" >
+                                                            <span id="lblUserID">¥Î¤á</span>&nbsp;</td>
+                                                        <td width="125">
+                                                            <asp:TextBox ID="txtUserCode" runat="server" Width="80px"></asp:TextBox>
+                                                        </td>
+                                                        <td width="68" rowspan="2" align="center">
+                                                            <asp:Button ID="btnSubmit" runat="server" Text="µn³°" TabIndex="2" 
+                                                                onclick="btnSubmit_Click"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">
+                                                            <span id="lblPwd">±K½X</span>&nbsp;</td>
+                                                        
+                                                        <td>
+                                                            <asp:TextBox ID="txtPwd" TextMode="Password" AutoComplete="OFF" runat="server" Width="80px" TabIndex="1" ></asp:TextBox></td>
+                                                    </tr>
+              </table>
+             <table id="tablePid" style="border: solid 1px #6A84BF; text-align: center;" runat="server" runat="server">
+             
+                            <tr>
+                            <td>
+                                <asp:Label ID="Labgetbak" runat="server" Text="TableList:"></asp:Label>
+                            </td>
+                            <td>
+                            <asp:DropDownList ID="DropDownList1" runat="server" 
+                                EnableViewState="False" Height="21px">
+                                <asp:ListItem>TESTINFO.TESTINFO_HEAD</asp:ListItem>
+                               <%-- <asp:ListItem>WCDMA_TSE.R_FUNCTION_DETAIL_T</asp:ListItem>--%>
+                                <asp:ListItem>WCDMA_TSE.R_FUNCTION_LOG_T</asp:ListItem>
+                                <%--<asp:ListItem>TESTINFO.TESTINFO_DETAIL</asp:ListItem>--%>
+                                <asp:ListItem>WCDMA_TSE.R_FUNCTION_HEAD_T</asp:ListItem>
+                                <asp:ListItem>SFC.R_WIP_TRACKING_T_PID</asp:ListItem>
+                            </asp:DropDownList>
+                            </td>
+                            <td>
+                                <asp:Label ID="LabgetIp" runat="server" Text="DBSER:"></asp:Label>
+                            </td>
+                            <td>
+                             <asp:DropDownList ID="DropDownListIp" runat="server" 
+                                EnableViewState="False" Height="19px">
+                                <asp:ListItem Value="76">10.186.171.76</asp:ListItem>
+                                <%--<asp:ListItem Value="215">10.186.171.215</asp:ListItem>--%>
+                            </asp:DropDownList>
+                            </td>
+                                 <td>
+                            <asp:Label ID="Label2" runat="server" Text="Please Input PID:"></asp:Label></td>
+                       
+                        <td>
+                            <asp:TextBox ID="TextInput" runat="server"></asp:TextBox>
+                        </td>
+                        <td>
+                              <asp:Button ID="ButRestore" runat="server" Text="Restore" 
+                              style="height: 26px" onclick="ButRestore_Click" />
+                        </td>
+                             </tr>
+             </table>                   
+    </div>
+    <div id="divchon"> 
+             <table id="table2"  style="border: solid 1px #6A84BF; text-align: center;" runat="server">
+               <tr>
+                <td>
+                    <asp:Label ID="Lbllist" runat="server" Text="TableList:"></asp:Label>
+                </td>
+                <td>
+                    <asp:DropDownList ID="DropTableList" runat="server" 
+                        EnableViewState="False" Height="23px">
+                        <asp:ListItem>TESTINFO.TESTINFO_HEAD</asp:ListItem>
+                    <%--    <asp:ListItem>WCDMA_TSE.R_FUNCTION_DETAIL_T</asp:ListItem>--%>
+                        <asp:ListItem>WCDMA_TSE.R_FUNCTION_LOG_T</asp:ListItem>
+                     <%--   <asp:ListItem>TESTINFO.TESTINFO_DETAIL</asp:ListItem>--%>
+                        <asp:ListItem>WCDMA_TSE.R_FUNCTION_HEAD_T</asp:ListItem>
+                    </asp:DropDownList>
+                </td>
+                  <td>
+                        <asp:Label ID="Label1" runat="server" Text="DBSER:"></asp:Label>
+                    </td>
+                    <td>
+                     <asp:DropDownList ID="DropDownList2" runat="server" 
+                        EnableViewState="False" Height="19px">
+                        <asp:ListItem Value="108">10.186.166.108</asp:ListItem>
+<%--                        <asp:ListItem Value="215">10.186.171.215</asp:ListItem>
+--%>                    </asp:DropDownList>
+                    </td>
+               <td align="right" style="width: 100px;">
+                Begin Date:
+            </td>
+            <td style="width: 135px;">
+                <asp:TextBox ID="txtBeginDate" runat="server"></asp:TextBox>
+            </td>
+            <td align="right" style="width: 100px;">                
+                End Date:</td>
+            <td style="width: 135px;">                
+                <asp:TextBox ID="txtDate" runat="server" ></asp:TextBox> 
+                    </td>
+               <td class="style3" style="vertical-align: middle; margin-left: 80px;" >
+                          
+                    <asp:Button ID="btnInsert" runat="server" Text="Submit" 
+                        onclick="btnInsert_Click" />
+                </td>
+               <td style=" vertical-align: top;" class="style4">
+       
+                    &nbsp;</td>
+              
+            </tr>
+        </table>
+    </div>
+    <div id="divDisay";style="width: 100%; align: center;" >
+             <table id="tableerror" runat="server" style="border: solid 1px #6A84BF; text-align: center;">
+                            <tr>
+                                <td>Error Message:</td>
+                                <td>
+                                    <asp:Label ID="Laberror" runat="server" Text="Label" BackColor="#FF3300" style="height: 10px"></asp:Label></td>
+                            </tr>
+                         </table>
+             <table id="tabledisay"   runat="server"  style="border: solid 1px #6A84BF; text-align: center;" >
+                            <tr>
+                               
+                                <td>Total Insert Rows:</td>
+                                <td>
+                                    <asp:Label ID="lblcolor" runat="server" Text="" BackColor="#FF3300" style="height: 10px"></asp:Label>
+                               </td>
+                            </tr>
+                            <tr>
+                                <td>Total RePet Rows:</td>
+                                <td>
+                                    <asp:Label ID="lblcolorthree" runat="server" Text="" BackColor="#FF3300" style="height: 10px"></asp:Label>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td>Total Update Rows:</td>
+                                <td>
+                                    <asp:Label ID="lblcolorfour" runat="server" Text="" BackColor="#FF3300" style="height: 10px"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Total Error Rows</td>
+                                <td>
+                                    <asp:Label ID="lblcolortwo" runat="server" Text="" BackColor="#FF3300" style="height: 10px"></asp:Label>
+                                </td>
+                            </tr>
+               </table>                   
+    </div>
+    <div id="GriewDisay";style="width:100%;align:center">
+             <table id="tableGrivwDisay" runat="server"  style="border: solid 1px #6A84BF; text-align: center;">
+        <tr>
+            <td>
+                <asp:Label ID="lbldiasyGriew" runat="server" Text="Label">Detail List</asp:Label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+             <asp:GridView ID="gvProjectList" runat="server" AutoGenerateColumns="true" 
+                    BackColor="White" BorderWidth="1px" CellPadding="3" Width="100%"
+                    CssClass="DMenuStyle" AllowSorting="True"  AllowPaging="True" 
+                      onpageindexchanging="gvProjectList_PageIndexChanging" 
+                      onrowcreated="gvProjectList_RowCreated" >
+                    <HeaderStyle CssClass="gvHeader" />
+                    <RowStyle CssClass="gvItem" />
+                    <AlternatingRowStyle CssClass="gvAlterStyle" />
+                </asp:GridView> 
+
+            </td>
+        </tr>
+    </table>
+</div>
+ </div>
+</asp:Content>
+

@@ -1,0 +1,1057 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+//using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Data.SqlClient;
+using Economy.Publibrary;
+
+//using System.Xml.Linq;
+
+
+public partial class Fbomm3 : System.Web.UI.Page
+{
+    MHDBConn dbc = new MHDBConn();
+    DbAccessing myAccessing = new DbAccessing();
+    public static DataTable dtbom1 = new DataTable();  // Tbale  for Merge data Item+Rev+Desp, Part+Rev+Desp
+    public static DataTable dtbom2 = new DataTable();
+    public static string NetDBPath = "Data Source=10.186.19.104;Initial Catalog=FMRPB1;User ID =sa;Password=Sa123456;Timeout=120;";// ConfigurationManager.AppSettings["DefaultConnectionString"];
+    public static string LocDBPath = "Data Source=127.0.0.1;Initial Catalog=FMRPB1;User ID =sa;Password=sa123456;Timeout=120;";// ConfigurationManager.AppSettings["DefaultConnectionString"];
+    public static string tmpItem      = "";
+    public static string tmpItemRev   = "";
+    public static string LevelItem    = "1";  // 0:Parent, 1:Child
+    public static string tmpPart      = "";
+    public static string tmpPartRev   = "";
+    public static string LevelPart    = "2";
+    public static string tmpQty       = "1";
+    public static string tmpUnit      = "";
+    public static string tmpBeginDate = "";
+    public static string tmpEndDate   = "";
+    public static string tmpDueDate   = "";
+    public static int    DGX_Loc = 1;         // DataGrew X-ray
+    public static int    DGY_Loc = 1;         // DataGrew Y-ray
+    public static int    arrayBOMM2Long = 30000;
+    public static string DBRaedFlag = "";  // Not Read
+    public static string RunDBPath = ConfigurationManager.AppSettings["ConnectionSqlServer"];
+	
+    
+    public static string[,] arrayBOM = new string[100, 3];
+    public static string[,] arrayBOMM1 = new string[arrayBOMM2Long + 1, 20 + 1];
+    public static string[,] arrayBOMM2 = new string[arrayBOMM2Long + 1, 20 + 1];
+    public DataSet tmpDataSet;
+    public static int BOM1Long = 0;
+    public static int PageNum = 1;
+    public static int PageSize = 10;
+    public static string FuncFlag = "";
+    public string tmpToday = DateTime.Today.ToString("yyyyMMdd");
+
+    ClassLibrarySCM1.Class1 LibSCM1Pointer = new ClassLibrarySCM1.Class1();
+    ClassLibraryUSR1.Class1 LibUSR1Pointer = new ClassLibraryUSR1.Class1();
+    ShipPlanlib ShipPlanlibPointer = new ShipPlanlib();
+    
+
+    public static int EBOMM2Long = 0;
+    public static int EBOMM1Long = 0;
+    public static DataSet dsbom1, dsbom2;
+
+ 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            InitVar();
+            this.probind();
+            this.DropDownList1.Items.Add("1.正常");
+            this.DropDownList1.Items.Add("2.刪除");
+            this.DropDownList1.Items.Add("3.整批拷背");
+            this.DropDownList1.Items.Add("4.整批刪除");
+            this.DropDownList1.Items.Add("5.結案");
+            this.DropDownList1.Items.Add("6.其他");
+        }
+        else
+        {   
+           
+        }
+    }
+
+    protected void InitVar()
+    {
+        int v1, v2, v3;
+        string sv1="", sv2="";
+
+
+        for (v1 = 0; v1 < arrayBOMM2Long; v1++)
+            for (v2 = 0; v2 < 15 + 1; v2++)
+            {
+                arrayBOMM1[v1, v2] = "";
+                arrayBOMM2[v1, v2] = "";
+            }
+
+        // string sql01 = "Select * From Syncro_Foxconn_Nokia_PartNo order by NokiaSite, FoxconnSite, NokiaPartNo, FoxconnPartNo ";
+        // dsbom2 = LibSCM1Pointer.GetDataByDataPath(sql01, RunDBPath);
+        // if (dsbom2.Tables.Count <= 0) EBOMM2Long = 0; // Not Data Response.Write("There are not data in Syncro_4A3 table from coming Para "); //    return;
+        // else
+        // {
+        //    EBOMM2Long = dsbom2.Tables[0].Rows.Count;
+        //    tmpDataSet = dsbom2;
+        //    // DataTable dt1 = myAccessing.ExecuteSqlTable(sql01);
+        //    dtbom2 = myAccessing.ExecuteSqlTable(sql01);
+        //    this.GridView2.DataSource = dtbom2;
+        //    this.GridView2.DataBind();            
+        ///}
+
+        // probind();  // Get EBOMM1 
+
+        string sql02 = " Select * From Syncro_Foxconn_Nokia_PartNo order by NokiaSite, FoxconnSite, NokiaPartNo, FoxconnPartNo ";
+        // DataSet dsbom1 = LibSCM1Pointer.GetDataByDataPath(sql02, RunDBPath);
+        dsbom1 = LibSCM1Pointer.GetDataByDataPath(sql02, RunDBPath);
+        if (dsbom1.Tables.Count <= 0) EBOMM1Long = 0; // Not Data Response.Write("There are not data in Syncro_4A3 table from coming Para "); //    return;
+        else
+            EBOMM1Long = dsbom1.Tables[0].Rows.Count;
+
+        sv1 = Get_EBOMM1(EBOMM1Long, dsbom1, EBOMM2Long, dsbom2, arrayBOMM1);
+        sv1 = ShowEBOMM1(ref PageNum, ref EBOMM1Long, ref arrayBOMM1, ref PageSize); 
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //  Function Selection 
+    protected void Button22_Click(object sender, EventArgs e)
+    {
+        int v1=0, v2=0, v3=0, v4=0;
+        string fno = FuncFlag, sqlstr="";
+        FuncFlag = "";  // Get function flag and clear
+
+        if ((fno == "") || (fno == "0") || (TextBox1.Text == "") || (TextBox2.Text == "") || (TextBox5.Text == "") || (TextBox6.Text == ""))
+        {
+            Response.Write("<script>alert('No Data or No Select Function ！ Try Again !')</script>");
+            return;
+        }
+
+        string sw1 = "";  // sw1="1" found in Fbomm1
+        string sw2 = "";  // sw2="1" found parent in Fbomm1
+        sw1 = ChkFbomm1(TextBox1.Text, TextBox2.Text, TextBox5.Text, TextBox6.Text, arrayBOMM1, BOM1Long);
+        tmpItem    = (TextBox1.Text).Trim();
+        tmpItemRev = (TextBox2.Text).Trim();
+        tmpPart    = (TextBox5.Text).Trim();
+        tmpPartRev = (TextBox6.Text).Trim();
+
+        if (fno == "1")
+        {
+            if (sw1 == "1")
+            {
+                Response.Write("<script>alert('This BOM already Exist in DB, Not Allow Insert')</script>");
+                return;
+            }
+            
+            sqlstr = "insert into Ebomm1 ( DocumentId, Item, ItemRev, Part, PartRev, CItemRev, QTY, Unit, "
+            + " Level, Location, BeginDate, EndDate, DueDate) values('" + tmpItem + "','" + tmpItem + "','" + tmpItemRev + "', "
+            + " '" + tmpPart + "', '" + tmpPartRev + "', '" + tmpPartRev + "', '" + TextBox4.Text + "', 'PC', "
+            + " '1', '" + TextBox3.Text + "',  '" + tmpToday + "', '', '' )";
+
+            v3 = dbc.exeq(sqlstr);
+            if (v3 < 0)
+            {
+                Response.Write("<script>alert(' Fbomm1添加失敗！')</script>");
+                // this.probind();
+            }
+
+            Response.Write("<script>alert(' Fbomm1 Insert OK！')</script>");
+           
+            return;
+
+        }  // FuncFalg =="1" end
+
+        if (fno == "2")
+        {
+            if (sw1 == "")
+            {
+                Response.Write("<script>alert('This BOM Not Exist in DB, Not Allow UpDate')</script>");
+                return;
+            }
+
+            // if (GridView1.SelectedIndex < 0)
+            // {
+            //     Response.Write("<script>alert('請先選擇一筆專案 ！')</script>");
+            // }
+
+            tmpItem    = (TextBox1.Text).Trim();
+            tmpItemRev = (TextBox2.Text).Trim();
+            tmpPart    = (TextBox5.Text).Trim();
+            tmpPartRev = (TextBox6.Text).Trim();
+            
+            sqlstr = "update EBOMM1  set Qty  = '" + TextBox4.Text + "' , Location = '" + TextBox3.Text + "'  where Item =  '" + tmpItem + "' and "
+            + " ItemRev =  '" + tmpItemRev + "' and Part = '" + tmpPart + "' and Partrev = '" + tmpPartRev + "' ";
+
+            dbc.exeq(sqlstr);
+
+            Response.Write("<script>alert('UpDate BOM OK !')</script>");
+            // TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;  
+            GridView1.Rows[DGY_Loc].Cells[3].Text = TextBox4.Text;  // QTY
+            GridView1.Rows[DGY_Loc].Cells[9].Text = TextBox3.Text;  // Location
+
+            if (DBRaedFlag == "A")
+            {
+                this.GridView1.EditIndex = -1;
+                this.probind();
+            }
+           return;
+        }
+
+        if (fno == "3")
+        {
+            if (sw1 == "")
+            {
+                Response.Write("<script>alert('This BOM Not Exist in DB, Not Allow UpDate')</script>");
+                return;
+            }
+
+            if (GridView1.SelectedIndex < 0)
+            {
+                Response.Write("<script>alert('請先選擇一筆專案 ！')</script>");
+            }
+
+            // sqlstr = "update EBOMM1  set Phase   = '" + DropDownList1.Text + "'  ,ProjectName ='" + TextBox2.Text + "' ,foxconnsite ='" + DropDownList2.Text + "' where Item =  '" + TextBox1.Text + "'".ToString();
+            sqlstr = "update EBOMM1  set Duedate  = '" + tmpToday + "' where Item =  '" + tmpItem + "'  COLLATE Chinese_PRC_CI_AS and Part = '" + tmpPart + "' COLLATE Chinese_PRC_CI_AS"
+            + " and ItemRev =  '" + tmpItemRev + "' COLLATE Chinese_PRC_CI_AS and Partrev = '" + tmpPartRev + "' COLLATE Chinese_PRC_CI_AS ";
+
+            dbc.exeq(sqlstr);
+
+            Response.Write("<script>alert('DueDate BOM OK !')</script>");
+            // TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;  
+            GridView1.Rows[DGY_Loc].Cells[3].Text = TextBox4.Text;  // QTY
+            return;
+        }
+
+        if (fno == "4")
+        {
+            if (sw1 == "")
+            {
+                Response.Write("<script>alert('This BOM Not Exist in DB, Not Allow UpDate')</script>");
+                return;
+            }
+
+            // if (GridView1.SelectedIndex < 0)
+            // {
+            //     Response.Write("<script>alert('請先選擇一筆專案 ！')</script>");
+            // }
+
+            string Setup1 = this.DropDownList1.SelectedItem.ToString();
+
+            if ( (DropDownList1.Text).Substring(0, 1) != "2")
+            {
+                Response.Write("<script>alert('You Need To SetUp Delete Function！')</script>");
+                return;
+            }
+
+            // sqlstr = "update EBOMM1  set Phase   = '" + DropDownList1.Text + "'  ,ProjectName ='" + TextBox2.Text + "' ,foxconnsite ='" + DropDownList2.Text + "' where Item =  '" + TextBox1.Text + "'".ToString();
+            sqlstr = "Delete EBOMM1  where Item =  '" + tmpItem + "' and Part = '" + tmpPart + "' "
+            + " and ItemRev =  '" + tmpItemRev + "' and Partrev = '" + tmpPartRev + "' ";
+
+            dbc.exeq(sqlstr);
+
+            DropDownList1.Text = "1.正常";
+            Setup1 = DropDownList1.Text;
+            Response.Write("<script>alert('Delete BOM OK !')</script>");
+            // TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;  
+            GridView1.Rows[DGY_Loc].Cells[3].Text = TextBox4.Text;  // QTY
+            return;
+        }
+
+        if ( fno == "5")
+        {
+            string sw3 = "", sw4="";
+            if (sw1 == "")
+            {
+                Response.Write("<script>alert('This BOM Not Exist in DB, Not Allow UpDate')</script>");
+                return;
+            }
+
+            sw2 = ChkFinvm1(TextBox160.Text, TextBox161.Text, dsbom2);  // Check need in Jinvm1
+            if (sw2 == "")  // Not In Jinvm1
+            {
+                Response.Write("<script>alert('This Part not exist in Dbase Finvm1 ！')</script>");
+                return;
+            }
+
+            sw3 = ChkFbomm1Parent(TextBox160.Text, TextBox161.Text, TextBox5.Text, TextBox6.Text, arrayBOMM1, BOM1Long); // Check need not in Fbomm1
+            if (sw3 == "1")  // Not In Jbomm1 Parent
+            {
+                Response.Write("<script>alert('This Part not allow exist in Dbase Fbomm1 ！')</script>");
+                return;
+            }
+
+            v2=0;
+            for (v1 = 1; v1 < EBOMM1Long+1 ; v1++)
+                 if ((TextBox1.Text == arrayBOMM1[v1, 2]) && (TextBox2.Text == arrayBOMM1[v1, 3])) v2++;
+
+            sw4 = v2.ToString();
+            
+            Response.Write("<script>alert('This Copy Bom is in Dbase Fbomm1 OK ！') </script>");
+            // Response.Write("<script>alert('Update 4A3_Detail 新增失敗，請稍后重試！ '" + sw4 + "' ') /script>" );
+                                                
+                      
+            v3 = 0;
+            for (v1 = 1; v1 < EBOMM1Long + 1; v1++)
+            {
+                if ((TextBox1.Text == arrayBOMM1[v1, 2]) && (TextBox2.Text == arrayBOMM1[v1, 3]))
+                {
+                    sqlstr = "insert into Ebomm1 ( DocumentId, Item, ItemRev, Part, PartRev, CItemRev, QTY, Unit, "
+                    + " Level, Location, BeginDate, EndDate, DueDate) values('" + TextBox160.Text + "','" + TextBox160.Text + "','" + TextBox161.Text + "', "
+                    + " '" + arrayBOMM1[v1, 4] + "', '" + arrayBOMM1[v1, 5] + "', '" + arrayBOMM1[v1, 5] + "', '" + arrayBOMM1[v1, 6] + "', 'PC', "
+                    + " '1', '" + arrayBOMM1[v1, 9] + "',  '" + tmpToday + "', '', '' )";
+                   
+                    v3 = dbc.exeq(sqlstr);
+                    if ( v3 < 0)
+                    {
+                        Response.Write("<script>alert(' Fbomm1添加失敗！')</script>");
+                        // this.probind();
+                    }
+                }
+            }  
+           
+        } // end switch 5 Copy BOM
+
+
+    }  // end function confirm
+          
+    
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+        FuncFlag = "1";
+        return;
+        // Not Uses 20101127
+        string proNo = this.TextBox1.Text;     // Item
+        string proName = this.TextBox2.Text;   // 
+        string proPhase = this.DropDownList1.SelectedItem.ToString();
+
+        string probak = this.TextBox3.Text;
+        if ( tmpItem != string.Empty && tmpQty != string.Empty)
+        {
+            string sqlstr = "insert into Ebommm1 (ProjectNO,ProjectName,Phase,BAK ) values('" + proNo + "','" + proName + "','" + proPhase + "','" + probak + "')";
+            int query = dbc.exeq(sqlstr);
+            if (query > 0)
+            {
+                Response.Write("<script>alert('專案添加成功！')</script>");
+                this.probind();
+            }
+        }
+    }
+
+
+    protected void ImageButton2_Click(object sender, GridViewDeleteEventArgs e)
+    {
+        //int ind = Convert.ToInt32(this.GridView1.Rows[ind].Cells[6].Text);
+       // int ind = Convert.ToInt32(((ImageButton)sender).CommandArgument);
+        string ProjectNO = this.GridView1.DataKeys[e.RowIndex].Value.ToString();
+
+        string sqlstr;
+        string Keyint = this.GridView1.Rows[e.RowIndex].Cells[3].Text;
+        if (Keyint == "N".ToString())
+        {
+            sqlstr = "update Ebommm1 set pro_close='Y' where ProjectNO =  '" + ProjectNO + "'".ToString();
+        }
+        else
+        {
+            sqlstr = "update Ebommm1 set pro_close='N' where ProjectNO =  '" + ProjectNO + "'".ToString();
+        }
+
+
+        dbc.exeq(sqlstr);
+        this.GridView1.EditIndex = -1;
+        this.probind();
+    }
+  
+    protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+ 
+ 
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            //int ind = Convert.ToInt32(GridView1.DataKeys[e.Row.RowIndex].Value);
+             
+          //  string id = this.GridView1.Rows[1].Cells[3].Text;
+    //         string ind = GridView1.DataKeys[e.Row.RowIndex].Value.ToString(); 
+             
+
+            if (((ImageButton)e.Row.Cells[4].FindControl("ibtnDelete")) != null)
+            {
+                ((ImageButton)e.Row.Cells[4].FindControl("ibtnDelete")).CommandArgument = e.Row.RowIndex.ToString();
+
+                if (e.Row.Cells[3].Text  == "N".ToString())
+                { 
+                    ((ImageButton)e.Row.Cells[4].FindControl("ibtnDelete")).OnClientClick = "return confirm('" + "當前專案數據將被結案".ToString() + "')"; 
+                }
+                else 
+                {
+                    ((ImageButton)e.Row.Cells[4].FindControl("ibtnDelete")).OnClientClick = "return confirm('" + "當前專案數據將被反結案".ToString() + "')";
+                }
+
+                
+            }             
+        }
+    }
+
+
+
+    public void probind()
+    {
+        return;
+        string str1 = "";
+                
+        string sqlstr = " Select a.*, substring(b.EngDescription,1,20) Desp1, substring(c.EngDescription,1,20) Desp2 From EBOMM1 a, EBOMM2 b, EBOMM2 c "
+        + " where (a.Item = b.Item COLLATE Chinese_PRC_CI_AS and a.ItemRev = b.ItemRev COLLATE Chinese_PRC_CI_AS) and  (a.Part = c.Item COLLATE Chinese_PRC_CI_AS and a.PartRev = c.ItemRev COLLATE Chinese_PRC_CI_AS) " 
+        + " order by a.Item, a.ItemRev, a.Part, a.PartRev ";
+        // string sqlstr = " Select a.*, b.EngDescription EngDescription From EBOMM1 a, EBOMM2 b where a.Item = b.Item order by a.Item, a.Part ";
+        dtbom1 = myAccessing.ExecuteSqlTable(sqlstr);
+        this.GridView1.DataSource = dtbom1;
+        this.GridView1.DataBind();
+
+        BOM1Long = dtbom1.Rows.Count;
+        // str1 = Get_EBOMM2Desp(dt, tmpDataSet);
+    }
+
+    // protected void pageindexchange(object sender, GridViewPageEventArgs e)
+    // {
+    //    this.GridView1.PageIndex = e.NewPageIndex;
+    //    this.GridView1.DataSource = dtbom1;
+    //    this.GridView1.DataBind();
+    //    // BOM1Long = dtbom1.Rows.Count; 
+    // }
+
+    protected void GridView1_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+    {
+        GridView1.SelectedIndex = e.NewSelectedIndex;
+        DGY_Loc = e.NewSelectedIndex;
+
+        TextBox1.Text = GridView1.Rows[e.NewSelectedIndex].Cells[0].Text;   // Item
+        TextBox2.Text = GridView1.Rows[e.NewSelectedIndex].Cells[1].Text;   // ItemRev
+        TextBox5.Text = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;   // Part
+        TextBox6.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;   // PartRev
+        TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[4].Text;   // Qty
+        TextBox3.Text = GridView1.Rows[e.NewSelectedIndex].Cells[6].Text;   // Location
+        TextBox7.Text = GridView1.Rows[e.NewSelectedIndex].Cells[7].Text;   // DocumentID, Item Desp
+
+
+        tmpQty     = GridView1.Rows[e.NewSelectedIndex].Cells[4].Text;   // QTY
+        tmpItem    = GridView1.Rows[e.NewSelectedIndex].Cells[0].Text;   // Item
+        tmpItemRev = GridView1.Rows[e.NewSelectedIndex].Cells[1].Text;   // ItemRev
+        tmpPart    = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;   // Part
+        tmpPartRev = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;   // PartRevY
+        
+        // 20100909 DropDownList1.Text = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;
+        //Label1.Text = GridView1.Rows[e.NewSelectedIndex].Cells[5].Text;
+        //Label2.Text = GridView1.Rows[e.NewSelectedIndex].Cells[6].Text;
+        ////Label3.Text =  GridView1.Rows[e.NewSelectedIndex].Cells[6].Text;
+
+
+        //TextBox15.Text = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;
+
+        if ( DBRaedFlag == "A") 
+        {
+             probind();
+             GridView1.Rows[e.NewSelectedIndex].BackColor = System.Drawing.Color.Bisque;  
+        }
+
+    }
+
+    // protected void GridView2_SelectedIndexChanged(object sender, EventArgs e)
+    protected void GridView2_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+    {
+        GridView2.SelectedIndex = e.NewSelectedIndex;
+        DGY_Loc = e.NewSelectedIndex;
+
+        LevelItem = GridView2.Rows[e.NewSelectedIndex].Cells[4].Text;
+
+        if (LevelItem == "0") // Parent
+        {
+            TextBox1.Text = GridView2.Rows[e.NewSelectedIndex].Cells[0].Text;
+            TextBox2.Text = GridView2.Rows[e.NewSelectedIndex].Cells[1].Text;
+            tmpItem       = TextBox1.Text;
+            tmpItemRev    = TextBox2.Text;
+        }
+        else  // Child 
+        {
+            TextBox5.Text = GridView2.Rows[e.NewSelectedIndex].Cells[0].Text;
+            TextBox6.Text = GridView2.Rows[e.NewSelectedIndex].Cells[1].Text;
+            tmpPart       = TextBox5.Text;
+            tmpPartRev    = TextBox6.Text;
+        }
+
+        // TextBox2.Text = GridView1.Rows[e.NewSelectedIndex].Cells[1].Text;
+        // TextBox3.Text = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;
+        // TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;  // QTY
+     
+        if (DBRaedFlag == "A")
+        {
+            probind();
+            GridView1.Rows[e.NewSelectedIndex].BackColor = System.Drawing.Color.Bisque;
+        }
+
+    }
+
+    protected void Button3_Click(object sender, EventArgs e)
+    {
+        FuncFlag = "2";
+
+        return;
+        string sqlstr;
+
+        // if (GridView1.SelectedIndex < 0)
+        // {
+        //     Response.Write("<script>alert('請先選擇一筆專案 ！')</script>");
+        // }
+
+        tmpItem    = (TextBox1.Text).Trim();
+        tmpItemRev = (TextBox2.Text).Trim();
+        tmpPart    = (TextBox5.Text).Trim();
+        tmpPartRev = (TextBox6.Text).Trim();
+        // sqlstr = "update EBOMM1  set Phase   = '" + DropDownList1.Text + "'  ,ProjectName ='" + TextBox2.Text + "' ,foxconnsite ='" + DropDownList2.Text + "' where Item =  '" + TextBox1.Text + "'".ToString();
+        sqlstr = "update EBOMM1  set Qty  = '" + TextBox4.Text + "' , Location = '" + TextBox3.Text + "'  where Item =  '" + tmpItem + "' and "
+        + " ItemRev =  '" + tmpItemRev + "' and Part = '" + tmpPart + "' and Partrev = '" + tmpPartRev + "' ";
+       
+        dbc.exeq(sqlstr);
+
+        Response.Write("<script>alert('UpDate BOM OK !')</script>");
+        // TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;  
+         GridView1.Rows[DGY_Loc].Cells[3].Text = TextBox4.Text;  // QTY
+         GridView1.Rows[DGY_Loc].Cells[9].Text = TextBox3.Text;  // Location
+
+        if (DBRaedFlag == "A")
+        {
+            this.GridView1.EditIndex = -1;
+            this.probind();
+        }
+
+    }
+    protected void TextBox1_TextChanged(object sender, EventArgs e)
+    {
+        string tDesp = "";
+
+        tmpItem    = TextBox1.Text;
+        tmpItemRev = TextBox2.Text;       
+
+    }
+
+    private string Get_EBOMM1(int EBOMM1Long, DataSet tdsbom1, int EBOMM2Long, DataSet tdsbom2, string [,] arrayBOMM1 )
+    {
+        // GridView1.AllowPaging = false;
+
+        string s1, s2, s3, s4, tmpDesp = "";
+        int v1, v2, v3 = 0, v4=0, v5, v6;
+
+        for (v1 = 0; v1 < EBOMM1Long ; v1++)
+        {
+            // arrayBOMM1[v1 + 1, 2] = GridView1.Rows[v2].Cells[0].Text;
+            arrayBOMM1[v1 + 1, 1]  = v1.ToString();
+            arrayBOMM1[v1 + 1, 2]  = tdsbom1.Tables[0].Rows[v1]["NokiaSite"].ToString();
+            arrayBOMM1[v1 + 1, 3]  = tdsbom1.Tables[0].Rows[v1]["FoxconnRegion"].ToString();
+            arrayBOMM1[v1 + 1, 4]  = tdsbom1.Tables[0].Rows[v1]["FoxconnSite"].ToString();
+            arrayBOMM1[v1 + 1, 5]  = tdsbom1.Tables[0].Rows[v1]["FoxconnBU"].ToString();
+            arrayBOMM1[v1 + 1, 6]  = tdsbom1.Tables[0].Rows[v1]["NokiaPartNo"].ToString();
+            arrayBOMM1[v1 + 1, 7]  = tdsbom1.Tables[0].Rows[v1]["FoxconnPartNo"].ToString();
+            arrayBOMM1[v1 + 1, 8]  = tdsbom1.Tables[0].Rows[v1]["Project"].ToString();
+            s4 = ShipPlanlibPointer.StrClrSpecialChar( tdsbom1.Tables[0].Rows[v1]["Description"].ToString() );
+            arrayBOMM1[v1 + 1, 9] = StrClrAllSpecialChar(tdsbom1.Tables[0].Rows[v1]["Description"].ToString());
+            arrayBOMM1[v1 + 1, 10] = tdsbom1.Tables[0].Rows[v1]["Executor"].ToString();
+            arrayBOMM1[v1 + 1, 11] = tdsbom1.Tables[0].Rows[v1]["Dom_Exp"].ToString();
+            arrayBOMM1[v1 + 1, 12] = tdsbom1.Tables[0].Rows[v1]["Next_Dos"].ToString(); // Desp
+            arrayBOMM1[v1 + 1, 13] = tdsbom1.Tables[0].Rows[v1]["ToTime"].ToString(); // Part Desp tdsbom1.Tables[0].Rows[v1]["Part"].ToString(); 
+            arrayBOMM1[v1 + 1, 14] = tdsbom1.Tables[0].Rows[v1]["DataSource"].ToString();
+            arrayBOMM1[v1 + 1, 15] = tdsbom1.Tables[0].Rows[v1]["UpdateTime"].ToString();
+            arrayBOMM1[v1 + 1, 16] = tdsbom1.Tables[0].Rows[v1]["EOL"].ToString();
+            arrayBOMM1[v1 + 1, 17] = tdsbom1.Tables[0].Rows[v1]["Datafrom"].ToString();
+            arrayBOMM1[v1 + 1, 18] = tdsbom1.Tables[0].Rows[v1]["DataSource"].ToString();
+            arrayBOMM1[v1 + 1, 19] = tdsbom1.Tables[0].Rows[v1]["DataSource"].ToString();
+            arrayBOMM1[v1 + 1, 20] = tdsbom1.Tables[0].Rows[v1]["DataSource"].ToString(); 
+            v5 = 0;
+            v6 = 0;
+
+            // for (v2 = 0; v2 < EBOMM2Long ; v2++)  // load in memory
+            // {
+            //     s1 = tdsbom2.Tables[0].Rows[v2]["Item"].ToString();
+            //     s2 = tdsbom2.Tables[0].Rows[v2]["ItemRev"].ToString();
+            //     tmpDesp = tdsbom2.Tables[0].Rows[v2]["EngDescription"].ToString();
+            //     if ((s1 == tdsbom1.Tables[0].Rows[v1]["Item"].ToString()) && (s2 == tdsbom1.Tables[0].Rows[v1]["ItemRev"].ToString()))
+            //     {
+            //         // GridView1.Rows[v2].Cells[5].Text = tmpDesp;
+            //         arrayBOMM1[v1 + 1, 7] = tmpDesp;                   
+            //         v3++;
+            //         v5++;
+            //     }
+            //     
+            //     if ((s1 == tdsbom1.Tables[0].Rows[v1]["Part"].ToString()) && (s2 == tdsbom1.Tables[0].Rows[v1]["PartRev"].ToString()))
+            //     {
+            //         // GridView1.Rows[v2].Cells[5].Text = tmpDesp;
+            //         arrayBOMM1[v1 + 1, 8] = tmpDesp;
+            //         v4++;
+            //         v6++;
+            //     }
+            // 
+            //     if ((v5 > 0) && (v6 > 0)) v2 = EBOMM2Long + 1;
+            // 
+            // } // end EBOMM2Long + 1
+        }
+
+        return ( v3.ToString() );
+    }
+
+    private string ShowEBOMM1(ref int PageNum, ref int EBOMM1Long, ref string [,] arrayBOMM1, ref int tPageSize)
+    {
+        int sloc = (PageNum-1) * PageSize + 1;
+
+        if ((sloc + PageSize) > EBOMM1Long)
+        {
+            sloc = 1;
+            PageNum = 1;
+        }
+
+        Button21.Text = PageNum.ToString();
+        TextBox8.Text  = arrayBOMM1[sloc, 2].ToString();
+        TextBox9.Text  = arrayBOMM1[sloc, 3].ToString();
+        TextBox10.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox11.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox12.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox13.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox14.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox15.Text = arrayBOMM1[sloc, 9].ToString();
+        sloc++;
+        TextBox25.Text = arrayBOMM1[sloc, 2].ToString();
+        TextBox26.Text = arrayBOMM1[sloc, 3].ToString();
+        TextBox27.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox28.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox29.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox30.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox31.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox32.Text = arrayBOMM1[sloc, 9].ToString();
+        sloc++;
+        TextBox40.Text = arrayBOMM1[sloc, 2].ToString();
+        TextBox41.Text = arrayBOMM1[sloc, 3].ToString();
+        TextBox42.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox43.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox44.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox45.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox46.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox47.Text = arrayBOMM1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox55.Text = arrayBOMM1[sloc, 2].ToString();
+        TextBox56.Text = arrayBOMM1[sloc, 3].ToString();
+        TextBox57.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox58.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox59.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox60.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox61.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox62.Text = arrayBOMM1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox70.Text = arrayBOMM1[sloc, 2].ToString();
+        TextBox71.Text = arrayBOMM1[sloc, 3].ToString();
+        TextBox72.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox73.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox74.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox75.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox76.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox77.Text = arrayBOMM1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox85.Text = arrayBOMM1[sloc, 2].ToString();
+        TextBox86.Text = arrayBOMM1[sloc, 3].ToString();
+        TextBox87.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox88.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox89.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox90.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox91.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox92.Text = arrayBOMM1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox100.Text = arrayBOMM1[sloc, 2].ToString();
+        TextBox101.Text = arrayBOMM1[sloc, 3].ToString();
+        TextBox102.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox103.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox104.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox105.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox106.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox107.Text = arrayBOMM1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox115.Text = arrayBOMM1[sloc, 2].ToString();
+        TextBox116.Text = arrayBOMM1[sloc, 3].ToString();
+        TextBox117.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox118.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox119.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox120.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox121.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox122.Text = arrayBOMM1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox130.Text = arrayBOMM1[sloc, 2].ToString();
+        TextBox131.Text = arrayBOMM1[sloc, 3].ToString();
+        TextBox132.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox133.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox134.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox135.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox136.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox137.Text = arrayBOMM1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox145.Text = arrayBOMM1[sloc, 2].ToString();
+        TextBox146.Text = arrayBOMM1[sloc, 3].ToString();
+        TextBox147.Text = arrayBOMM1[sloc, 4].ToString();
+        TextBox148.Text = arrayBOMM1[sloc, 5].ToString();
+        TextBox149.Text = arrayBOMM1[sloc, 6].ToString();
+        TextBox150.Text = arrayBOMM1[sloc, 7].ToString();
+        TextBox151.Text = arrayBOMM1[sloc, 8].ToString();
+        TextBox152.Text = arrayBOMM1[sloc, 9].ToString();
+
+
+        return("Y");
+    }
+
+    private string Get_EBOMM2Desp(DataTable tst1, DataSet tds1)
+    {
+        // GridView1.AllowPaging = false;
+        
+        string s1, s2, s3, s4, tmpDesp="";
+        int v1, v2=0;
+        // for (v2 = 0; v2 < BOM1Long; v2++)
+        for (v2 = 0; v2 < 16; v2++)
+        {   
+            s3 = GridView1.Rows[v2].Cells[0].Text;
+            s4 = GridView1.Rows[v2].Cells[1].Text;
+            for  (v1 = 0; v1 < EBOMM2Long + 1; v1++)  // load in memory
+            {
+                 s1 = tds1.Tables[0].Rows[v1]["Item"].ToString();
+                 s2 = tds1.Tables[0].Rows[v1]["ItemRev"].ToString();
+                 tmpDesp = tds1.Tables[0].Rows[v1]["EngDescription"].ToString();
+                 if (( s3 == tds1.Tables[0].Rows[v1]["Item"].ToString()) && ( s4 == tds1.Tables[0].Rows[v1]["ItemRev"].ToString()))
+                 {
+                    tmpDesp = tds1.Tables[0].Rows[v1]["EngDescription"].ToString();
+                    GridView1.Rows[v2].Cells[5].Text = tmpDesp;
+                    // GridView1.Tables[DGY_Loc].["DocumentID"].Text = tmpDesp;
+                    v1 = EBOMM2Long + 1;
+                 }
+            } // end EBOMM2Long + 1
+        }              
+
+        return (tmpDesp);
+    }
+
+    protected void Button8_Click(object sender, EventArgs e)
+    {
+        if (TextBox160.Text == "") return;
+        int v1=0, v2=0, v3=0, v4=0;
+        string s1 = "", s2 = "", s3 = "", s4 = "";
+        v2 = (TextBox160.Text).Length;
+
+        for (v1 = 1; v1 < BOM1Long + 1; v1++)
+        {
+            s1 = arrayBOMM1[v1, 2];   // = tdsbom1.Tables[0].Rows[v1]["Item"].ToString();
+            s2 = s1.Substring(0, v2 );
+            if (TextBox160.Text == s1.Substring(0, v2))  // Found 
+            {
+                if ( (TextBox161.Text == "") || (TextBox161.Text == arrayBOMM1[v1, 3]))
+                {
+                    v3 = v1;  // V3 is the start Point
+                    v1 = BOM1Long + 1;
+                }
+
+            }
+            
+        }
+
+        PageNum = ( v3 / PageSize ) + 1;
+
+        s3 = ShowEBOMM1(ref PageNum, ref EBOMM1Long, ref arrayBOMM1, ref PageSize);
+
+  
+        
+        // probind();
+        // GridView1.Rows[e.DGY_Loc].BackColor = System.Drawing.Color.Bisque;  
+    }
+    protected void Button9_Click(object sender, EventArgs e)
+    {
+        DBRaedFlag = "A";
+        probind();
+        // GridView1.Rows[e.DGY_Loc].BackColor = System.Drawing.Color.Bisque;  
+    }
+
+
+    public static DataSet PGetDataByDataPath(string sql, string DataPath)
+    {
+        string ConnString = RunDBPath;
+        if (DataPath != "") ConnString = DataPath.ToString();
+
+        SqlConnection scnn = new SqlConnection(ConnString);
+        DataSet ds = new DataSet();
+        try
+        {
+            scnn.Open();
+            SqlCommand scmm = new SqlCommand(sql, scnn);
+
+            SqlDataAdapter sdapter = new SqlDataAdapter(scmm);
+            sdapter.SelectCommand.CommandTimeout = 300;
+            sdapter.Fill(ds);
+            return ds;
+        }
+        // catch (Exception ex)
+        // {
+        //    throw ex;
+        // }
+        catch
+        {
+            return ds;
+        }
+        finally
+        {
+            scnn.Close();
+        }
+    }  // PGetDataByPara end
+
+    protected void GridView2_SelectedIndexChanged(object sender, GridViewPageEventArgs e)
+    {
+         this.GridView2.PageIndex = e.NewPageIndex;
+         this.GridView2.DataSource = dtbom2;
+         this.GridView2.DataBind();
+    }
+    protected void TextBox3_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void GridView2_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        this.GridView2.PageIndex = e.NewPageIndex;
+        this.GridView2.DataSource = dtbom2;
+        this.GridView2.DataBind();
+    }
+
+    protected void GridView1_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        this.GridView1.PageIndex = e.NewPageIndex;
+        this.GridView1.DataSource = dtbom1;
+        this.GridView1.DataBind();
+    }
+
+
+    protected void Button19_Click(object sender, EventArgs e)
+    {
+        string sv1 = "";
+        PageNum++;
+        PageSize = 10;
+        sv1 = ShowEBOMM1(ref PageNum, ref EBOMM1Long, ref arrayBOMM1, ref PageSize);
+    }
+    protected void Button20_Click(object sender, EventArgs e)
+    {
+        string sv1 = "";
+        PageNum--;
+
+        if (PageNum <= 0) PageNum = 0;
+
+        sv1 = ShowEBOMM1(ref PageNum, ref EBOMM1Long, ref arrayBOMM1, ref PageSize);
+
+    }
+
+    public string ChkFbomm1( string tItem, string tItemRev, string tPart, string tPartRev, string [,] tarrayBOMM1, int tBOM1Long)
+    {
+        int v1 = 0;
+        string tsw = "";
+
+        for (v1 = 1; v1 < tBOM1Long + 1; v1++)
+        {
+            if ((tItem == tarrayBOMM1[v1, 2]) && (tItemRev == tarrayBOMM1[v1, 3]) && (tPart == tarrayBOMM1[v1, 4]) && (tPartRev == tarrayBOMM1[v1, 5]))
+            {
+                tsw = "1";
+                v1 = BOM1Long + 1; // break
+            }
+        }
+
+        return ( tsw );
+
+    }
+
+    public string ChkFbomm1Parent(string tItem, string tItemRev, string tPart, string tPartRev, string[,] tarrayBOMM1, int tBOM1Long)
+    {
+        int v1 = 0;
+        string tsw = "";
+
+        for (v1 = 1; v1 < tBOM1Long + 1; v1++)
+        {
+            if ((tItem == tarrayBOMM1[v1, 2]) && (tItemRev == tarrayBOMM1[v1, 3]) )
+            {
+                tsw = "1";
+                v1 = BOM1Long + 1; // break
+            }
+        }
+
+        return (tsw);
+
+    }
+    
+    private string ChkFinvm1(string P1, string C1, DataSet tds1)
+    {
+        // GridView1.AllowPaging = false;
+
+        string s1, s2, s3 = "";
+        int v1, v2 = 0;
+        
+        for (v1 = 0; v1 < EBOMM2Long; v1++)  // load in memory
+        {
+                s1 = tds1.Tables[0].Rows[v1]["Item"].ToString();
+                s2 = tds1.Tables[0].Rows[v1]["ItemRev"].ToString();
+                if ((P1 == s1) && (C1 == s2))
+                {
+                    s3 = "1";
+                    v1 = EBOMM2Long + 1;
+                }
+        } // end EBOMM2Long + 1
+        
+
+        return (s3);
+    }
+
+    protected void Button4_Click(object sender, EventArgs e)
+    {
+        FuncFlag = "3";
+    }
+    protected void Button5_Click(object sender, EventArgs e)
+    {
+
+        FuncFlag = "4";
+        Response.Write("<script>alert(' Be careful of Delete Bom, Press EcecAct ')</script>");
+    }
+    protected void Button6_Click(object sender, EventArgs e)
+    {
+        FuncFlag = "5";
+
+    }
+
+    protected void Button10_Click(object sender, EventArgs e)
+    {
+        Response.Write("<script language='javascript'>window.showModelessDialog('Finvm1.aspx', 'window', 'dialogWidth:800px;dialogHeight:600px;center:1;dialogLeft:200;dialogTop:100;dialogHide:1;edge:raised;help:1;resizable:1;scroll:1;status:1;unadorned:1');</script> ");
+       
+    }
+    protected void TextBox5_TextChanged(object sender, EventArgs e)
+    {
+        tmpPart    = TextBox5.Text;
+        tmpPartRev = TextBox6.Text;   
+    }
+    protected void Button24_Click(object sender, EventArgs e)
+    {
+        InitVar();
+    }
+    protected void Button25_Click(object sender, EventArgs e)  // First Array
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 0;
+        MoveArrayToVar(Psloc);    
+
+    }
+
+    protected void MoveArrayToVar( int sloc)
+    {
+        if ((sloc <= 0) || (sloc > EBOMM1Long )) return; // Over array
+ 
+        TextBox1.Text = arrayBOMM1[sloc, 2]; //  = tdsbom1.Tables[0].Rows[v1]["NokiaSite"].ToString();
+        TextBox2.Text = arrayBOMM1[sloc, 3]; //  = tdsbom1.Tables[0].Rows[v1]["FoxconnSite"].ToString();
+        TextBox5.Text = arrayBOMM1[sloc, 4]; // = tdsbom1.Tables[0].Rows[v1]["NokiaPartNo"].ToString();
+        TextBox6.Text = arrayBOMM1[sloc, 4]; //  = tdsbom1.Tables[0].Rows[v1]["FoxconnPartNo"].ToString();
+
+        tmpItem = (TextBox1.Text).Trim();
+        tmpItemRev = (TextBox2.Text).Trim();
+        tmpPart = (TextBox5.Text).Trim();
+        tmpPartRev = (TextBox6.Text).Trim();
+
+
+    }
+
+    protected void Button26_Click(object sender, EventArgs e)
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 1;
+        MoveArrayToVar(Psloc);    
+
+    }
+    protected void Button27_Click(object sender, EventArgs e)
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 2;
+        MoveArrayToVar(Psloc);    
+    }
+    protected void Button28_Click(object sender, EventArgs e)
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 3;
+        MoveArrayToVar(Psloc);    
+    }
+    protected void Button29_Click(object sender, EventArgs e)
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 4;
+        MoveArrayToVar(Psloc);    
+    }
+    protected void Button30_Click(object sender, EventArgs e)
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 5;
+        MoveArrayToVar(Psloc);    
+    }
+    protected void Button31_Click(object sender, EventArgs e)
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 6;
+        MoveArrayToVar(Psloc);    
+    }
+    protected void Button32_Click(object sender, EventArgs e)
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 7;
+        MoveArrayToVar(Psloc);    
+    }
+    protected void Button33_Click(object sender, EventArgs e)
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 8;
+        MoveArrayToVar(Psloc);    
+    }
+    protected void Button34_Click(object sender, EventArgs e)
+    {
+        int Psloc = (PageNum - 1) * PageSize + 1;
+        Psloc = Psloc + 9;
+        MoveArrayToVar(Psloc);    
+    }
+
+    public string StrClrAllSpecialChar(string tMPQ)
+    {
+        int lvar41, lvar51;
+        string tmp1 = "";
+
+        if ((tMPQ == null) || (tMPQ == "")) return ("");
+
+        lvar41 = tMPQ.Length;
+
+        for (lvar51 = 0; lvar51 < lvar41; lvar51++)
+        {
+            tmp1 = (tMPQ.Substring(lvar51, 1));
+            // lvar61 = String.Compare(tmp1, "0");
+            // lvar61 = String.Compare(tmp1, "9");
+            if ((tmp1 == "'") || (tmp1 == "&") || (tmp1 == "?") || (tmp1 == "<") )
+            {
+                tMPQ = tMPQ.Substring(0, lvar51) + tMPQ.Substring(lvar51 + 1, lvar41 - lvar51 - 1);
+                lvar41 = tMPQ.Length;
+                lvar51 = -1;  // restart check
+            }
+        }
+
+        if (tMPQ.Length == 0) tMPQ = "";
+
+        return (tMPQ);
+
+    }
+
+} // end class

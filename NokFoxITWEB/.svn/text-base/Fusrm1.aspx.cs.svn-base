@@ -1,0 +1,918 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+//using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Data.SqlClient;
+using Economy.Publibrary;
+using EconomyUser;
+
+//using System.Xml.Linq;
+
+
+public partial class Fbomm11 : System.Web.UI.Page
+{
+    MHDBConn dbc = new MHDBConn();
+    DbAccessing myAccessing = new DbAccessing();
+    public static DataTable dtbom1 = new DataTable();  // Tbale  for Merge data Item+Rev+Desp, Part+Rev+Desp
+    public static DataTable dtbom2 = new DataTable();
+    public static string NetDBPath = "Data Source=10.186.19.104;Initial Catalog=FMRPB1;User ID =sa;Password=Sa123456;Timeout=120;";// ConfigurationManager.AppSettings["DefaultConnectionString"];
+    public static string LocDBPath = "Data Source=127.0.0.1;Initial Catalog=FMRPB1;User ID =sa;Password=sa123456;Timeout=120;";// ConfigurationManager.AppSettings["DefaultConnectionString"];
+    public static string tmpItem      = "";
+    public static string tmpItemRev   = "";
+    public static string LevelItem    = "1";  // 0:Parent, 1:Child
+    public static string tmpPart      = "";
+    public static string tmpPartRev   = "";
+    public static string LevelPart    = "2";
+    public static string tmpQty       = "1";
+    public static string tmpUnit      = "";
+    public static string tmpBeginDate = "";
+    public static string tmpEndDate   = "";
+    public static string tmpDueDate   = "";
+    public static int    DGX_Loc = 1;         // DataGrew X-ray
+    public static int    DGY_Loc = 1;         // DataGrew Y-ray
+    public static int    array1Long = 100000;
+    public static string DBRaedFlag = "";  // Not Read
+    public static string RunDBPath = ConfigurationManager.AppSettings["ConnectionSqlServer"];
+	
+    
+    public static string[,] arrayBOM = new string[100, 3];
+    public static string[,] array1 = new string[array1Long + 1, 15 + 1];
+    public DataSet tmpDataSet;
+    public static int Rec1Long = 0;
+    public static int PageNum = 1;
+    public static int PageSize = 10;
+    public static string FuncFlag = "", CurrUserID="";
+    public string tmpToday = DateTime.Today.ToString("yyyyMMdd");
+    public static string Supervisorflag = "", PassUsrName="", Userflag="";
+
+    ClassLibrarySCM1.Class1 LibSCM1Pointer = new ClassLibrarySCM1.Class1();
+    ClassLibraryUSR1.Class1 LibUSR1Pointer = new ClassLibraryUSR1.Class1();
+    ShipPlanlib ShipPlanlibPointer = new ShipPlanlib();
+    UsrCtllib UsrCtllibPointer = new UsrCtllib();
+    Pictlib PictlibPointer = new Pictlib();
+
+    public static int EBOMM2Long = 0;
+    public static int EBOMM1Long = 0;
+    public static DataSet ds1;
+
+ 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+       
+        if (!IsPostBack)
+        {
+            // PassUsrName = Session["SUsername"].ToString();
+            PassUsrName = Request["SUsername"];
+            if ((PassUsrName != null) && (PassUsrName.ToUpper() == "ADMIN")) Supervisorflag = "Y";
+            else Supervisorflag = "N";
+            InitVar();
+          //  this.probind();
+            this.DropDownList1.Items.Add("1.正常");
+            this.DropDownList1.Items.Add("2.刪除");
+            this.DropDownList1.Items.Add("3.整批拷背");
+            this.DropDownList1.Items.Add("4.整批刪除");
+            this.DropDownList1.Items.Add("5.結案");
+            this.DropDownList1.Items.Add("6.其他");           
+        }
+        else
+        {   
+           
+        }
+                 
+    }
+
+    protected void InitVar()
+    {
+        int v1, v2, v3;
+        string sv1="", sv2="";
+
+
+        for (v1 = 0; v1 < array1Long; v1++)
+            for (v2 = 0; v2 < 15 + 1; v2++)
+                 array1[v1, v2] = "";
+             
+
+        string sql01 = "select * from Fuser1 order by Username ";
+        ds1 = LibSCM1Pointer.GetDataByDataPath(sql01, RunDBPath);
+        if (ds1.Tables.Count <= 0) Rec1Long = 0; // Not Data Response.Write("There are not data in Syncro_4A3 table from coming Para "); //    return;
+        else
+            Rec1Long = ds1.Tables[0].Rows.Count;
+
+
+        for (v1 = 0; v1 < Rec1Long; v1++)
+        {
+            // array1[v1 + 1, 2] = GridView1.Rows[v2].Cells[0].Text;
+            array1[v1 + 1, 1] = v1.ToString();
+            array1[v1 + 1, 2] = ds1.Tables[0].Rows[v1]["UserID"].ToString();
+            array1[v1 + 1, 3] = ds1.Tables[0].Rows[v1]["UserName"].ToString();
+            array1[v1 + 1, 4] = ds1.Tables[0].Rows[v1]["IDCard"].ToString();
+            array1[v1 + 1, 5] = ds1.Tables[0].Rows[v1]["Nation"].ToString();
+            array1[v1 + 1, 6] = ds1.Tables[0].Rows[v1]["Mobile"].ToString();
+            array1[v1 + 1, 7] = ds1.Tables[0].Rows[v1]["Addr1"].ToString();
+            array1[v1 + 1, 8] = ds1.Tables[0].Rows[v1]["passWD"].ToString();
+            array1[v1 + 1, 9] = ds1.Tables[0].Rows[v1]["CheckSumNum"].ToString();
+        }
+
+        PageNum = 1;
+        if ( Supervisorflag == "Y") Showarray1(ref PageNum, ref Rec1Long, ref array1, ref PageSize);
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //  Function Selection 
+    protected void Button22_Click(object sender, EventArgs e)
+    {
+        int v1=0, v2=0, v3=0, v4=0;
+        string fno = FuncFlag, sqlstr="", s1="";
+        FuncFlag = "";  // Get function flag and clear
+
+        if ((fno == "") || (fno == "0") || (TextBox1.Text == "") )
+        {
+            Response.Write("<script>alert('No Data or No Select Function ！ Try Again !')</script>");
+            return;
+        }
+
+        string sw1 = "";  // sw1="1" found in Fbomm1
+        string sw2 = "";  // sw2="1" found parent in Fbomm1
+        // sw1 = ChkFbomm1(TextBox1.Text, TextBox2.Text, TextBox5.Text, TextBox6.Text, array1, Rec1Long);
+        sw2 = Chkarray1(TextBox1.Text, Rec1Long, array1);
+
+        if ((sw2 == "") || (sw2 == "0")) sw1 = "";  // Not-Found 
+        else sw1 = "1";                             // Found 
+
+
+      //  s1 = UsrCtllibPointer.ChkUsr(Username, FPassword, SPassword, PSDB, RunDBPath, "Q");
+
+        tmpItem    = (TextBox1.Text).Trim();
+        tmpItemRev = (TextBox2.Text).Trim();
+        tmpPart    = (TextBox5.Text).Trim();
+        tmpPartRev = (TextBox6.Text).Trim();
+
+        if (fno == "1")
+        {
+            if ((sw1 == "1") || (TextBox1.Text.Length <= 3 ))
+            {
+                Response.Write("<script>alert('This Users already Exist in DB or UserID <= 3, Not Allow Insert')</script>");
+                return;
+            }
+
+            if ( ( TextBox2.Text != TextBox6.Text ) ||  ( TextBox1.Text == TextBox2.Text ) )
+            {
+                Response.Write("<script>alert('Password need confirm twice and User not = Password !  try Again ')</script>");
+                return;
+            }
+            // TextBox2.Text = array1[v1, 3]; // = ds1.Tables[0].Rows[v1]["UserName"].ToString();
+            // TextBox161.Text = array1[v1, 4]; // = ds1.Tables[0].Rows[v1]["IDCard"].ToString();
+            // TextBox5.Text = array1[v1, 5]; //  = ds1.Tables[0].Rows[v1]["Nation"].ToString();
+            // TextBox4.Text = array1[v1, 6]; // = ds1.Tables[0].Rows[v1]["Mobile"].ToString();
+            // TextBox160.Text = array1[v1, 7]; // = ds1.Tables[0].Rows[v1]["Addr1"].ToString();
+            // TextBox3.Text = array1[v1, 8]; // = ds1.Tables[0].Rows[v1]["passWD"].ToString();
+            // TextBox7.Text = array1[v1, 9]; // = ds1.Tables[0].Rows[v1]["CheckSumNum"].ToString();
+            
+            TextBox7.Text = LibUSR1Pointer.Usr1ConvertPS(TextBox1.Text, TextBox2.Text);  // get New Pass CheckSumNum 
+
+            sqlstr = "insert into FUser1 ( UserID, UserName passWD, Mobile, Nation, CheckSumNu, Addr1, IDCard ) "
+            + " values('" + TextBox1.Text + "','" + TextBox3.Text + "', '" + TextBox2.Text + "', '" + TextBox4.Text + "', "
+            + " '" + TextBox5.Text + "', '" + TextBox7.Text + "', '" + TextBox160.Text + "',  '" + TextBox161.Text + "' )";
+
+            v3 = dbc.exeq(sqlstr);
+            if (v3 < 0)
+            {
+                Response.Write("<script>alert(' FUser1添加失敗！')</script>");
+                // this.probind();
+            }
+
+            Response.Write("<script>alert(' FUser1 Insert OK！')</script>");
+           
+            return;
+
+        }  // FuncFalg =="1" end
+
+        if (fno == "2")  // UpDate
+        {
+            if ( ( sw1 == "" ) || (TextBox1.Text != CurrUserID) )
+            {
+                Response.Write("<script>alert('This BOM Not Exist in DB, Not Allow UpDate')</script>");
+                return;
+            }
+
+            tmpItem    = (TextBox1.Text).Trim();
+            tmpItemRev = (TextBox2.Text).Trim();
+            tmpPart    = (TextBox5.Text).Trim();
+            tmpPartRev = (TextBox6.Text).Trim();
+
+            if (TextBox2.Text != "")
+            {
+                s1 = LibUSR1Pointer.Usr1ConvertPS(TextBox1.Text, TextBox2.Text);
+                TextBox7.Text = s1;
+            }
+            else
+            {
+                Response.Write("<script>alert('Password should not be space !')</script>");
+                return;
+            }
+
+            sqlstr = "update FUser1  set UserName = '" + TextBox3.Text + "' , passWD = '" + TextBox2.Text + "', "
+            + " Mobile = '" + TextBox4.Text + "', Nation = '" + TextBox5.Text + "',  CheckSumNum = '" + TextBox7.Text + "', "
+            + " Addr1  = '" + TextBox160.Text + "', IDCard = '" + TextBox161.Text + "'  where UserID =  '" + TextBox1.Text + "'  ";
+
+            dbc.exeq(sqlstr);
+
+            Response.Write("<script>alert('UpDate FUser1 OK !')</script>");
+            return;
+        }
+
+        if (fno == "3")
+        {
+            return;
+            if (sw1 == "")
+            {
+                Response.Write("<script>alert('This BOM Not Exist in DB, Not Allow UpDate')</script>");
+                return;
+            }
+
+            if (GridView1.SelectedIndex < 0)
+            {
+                Response.Write("<script>alert('請先選擇一筆專案 ！')</script>");
+            }
+
+            // sqlstr = "update EBOMM1  set Phase   = '" + DropDownList1.Text + "'  ,ProjectName ='" + TextBox2.Text + "' ,foxconnsite ='" + DropDownList2.Text + "' where Item =  '" + TextBox1.Text + "'".ToString();
+            sqlstr = "update EBOMM1  set Duedate  = '" + tmpToday + "' where Item =  '" + tmpItem + "'  COLLATE Chinese_PRC_CI_AS and Part = '" + tmpPart + "' COLLATE Chinese_PRC_CI_AS"
+            + " and ItemRev =  '" + tmpItemRev + "' COLLATE Chinese_PRC_CI_AS and Partrev = '" + tmpPartRev + "' COLLATE Chinese_PRC_CI_AS ";
+
+            dbc.exeq(sqlstr);
+
+            Response.Write("<script>alert('DueDate BOM OK !')</script>");
+            // TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;  
+            GridView1.Rows[DGY_Loc].Cells[3].Text = TextBox4.Text;  // QTY
+            return;
+        }
+
+        if (fno == "4")
+        {
+            if ( (sw1 == "") || (TextBox1.Text != CurrUserID) ) 
+            {
+                Response.Write("<script>alert('This BOM Not Exist in DB, Not Allow UpDate')</script>");
+                return;
+            }
+
+            if (Supervisorflag != "Y") return;
+            {
+                Response.Write("<script>alert('You Need To SetUp Delete Function！')</script>");
+                return;
+            }
+
+            sqlstr = "Delete FUser1 where UserID =  '" + TextBox1.Text + "'  ";
+
+            dbc.exeq(sqlstr);
+
+            DropDownList1.Text = "1.正常";
+            Response.Write("<script>alert('Delete FUser1 OK !')</script>");
+            // TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;  
+            GridView1.Rows[DGY_Loc].Cells[3].Text = TextBox4.Text;  // QTY
+            return;
+        }
+
+        if ( fno == "5")
+        {
+            return;
+            string sw3 = "", sw4="";
+            if (sw1 == "")
+            {
+                Response.Write("<script>alert('This Users Not Exist in DB, Not Allow UpDate')</script>");
+                return;
+            }
+
+        
+     //       sw2 = ChkFinvm1(TextBox160.Text, TextBox161.Text, dsbom2);  // Check need in Jinvm1
+            if (sw2 == "")  // Not In Jinvm1
+            {
+                Response.Write("<script>alert('This Part not exist in Dbase Finvm1 ！')</script>");
+                return;
+            }
+
+          //  sw3 = ChkFbomm1Parent(TextBox160.Text, TextBox161.Text, TextBox5.Text, TextBox6.Text, array1, Rec1Long); // Check need not in Fbomm1
+            if (sw3 == "1")  // Not In Jbomm1 Parent
+            {
+                Response.Write("<script>alert('This Part not allow exist in Dbase Fbomm1 ！')</script>");
+                return;
+            }
+
+            v2=0;
+            for (v1 = 1; v1 < EBOMM1Long+1 ; v1++)
+                 if ((TextBox1.Text == array1[v1, 2]) && (TextBox2.Text == array1[v1, 3])) v2++;
+
+            sw4 = v2.ToString();
+            
+            Response.Write("<script>alert('This Copy Bom is in Dbase Fbomm1 OK ！') </script>");
+            // Response.Write("<script>alert('Update 4A3_Detail 新增失敗，請稍后重試！ '" + sw4 + "' ') /script>" );
+                                                
+                      
+            v3 = 0;
+            for (v1 = 1; v1 < EBOMM1Long + 1; v1++)
+            {
+                if ((TextBox1.Text == array1[v1, 2]) && (TextBox2.Text == array1[v1, 3]))
+                {
+                    sqlstr = "insert into Ebomm1 ( DocumentId, Item, ItemRev, Part, PartRev, CItemRev, QTY, Unit, "
+                    + " Level, Location, BeginDate, EndDate, DueDate) values('" + TextBox160.Text + "','" + TextBox160.Text + "','" + TextBox161.Text + "', "
+                    + " '" + array1[v1, 4] + "', '" + array1[v1, 5] + "', '" + array1[v1, 5] + "', '" + array1[v1, 6] + "', 'PC', "
+                    + " '1', '" + array1[v1, 9] + "',  '" + tmpToday + "', '', '' )";
+                   
+                    v3 = dbc.exeq(sqlstr);
+                    if ( v3 < 0)
+                    {
+                        Response.Write("<script>alert(' Fbomm1添加失敗！')</script>");
+                        // this.probind();
+                    }
+                }
+            }  
+           
+        } // end switch 5 Copy BOM
+
+
+    }  // end function confirm
+          
+    
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+        FuncFlag = "1";
+    }
+
+
+    protected void ImageButton2_Click(object sender, GridViewDeleteEventArgs e)
+    {
+        //int ind = Convert.ToInt32(this.GridView1.Rows[ind].Cells[6].Text);
+       // int ind = Convert.ToInt32(((ImageButton)sender).CommandArgument);
+        string ProjectNO = this.GridView1.DataKeys[e.RowIndex].Value.ToString();
+
+        string sqlstr;
+        string Keyint = this.GridView1.Rows[e.RowIndex].Cells[3].Text;
+        if (Keyint == "N".ToString())
+        {
+            sqlstr = "update Ebommm1 set pro_close='Y' where ProjectNO =  '" + ProjectNO + "'".ToString();
+        }
+        else
+        {
+            sqlstr = "update Ebommm1 set pro_close='N' where ProjectNO =  '" + ProjectNO + "'".ToString();
+        }
+
+
+        dbc.exeq(sqlstr);
+        this.GridView1.EditIndex = -1;
+        this.probind();
+    }
+  
+    protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+ 
+ 
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            //int ind = Convert.ToInt32(GridView1.DataKeys[e.Row.RowIndex].Value);
+             
+          //  string id = this.GridView1.Rows[1].Cells[3].Text;
+    //         string ind = GridView1.DataKeys[e.Row.RowIndex].Value.ToString(); 
+             
+
+            if (((ImageButton)e.Row.Cells[4].FindControl("ibtnDelete")) != null)
+            {
+                ((ImageButton)e.Row.Cells[4].FindControl("ibtnDelete")).CommandArgument = e.Row.RowIndex.ToString();
+
+                if (e.Row.Cells[3].Text  == "N".ToString())
+                { 
+                    ((ImageButton)e.Row.Cells[4].FindControl("ibtnDelete")).OnClientClick = "return confirm('" + "當前專案數據將被結案".ToString() + "')"; 
+                }
+                else 
+                {
+                    ((ImageButton)e.Row.Cells[4].FindControl("ibtnDelete")).OnClientClick = "return confirm('" + "當前專案數據將被反結案".ToString() + "')";
+                }
+
+                
+            }             
+        }
+    }
+
+
+
+    public void probind()
+    {
+        string str1 = "";
+                
+        string sqlstr = " Select a.*, substring(b.EngDescription,1,20) Desp1, substring(c.EngDescription,1,20) Desp2 From EBOMM1 a, EBOMM2 b, EBOMM2 c "
+        + " where (a.Item = b.Item COLLATE Chinese_PRC_CI_AS and a.ItemRev = b.ItemRev COLLATE Chinese_PRC_CI_AS) and  (a.Part = c.Item COLLATE Chinese_PRC_CI_AS and a.PartRev = c.ItemRev COLLATE Chinese_PRC_CI_AS) " 
+        + " order by a.Item, a.ItemRev, a.Part, a.PartRev ";
+        // string sqlstr = " Select a.*, b.EngDescription EngDescription From EBOMM1 a, EBOMM2 b where a.Item = b.Item order by a.Item, a.Part ";
+        dtbom1 = myAccessing.ExecuteSqlTable(sqlstr);
+        this.GridView1.DataSource = dtbom1;
+        this.GridView1.DataBind();
+
+        Rec1Long = dtbom1.Rows.Count;
+        // str1 = Get_EBOMM2Desp(dt, tmpDataSet);
+    }
+
+    // protected void pageindexchange(object sender, GridViewPageEventArgs e)
+    // {
+    //    this.GridView1.PageIndex = e.NewPageIndex;
+    //    this.GridView1.DataSource = dtbom1;
+    //    this.GridView1.DataBind();
+    //    // Rec1Long = dtbom1.Rows.Count; 
+    // }
+
+    protected void GridView1_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+    {
+        GridView1.SelectedIndex = e.NewSelectedIndex;
+        DGY_Loc = e.NewSelectedIndex;
+
+        TextBox1.Text = GridView1.Rows[e.NewSelectedIndex].Cells[0].Text;   // Item
+        TextBox2.Text = GridView1.Rows[e.NewSelectedIndex].Cells[1].Text;   // ItemRev
+        TextBox5.Text = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;   // Part
+        TextBox6.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;   // PartRev
+        TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[4].Text;   // Qty
+        TextBox3.Text = GridView1.Rows[e.NewSelectedIndex].Cells[6].Text;   // Location
+        TextBox7.Text = GridView1.Rows[e.NewSelectedIndex].Cells[7].Text;   // DocumentID, Item Desp
+
+
+        tmpQty     = GridView1.Rows[e.NewSelectedIndex].Cells[4].Text;   // QTY
+        tmpItem    = GridView1.Rows[e.NewSelectedIndex].Cells[0].Text;   // Item
+        tmpItemRev = GridView1.Rows[e.NewSelectedIndex].Cells[1].Text;   // ItemRev
+        tmpPart    = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;   // Part
+        tmpPartRev = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;   // PartRevY
+        
+        // 20100909 DropDownList1.Text = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;
+        //Label1.Text = GridView1.Rows[e.NewSelectedIndex].Cells[5].Text;
+        //Label2.Text = GridView1.Rows[e.NewSelectedIndex].Cells[6].Text;
+        ////Label3.Text =  GridView1.Rows[e.NewSelectedIndex].Cells[6].Text;
+
+
+        //TextBox15.Text = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;
+
+        if ( DBRaedFlag == "A") 
+        {
+             probind();
+             GridView1.Rows[e.NewSelectedIndex].BackColor = System.Drawing.Color.Bisque;  
+        }
+
+    }
+
+    // protected void GridView2_SelectedIndexChanged(object sender, EventArgs e)
+    protected void GridView2_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+    {
+        GridView2.SelectedIndex = e.NewSelectedIndex;
+        DGY_Loc = e.NewSelectedIndex;
+
+        LevelItem = GridView2.Rows[e.NewSelectedIndex].Cells[4].Text;
+
+        if (LevelItem == "0") // Parent
+        {
+            TextBox1.Text = GridView2.Rows[e.NewSelectedIndex].Cells[0].Text;
+            TextBox2.Text = GridView2.Rows[e.NewSelectedIndex].Cells[1].Text;
+            tmpItem       = TextBox1.Text;
+            tmpItemRev    = TextBox2.Text;
+        }
+        else  // Child 
+        {
+            TextBox5.Text = GridView2.Rows[e.NewSelectedIndex].Cells[0].Text;
+            TextBox6.Text = GridView2.Rows[e.NewSelectedIndex].Cells[1].Text;
+            tmpPart       = TextBox5.Text;
+            tmpPartRev    = TextBox6.Text;
+        }
+
+        // TextBox2.Text = GridView1.Rows[e.NewSelectedIndex].Cells[1].Text;
+        // TextBox3.Text = GridView1.Rows[e.NewSelectedIndex].Cells[2].Text;
+        // TextBox4.Text = GridView1.Rows[e.NewSelectedIndex].Cells[3].Text;  // QTY
+     
+        if (DBRaedFlag == "A")
+        {
+            probind();
+            GridView1.Rows[e.NewSelectedIndex].BackColor = System.Drawing.Color.Bisque;
+        }
+
+    }
+
+    protected void Button3_Click(object sender, EventArgs e)
+    {
+        FuncFlag = "2";        
+    }
+    
+    private string Get_EBOMM1(int EBOMM1Long, DataSet tdsbom1, int EBOMM2Long, DataSet tdsbom2, string [,] array1 )
+    {
+        // GridView1.AllowPaging = false;
+
+        string s1, s2, s3, s4, tmpDesp = "";
+        int v1, v2, v3 = 0, v4=0, v5, v6;
+
+        for (v1 = 0; v1 < EBOMM1Long ; v1++)
+        {
+            // array1[v1 + 1, 2] = GridView1.Rows[v2].Cells[0].Text;
+            array1[v1 + 1, 1] = v1.ToString();
+            array1[v1 + 1, 2] = tdsbom1.Tables[0].Rows[v1]["Item"].ToString();
+            array1[v1 + 1, 3] = tdsbom1.Tables[0].Rows[v1]["ItemRev"].ToString();
+            array1[v1 + 1, 4] = tdsbom1.Tables[0].Rows[v1]["Part"].ToString();
+            array1[v1 + 1, 5] = tdsbom1.Tables[0].Rows[v1]["PartRev"].ToString();
+            array1[v1 + 1, 6] = tdsbom1.Tables[0].Rows[v1]["Qty"].ToString();
+            array1[v1 + 1, 7] = ""; // Desp
+            array1[v1 + 1, 8] = ""; // Part Desp tdsbom1.Tables[0].Rows[v1]["Part"].ToString(); 
+            array1[v1 + 1, 9] = tdsbom1.Tables[0].Rows[v1]["Location"].ToString();
+
+            v5 = 0;
+            v6 = 0;
+
+            for (v2 = 0; v2 < EBOMM2Long ; v2++)  // load in memory
+            {
+                s1 = tdsbom2.Tables[0].Rows[v2]["Item"].ToString();
+                s2 = tdsbom2.Tables[0].Rows[v2]["ItemRev"].ToString();
+                tmpDesp = tdsbom2.Tables[0].Rows[v2]["EngDescription"].ToString();
+                if ((s1 == tdsbom1.Tables[0].Rows[v1]["Item"].ToString()) && (s2 == tdsbom1.Tables[0].Rows[v1]["ItemRev"].ToString()))
+                {
+                    // GridView1.Rows[v2].Cells[5].Text = tmpDesp;
+                    array1[v1 + 1, 7] = tmpDesp;                   
+                    v3++;
+                    v5++;
+                }
+                
+                if ((s1 == tdsbom1.Tables[0].Rows[v1]["Part"].ToString()) && (s2 == tdsbom1.Tables[0].Rows[v1]["PartRev"].ToString()))
+                {
+                    // GridView1.Rows[v2].Cells[5].Text = tmpDesp;
+                    array1[v1 + 1, 8] = tmpDesp;
+                    v4++;
+                    v6++;
+                }
+
+                if ((v5 > 0) && (v6 > 0)) v2 = EBOMM2Long + 1;
+
+            } // end EBOMM2Long + 1
+        }
+
+        return ( v3.ToString() );
+    }
+
+    // sv1 = Showarray1(ref PageNum, ref Rec1Long, ref array1, ref PageSize);
+    private string Showarray1(ref int PageNum, ref int Rec1Long, ref string[,] array1, ref int PageSize)
+    {
+        int sloc = (PageNum-1) * PageSize + 1;
+
+        
+        if ( ( sloc > Rec1Long) || ( sloc <= 0 ) )
+        {
+            sloc = 1;
+            PageNum = 1;
+        }
+
+        Button21.Text = PageNum.ToString();
+        TextBox8.Text  = array1[sloc, 2].ToString();
+        TextBox9.Text  = array1[sloc, 3].ToString();
+        TextBox10.Text = array1[sloc, 4].ToString();
+        TextBox11.Text = array1[sloc, 5].ToString();
+        TextBox12.Text = array1[sloc, 6].ToString();
+        TextBox13.Text = array1[sloc, 7].ToString();
+        TextBox14.Text = array1[sloc, 8].ToString();
+        TextBox15.Text = array1[sloc, 9].ToString();
+        sloc++;
+        TextBox25.Text = array1[sloc, 2].ToString();
+        TextBox26.Text = array1[sloc, 3].ToString();
+        TextBox27.Text = array1[sloc, 4].ToString();
+        TextBox28.Text = array1[sloc, 5].ToString();
+        TextBox29.Text = array1[sloc, 6].ToString();
+        TextBox30.Text = array1[sloc, 7].ToString();
+        TextBox31.Text = array1[sloc, 8].ToString();
+        TextBox32.Text = array1[sloc, 9].ToString();
+        sloc++;
+        TextBox40.Text = array1[sloc, 2].ToString();
+        TextBox41.Text = array1[sloc, 3].ToString();
+        TextBox42.Text = array1[sloc, 4].ToString();
+        TextBox43.Text = array1[sloc, 5].ToString();
+        TextBox44.Text = array1[sloc, 6].ToString();
+        TextBox45.Text = array1[sloc, 7].ToString();
+        TextBox46.Text = array1[sloc, 8].ToString();
+        TextBox47.Text = array1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox55.Text = array1[sloc, 2].ToString();
+        TextBox56.Text = array1[sloc, 3].ToString();
+        TextBox57.Text = array1[sloc, 4].ToString();
+        TextBox58.Text = array1[sloc, 5].ToString();
+        TextBox59.Text = array1[sloc, 6].ToString();
+        TextBox60.Text = array1[sloc, 7].ToString();
+        TextBox61.Text = array1[sloc, 8].ToString();
+        TextBox62.Text = array1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox70.Text = array1[sloc, 2].ToString();
+        TextBox71.Text = array1[sloc, 3].ToString();
+        TextBox72.Text = array1[sloc, 4].ToString();
+        TextBox73.Text = array1[sloc, 5].ToString();
+        TextBox74.Text = array1[sloc, 6].ToString();
+        TextBox75.Text = array1[sloc, 7].ToString();
+        TextBox76.Text = array1[sloc, 8].ToString();
+        TextBox77.Text = array1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox85.Text = array1[sloc, 2].ToString();
+        TextBox86.Text = array1[sloc, 3].ToString();
+        TextBox87.Text = array1[sloc, 4].ToString();
+        TextBox88.Text = array1[sloc, 5].ToString();
+        TextBox89.Text = array1[sloc, 6].ToString();
+        TextBox90.Text = array1[sloc, 7].ToString();
+        TextBox91.Text = array1[sloc, 8].ToString();
+        TextBox92.Text = array1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox100.Text = array1[sloc, 2].ToString();
+        TextBox101.Text = array1[sloc, 3].ToString();
+        TextBox102.Text = array1[sloc, 4].ToString();
+        TextBox103.Text = array1[sloc, 5].ToString();
+        TextBox104.Text = array1[sloc, 6].ToString();
+        TextBox105.Text = array1[sloc, 7].ToString();
+        TextBox106.Text = array1[sloc, 8].ToString();
+        TextBox107.Text = array1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox115.Text = array1[sloc, 2].ToString();
+        TextBox116.Text = array1[sloc, 3].ToString();
+        TextBox117.Text = array1[sloc, 4].ToString();
+        TextBox118.Text = array1[sloc, 5].ToString();
+        TextBox119.Text = array1[sloc, 6].ToString();
+        TextBox120.Text = array1[sloc, 7].ToString();
+        TextBox121.Text = array1[sloc, 8].ToString();
+        TextBox122.Text = array1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox130.Text = array1[sloc, 2].ToString();
+        TextBox131.Text = array1[sloc, 3].ToString();
+        TextBox132.Text = array1[sloc, 4].ToString();
+        TextBox133.Text = array1[sloc, 5].ToString();
+        TextBox134.Text = array1[sloc, 6].ToString();
+        TextBox135.Text = array1[sloc, 7].ToString();
+        TextBox136.Text = array1[sloc, 8].ToString();
+        TextBox137.Text = array1[sloc, 9].ToString();
+
+        sloc++;
+        TextBox145.Text = array1[sloc, 2].ToString();
+        TextBox146.Text = array1[sloc, 3].ToString();
+        TextBox147.Text = array1[sloc, 4].ToString();
+        TextBox148.Text = array1[sloc, 5].ToString();
+        TextBox149.Text = array1[sloc, 6].ToString();
+        TextBox150.Text = array1[sloc, 7].ToString();
+        TextBox151.Text = array1[sloc, 8].ToString();
+        TextBox152.Text = array1[sloc, 9].ToString();
+
+
+        return("Y");
+    }
+
+    private string Get_EBOMM2Desp(DataTable tst1, DataSet tds1)
+    {
+        // GridView1.AllowPaging = false;
+        
+        string s1, s2, s3, s4, tmpDesp="";
+        int v1, v2=0;
+        // for (v2 = 0; v2 < Rec1Long; v2++)
+        for (v2 = 0; v2 < 16; v2++)
+        {   
+            s3 = GridView1.Rows[v2].Cells[0].Text;
+            s4 = GridView1.Rows[v2].Cells[1].Text;
+            for  (v1 = 0; v1 < EBOMM2Long + 1; v1++)  // load in memory
+            {
+                 s1 = tds1.Tables[0].Rows[v1]["Item"].ToString();
+                 s2 = tds1.Tables[0].Rows[v1]["ItemRev"].ToString();
+                 tmpDesp = tds1.Tables[0].Rows[v1]["EngDescription"].ToString();
+                 if (( s3 == tds1.Tables[0].Rows[v1]["Item"].ToString()) && ( s4 == tds1.Tables[0].Rows[v1]["ItemRev"].ToString()))
+                 {
+                    tmpDesp = tds1.Tables[0].Rows[v1]["EngDescription"].ToString();
+                    GridView1.Rows[v2].Cells[5].Text = tmpDesp;
+                    // GridView1.Tables[DGY_Loc].["DocumentID"].Text = tmpDesp;
+                    v1 = EBOMM2Long + 1;
+                 }
+            } // end EBOMM2Long + 1
+        }              
+
+        return (tmpDesp);
+    }
+
+    protected void Button8_Click(object sender, EventArgs e)
+    {
+        string t1 = "", t2 = "";
+
+        Userflag = "N";
+        CurrUserID="";
+        if ( TextBox1.Text == "") return;
+              
+        int v1=0, v2=0, v3=0, v4=0;
+        string s1 = "", s2 = "", s3 = "", s4 = "";
+        s1 = Chkarray1( TextBox1.Text, Rec1Long, array1);
+
+        if ( (s1 == "") || (s1 == "0")) return;
+
+        t1=TextBox2.Text; // = ds1.Tables[0].Rows[v1]["passWD"].ToString();
+        t2=TextBox7.Text; // = ds1.Tables[0].Rows[v1]["CheckSumNum"].ToString();
+
+        v1= Convert.ToInt32(s1);
+
+        if (t1 != array1[v1, 8])
+        {
+            Response.Write("<script>alert('Password Error！ Try Again !')</script>");
+            return;
+        } 
+
+        CurrUserID      = array1[v1, 2]; // = ds1.Tables[0].Rows[v1]["UserID"].ToString();
+        TextBox3.Text   = array1[v1, 3]; // = ds1.Tables[0].Rows[v1]["UserName"].ToString();
+        TextBox161.Text = array1[v1, 4]; // = ds1.Tables[0].Rows[v1]["IDCard"].ToString();
+        TextBox5.Text   = array1[v1, 5]; //  = ds1.Tables[0].Rows[v1]["Nation"].ToString();
+        TextBox4.Text   = array1[v1, 6]; // = ds1.Tables[0].Rows[v1]["Mobile"].ToString();
+        TextBox160.Text = array1[v1, 7]; // = ds1.Tables[0].Rows[v1]["Addr1"].ToString();
+        TextBox2.Text   = array1[v1, 8]; // = ds1.Tables[0].Rows[v1]["passWD"].ToString();
+        TextBox7.Text   = array1[v1, 9]; // = ds1.Tables[0].Rows[v1]["CheckSumNum"].ToString();
+
+        Userflag  = "Y";          
+    }
+    
+
+    public static DataSet PGetDataByDataPath(string sql, string DataPath)
+    {
+        string ConnString = RunDBPath;
+        if (DataPath != "") ConnString = DataPath.ToString();
+
+        SqlConnection scnn = new SqlConnection(ConnString);
+        DataSet ds = new DataSet();
+        try
+        {
+            scnn.Open();
+            SqlCommand scmm = new SqlCommand(sql, scnn);
+
+            SqlDataAdapter sdapter = new SqlDataAdapter(scmm);
+            sdapter.SelectCommand.CommandTimeout = 300;
+            sdapter.Fill(ds);
+            return ds;
+        }
+        // catch (Exception ex)
+        // {
+        //    throw ex;
+        // }
+        catch
+        {
+            return ds;
+        }
+        finally
+        {
+            scnn.Close();
+        }
+    }  // PGetDataByPara end
+
+    protected void GridView2_SelectedIndexChanged(object sender, GridViewPageEventArgs e)
+    {
+         this.GridView2.PageIndex = e.NewPageIndex;
+         this.GridView2.DataSource = dtbom2;
+         this.GridView2.DataBind();
+    }
+    protected void TextBox3_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void GridView2_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        this.GridView2.PageIndex = e.NewPageIndex;
+        this.GridView2.DataSource = dtbom2;
+        this.GridView2.DataBind();
+    }
+
+    protected void GridView1_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        this.GridView1.PageIndex = e.NewPageIndex;
+        this.GridView1.DataSource = dtbom1;
+        this.GridView1.DataBind();
+    }
+
+
+    protected void Button19_Click(object sender, EventArgs e)
+    {
+        if (Supervisorflag != "Y") return;
+
+        string sv1 = "";
+        PageNum++;
+        PageSize = 10;
+        // sv1 = ShowEBOMM1(ref PageNum, ref EBOMM1Long, ref array1, ref PageSize);
+        sv1 = Showarray1(ref PageNum, ref Rec1Long, ref array1, ref PageSize);
+    }
+    protected void Button20_Click(object sender, EventArgs e)
+    {
+        if (Supervisorflag != "Y") return;
+        string sv1 = "";
+        PageNum--;
+
+        if (PageNum <= 0) PageNum = 0;
+
+        // sv1 = ShowEBOMM1(ref PageNum, ref EBOMM1Long, ref array1, ref PageSize);
+        sv1 = Showarray1(ref PageNum, ref Rec1Long, ref array1, ref PageSize);
+
+    }
+
+    public string ChkFbomm1( string tItem, string tItemRev, string tPart, string tPartRev, string [,] tarray1, int tRec1Long)
+    {
+        int v1 = 0;
+        string tsw = "";
+
+        for (v1 = 1; v1 < tRec1Long + 1; v1++)
+        {
+            if ((tItem == tarray1[v1, 2]) && (tItemRev == tarray1[v1, 3]) && (tPart == tarray1[v1, 4]) && (tPartRev == tarray1[v1, 5]))
+            {
+                tsw = "1";
+                v1 = Rec1Long + 1; // break
+            }
+        }
+
+        return ( tsw );
+
+    }
+
+    public string Chkarray1(string tcheckitem, int tRec1Long, string[,] tarray1)
+    {
+        int v1 = 0;
+        string tsw = "0";
+
+        for (v1 = 1; v1 < tRec1Long + 1; v1++)
+        {
+            if ( tcheckitem == tarray1[v1, 2]) 
+            {
+                tsw = v1.ToString();
+                v1 = Rec1Long + 1; // break
+            }
+        }
+
+        return (tsw);
+
+    }
+
+    public string ChkFbomm1Parent(string tItem, string tItemRev, string tPart, string tPartRev, string[,] tarray1, int tRec1Long)
+    {
+        int v1 = 0;
+        string tsw = "";
+
+        for (v1 = 1; v1 < tRec1Long + 1; v1++)
+        {
+            if ((tItem == tarray1[v1, 2]) && (tItemRev == tarray1[v1, 3]) )
+            {
+                tsw = "1";
+                v1 = Rec1Long + 1; // break
+            }
+        }
+
+        return (tsw);
+
+    }
+    
+    private string ChkFinvm1(string P1, string C1, DataSet tds1)
+    {
+        // GridView1.AllowPaging = false;
+
+        string s1, s2, s3 = "";
+        int v1, v2 = 0;
+        
+        for (v1 = 0; v1 < EBOMM2Long; v1++)  // load in memory
+        {
+                s1 = tds1.Tables[0].Rows[v1]["Item"].ToString();
+                s2 = tds1.Tables[0].Rows[v1]["ItemRev"].ToString();
+                if ((P1 == s1) && (C1 == s2))
+                {
+                    s3 = "1";
+                    v1 = EBOMM2Long + 1;
+                }
+        } // end EBOMM2Long + 1
+        
+
+        return (s3);
+    }
+
+    protected void Button4_Click(object sender, EventArgs e)
+    {
+        FuncFlag = "3";
+    }
+    protected void Button5_Click(object sender, EventArgs e)
+    {
+
+        FuncFlag = "4";
+        Response.Write("<script>alert(' Be careful of Delete Bom, Press EcecAct ')</script>");
+    }
+    protected void Button6_Click(object sender, EventArgs e)
+    {
+        FuncFlag = "5";
+
+    }
+
+    protected void Button10_Click(object sender, EventArgs e)
+    {
+        Response.Write("<script language='javascript'>window.showModelessDialog('Finvm1.aspx', 'window', 'dialogWidth:800px;dialogHeight:600px;center:1;dialogLeft:200;dialogTop:100;dialogHide:1;edge:raised;help:1;resizable:1;scroll:1;status:1;unadorned:1');</script> ");
+       
+    }
+    
+    protected void Button24_Click(object sender, EventArgs e)
+    {
+        InitVar();
+    }
+}

@@ -1,0 +1,33 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Web.Master" AutoEventWireup="true" CodeFile="TestStandByInsert.aspx.cs" Inherits="StandByInsert" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+        <div> 
+                 <table class="style1">
+            <tr>
+                <td class="style3">
+                    <b>
+                    <asp:Label ID="Label6" runat="server" Text="備份Head表數據：" Visible="True"></asp:Label>
+                    </b></td>
+                <td class="style4">
+                    <b>
+                    <asp:Label ID="Label7" runat="server" Text="還原Head表數據：" Visible="True"></asp:Label>
+                    </b></td>
+            </tr>
+            <tr>
+                <td class="style3" style="vertical-align: top" >
+                    <asp:Button ID="btnInsert" runat="server" Text="Insert" 
+                        onclick="btnInsert_Click" />
+                </td>
+                <td style=" vertical-align: top;" class="style4">
+       
+                    <asp:Button ID="btnrestore" runat="server" Text="Restore" />
+                </td>
+            </tr>
+        </table>
+
+</div>
+</asp:Content>
+

@@ -1,0 +1,71 @@
+2011/08/04 10:12:11 || [CheckPO] 81975454
+2011/08/04 10:13:16 || [CheckPO] 81975386
+2011/08/04 11:19:09 || [ERROR] ORA-01017: ¨Ï¥ÎªÌ¦WºÙ/±K½XµL®Ä; µLªkµn¤J
+:COracleDB()
+2011/08/04 11:19:09 || [ERROR] ORA-01017: ¨Ï¥ÎªÌ¦WºÙ/±K½XµL®Ä; µLªkµn¤J
+:GetDataReader()
+2011/08/04 11:19:09 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 11:21:07 || [ERROR] ORA-00942: ªí©Î‰y¹Ï¤£¦s¦b
+:GetDataReader()
+2011/08/04 11:21:07 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 11:23:54 || [ERROR] ORA-00942: ªí©Î‰y¹Ï¤£¦s¦b
+:GetDataReader()
+2011/08/04 11:23:54 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 11:26:20 || [ERROR] ORA-00942: ªí©Î‰y¹Ï¤£¦s¦b
+:GetDataReader()
+2011/08/04 11:26:20 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 11:30:06 || [SUCCEED] create file C:\mcms\upd_service\to_be_processed\AS_FIHTJ_UPD_IMEI_2011_08_04_11_29_38_1.dat
+2011/08/04 11:36:15 || [SUCCEED] create file C:\mcms\upd_service\to_be_processed\AS_FIHTJ_UPD_IMEI_2011_08_04_11_29_38_1.dat
+2011/08/04 11:37:58 || [ERROR] upload file ¨t²Î§ä¤£¨ì«ü©wªºÀÉ®×¡C
+2011/08/04 11:38:18 || [ERROR] upload file ¨t²Î§ä¤£¨ì«ü©wªºÀÉ®×¡C
+2011/08/04 11:38:39 || [ERROR] upload file ¨t²Î§ä¤£¨ì«ü©wªºÀÉ®×¡C
+2011/08/04 11:38:39 || [ERROR] upload 81965773 failed
+2011/08/04 11:38:39 || [SUCCEED] end
+2011/08/04 11:40:19 || [ERROR] ORA-00942: ªí©Î‰y¹Ï¤£¦s¦b
+:GetDataReader()
+2011/08/04 11:40:19 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 11:40:41 || [repeat] 81971219
+2011/08/04 12:09:25 || [ERROR] ORA-00942: ªí©Î‰y¹Ï¤£¦s¦b
+:GetDataReader()
+2011/08/04 12:09:25 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 12:09:48 || [repeat] 81969978
+2011/08/04 12:11:45 || [SUCCEED] create file C:\mcms\upd_service\to_be_processed\AS_FIHTJ_UPD_IMEI_2011_08_04_12_11_40_1.dat
+2011/08/04 12:14:33 || [IMEISUCCESS] 81969978
+2011/08/04 12:18:15 || [ERROR] ORA-00942: ªí©Î‰y¹Ï¤£¦s¦b
+:GetDataReader()
+2011/08/04 12:18:15 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 12:19:34 || [ERROR] ORA-00942: ªí©Î‰y¹Ï¤£¦s¦b
+:GetDataReader()
+2011/08/04 12:19:34 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 12:19:53 || [CheckPO] 86004586
+2011/08/04 12:21:08 || [ERROR] ORA-00942: ªí©Î‰y¹Ï¤£¦s¦b
+:GetDataReader()
+2011/08/04 12:21:08 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 12:21:33 || [repeat] 86004592
+2011/08/04 12:22:57 || [SUCCEED] create file c:\mcms\upd_service\to_be_processed\AS_FIHTJ_UPD_MEID_2011_08_04_12_22_43_1.dat
+2011/08/04 12:27:31 || [SUCCEED] create file c:\mcms\gfs\to_be_processed\PROG_V01_FIHTJ_20110804122730_86004592-068.dat
+2011/08/04 12:27:31 || [ERROR] AddMail CommandText property has not been initialized.
+2011/08/04 12:27:31 || [ERROR] upload file ¨t²Î§ä¤£¨ì«ü©wªºÀÉ®×¡C
+2011/08/04 12:27:51 || [ERROR] upload file ¨t²Î§ä¤£¨ì«ü©wªºÀÉ®×¡C
+2011/08/04 12:28:11 || [ERROR] upload file ¨t²Î§ä¤£¨ì«ü©wªºÀÉ®×¡C
+2011/08/04 12:28:11 || [ERROR] upload 86004592 failed
+2011/08/04 12:28:11 || [SUCCEED] end
+2011/08/04 12:31:52 || [ERROR] ORA-00942: ªí©Î‰y¹Ï¤£¦s¦b
+:GetDataReader()
+2011/08/04 12:31:52 || [ERROR] UPDAlarm_Load->GetDataReader:Cannot find table 0.
+2011/08/04 12:32:17 || [repeat] 86004588
+2011/08/04 12:33:15 || [SUCCEED] create file c:\mcms\upd_service\to_be_processed\AS_FIHTJ_UPD_MEID_2011_08_04_12_33_11_1.dat
+2011/08/04 12:38:40 || [ERROR] AddMail CommandText property has not been initialized.
+2011/08/04 13:07:29 || [CheckPO] 81975454
+2011/08/04 13:12:24 || [CheckPO] 81975454
+2011/08/04 13:25:12 || [CheckPO] 81975464
+2011/08/04 13:40:52 || [ERROR] ORA-00904: "COUNTRE": ¼ÐÃÑ²ÅüÓ®Ä
+:GetDataReader()
+2011/08/04 13:40:52 || [ERROR] Checkrepeat Object reference not set to an instance of an object.
+2011/08/04 13:47:19 || [ERROR] ORA-00904: "COUNTRE": ¼ÐÃÑ²ÅüÓ®Ä
+:GetDataReader()
+2011/08/04 13:47:19 || [ERROR] Checkrepeat Object reference not set to an instance of an object.
+2011/08/04 14:30:57 || [ERROR] ORA-00904: "COUNTRE": ¼ÐÃÑ²ÅüÓ®Ä
+:GetDataReader()
+2011/08/04 14:30:57 || [ERROR] Checkrepeat Object reference not set to an instance of an object.
+2011/08/04 14:33:18 || [IMEISUCCESS] 81975416

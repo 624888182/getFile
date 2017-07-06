@@ -1,0 +1,738 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Data.OracleClient;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+using System.IO;
+using System.Windows.Forms;
+using System.Data.OleDb;
+using System.ComponentModel;
+using System.Drawing;
+using System.Text;
+using System.Threading;
+using System.Collections.Generic;
+
+public partial class Check_Data : System.Web.UI.Page
+{
+    public static readonly string UPLOAD_DIR = @"D:\UPLOAD";
+    public static readonly string[] TableName = { "SFC.R_WIP_TRACKING_T",
+                                                   "SFC.R_WIP_TRACKING_T_PID", 
+                                                   "SFC.MES_ASSY_HISTORY",
+                                                   "SFC.MES_ASSY_PID_JOIN", 
+                                                   "SFC.MES_ASSY_WIP",
+                                                   "SFC.MES_PCBA_HISTORY",
+                                                   "TESTINFO.TESTINFO_HEAD",
+                                                   "SHP.ROS_TCH_PN",
+                                                   "SHP.CMCS_SFC_AORDER" };
+
+    string[] filesName = Directory.GetFiles(UPLOAD_DIR);
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!Page.IsPostBack)
+        {
+            if (Directory.Exists(UPLOAD_DIR))
+            {
+                Directory.CreateDirectory(UPLOAD_DIR);
+            }
+            flash();
+        }
+    }
+
+    private void flash()
+    {
+        
+    }
+
+    protected void btnCheckData_Click(object sender, EventArgs e)
+    {
+        this.btnUpLoad.Enabled = false;
+        this.lblResult.Text = "";
+        List<string> FileName = GetDirFiles(UPLOAD_DIR);
+
+        foreach (string str in filesName)
+        {
+            string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source = " + str + ";Extended Properties ='Excel 8.0;HDR=YES;IMEX=1'";//导入时包含Excel中的第一行数据，并且将数字和字符混合的单元格视为文本进行导入
+            string strExcel = "select  * from   [Sheet 1$]";
+            OleDbConnection conn = new OleDbConnection(strConn);
+            conn.Open();
+            OleDbDataAdapter myCommand = new OleDbDataAdapter(strExcel, strConn);
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
+            myCommand.Fill(ds);
+            dt = ds.Tables[0];
+            gvData.DataSource = dt;
+            gvData.DataBind();
+            string strName = str.Substring(10);
+
+            if (strName.Trim().Equals("SFC.MES_ASSY_WIP.xls"))
+            {
+                int pass = 0;
+                int fail = 0;
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < 5; j++)
+                    {
+                        string aa = gvData.Rows[i].Cells[j].Text;
+                        if (gvData.Rows[i].Cells[j].Text.Equals("&nbsp;"))
+                        {
+                            fail++;
+                            break;
+                        }
+                    }
+                }
+                pass = gvData.Rows.Count - fail;
+                this.L1ALL.Text = gvData.Rows.Count.ToString();
+                this.L1PASS.Text = pass.ToString();
+                this.L1FAIL.Text = fail.ToString();
+                if (this.L1FAIL.Text.Equals("0"))
+                {
+                    this.L1RESULT.Text = "Pass";
+                    this.L1RESULT.BackColor = Color.Green;
+                }
+                else
+                {
+                    this.L1RESULT.Text = "Fail";
+                    this.L1RESULT.BackColor = Color.Red;
+                }
+            }
+            if (strName.Trim().Equals("SFC.MES_ASSY_HISTORY.xls"))
+            {
+                int pass = 0;
+                int fail = 0;
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < 6; j++)
+                    {
+                        string aa = gvData.Rows[i].Cells[j].Text;
+                        if (gvData.Rows[i].Cells[j].Text.Equals("&nbsp;"))
+                        {
+                            fail++;
+                            break;
+                        }
+                    }
+                }
+                this.L2ALL.Text = gvData.Rows.Count.ToString();
+                this.L2PASS.Text = pass.ToString();
+                this.L2FAIL.Text = fail.ToString();
+                if (this.L2FAIL.Text.Equals("0"))
+                {
+                    this.L2RESULT.Text = "Pass";
+                    this.L2RESULT.BackColor = Color.Green;
+                }
+                else
+                {
+                    this.L2RESULT.Text = "Fail";
+                    this.L2RESULT.BackColor = Color.Red;
+                }
+            }
+            if (strName.Trim().Equals("SFC.MES_ASSY_PID_JOIN.xls"))
+            {
+                int pass = 0;
+                int fail = 0;
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < 6; j++)
+                    {
+                        if (j == 0 || j == 1 || j == 5)
+                        {
+                            string aa = gvData.Rows[i].Cells[j].Text;
+                            if (gvData.Rows[i].Cells[j].Text.Equals("&nbsp;"))
+                            {
+                                fail++;
+                                break;
+                            }
+                        }
+                    }
+                }
+                this.L3ALL.Text = gvData.Rows.Count.ToString();
+                this.L3PASS.Text = pass.ToString();
+                this.L3FAIL.Text = fail.ToString();
+                if (this.L3FAIL.Text.Equals("0"))
+                {
+                    this.L3RESULT.Text = "Pass";
+                    this.L3RESULT.BackColor = Color.Green;
+                }
+                else
+                {
+                    this.L3RESULT.Text = "Fail";
+                    this.L3RESULT.BackColor = Color.Red;
+                }
+            }
+            if (strName.Trim().Equals("SFC.MES_PCBA_HISTORY.xls"))
+            {
+                int pass = 0;
+                int fail = 0;
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < 5; j++)
+                    {
+                        string aa = gvData.Rows[i].Cells[j].Text;
+                        if (gvData.Rows[i].Cells[j].Text.Equals("&nbsp;"))
+                        {
+                            fail++;
+                            break;
+                        }
+                    }
+                }
+                this.L4ALL.Text = gvData.Rows.Count.ToString();
+                this.L4PASS.Text = pass.ToString();
+                this.L4FAIL.Text = fail.ToString();
+                if (this.L4FAIL.Text.Equals("0"))
+                {
+                    this.L4RESULT.Text = "Pass";
+                    this.L4RESULT.BackColor = Color.Green;
+                }
+                else
+                {
+                    this.L4RESULT.Text = "Fail";
+                    this.L4RESULT.BackColor = Color.Red;
+                }
+            }
+            if (strName.Trim().Equals("SFC.R_WIP_TRACKING_T_PID.xls"))
+            {
+                int pass = 0;
+                int fail = 0;
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        if (j == 0 || j == 2 || j == 3 || j == 5 || j == 6 || j == 7 || j == 8 || j == 9 || j == 16 || j == 39 || j == 44)
+                        {
+                            string aa = gvData.Rows[i].Cells[j].Text;
+                            if (gvData.Rows[i].Cells[j].Text.Equals("&nbsp;"))
+                            {
+                                fail++;
+                                break;
+                            }
+                        }
+                    }
+                }
+                this.L5ALL.Text = gvData.Rows.Count.ToString();
+                this.L5PASS.Text = pass.ToString();
+                this.L5FAIL.Text = fail.ToString();
+                if (this.L5FAIL.Text.Equals("0"))
+                {
+                    this.L5RESULT.Text = "Pass";
+                    this.L5RESULT.BackColor = Color.Green;
+                }
+                else
+                {
+                    this.L5RESULT.Text = "Fail";
+                    this.L5RESULT.BackColor = Color.Red;
+                }
+            }
+            if (strName.Trim().Equals("TESTINFO.TESTINFO_HEAD.xls"))
+            {
+                int pass = 0;
+                int fail = 0;
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < 30; j++)
+                    {
+                        if (j == 1 || j == 3 || j == 4 || j == 5 || j == 7 || j == 9 || j == 16)
+                        {
+                            string aa = gvData.Rows[i].Cells[j].Text;
+                            if (gvData.Rows[i].Cells[j].Text.Equals("&nbsp;"))
+                            {
+                                fail++;
+                                break;
+                            }
+                        }
+                    }
+                }
+                this.L6ALL.Text = gvData.Rows.Count.ToString();
+                this.L6PASS.Text = pass.ToString();
+                this.L6FAIL.Text = fail.ToString();
+                if (this.L6FAIL.Text.Equals("0"))
+                {
+                    this.L6RESULT.Text = "Pass";
+                    this.L6RESULT.BackColor = Color.Green;
+                }
+                else
+                {
+                    this.L6RESULT.Text = "Fail";
+                    this.L6RESULT.BackColor = Color.Red;
+                }
+            }
+            if (strName.Trim().Equals("SHP.ROS_TCH_PN.xls"))
+            {
+                int pass = 0;
+                int fail = 0;
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < 38; j++)
+                    {
+                        if (j == 0 || j == 1 || j == 7 || j == 8 || j == 9 || j == 10 || j == 11 || j == 17 || j == 19 || j == 21 || j == 27 || j == 33 || j == 34)
+                        {
+                            string aa = gvData.Rows[i].Cells[j].Text;
+                            if (gvData.Rows[i].Cells[j].Text.Equals("&nbsp;"))
+                            {
+                                fail++;
+                                break;
+                            }
+                        }
+                    }
+                }
+                this.L7ALL.Text = gvData.Rows.Count.ToString();
+                this.L7PASS.Text = pass.ToString();
+                this.L7FAIL.Text = fail.ToString();
+                if (this.L7FAIL.Text.Equals("0"))
+                {
+                    this.L7RESULT.Text = "Pass";
+                    this.L7RESULT.BackColor = Color.Green;
+                }
+                else
+                {
+                    this.L7RESULT.Text = "Fail";
+                    this.L7RESULT.BackColor = Color.Red;
+                }
+            }
+            if (strName.Trim().Equals("SHP.CMCS_SFC_AORDER.xls"))
+            {
+                int pass = 0;
+                int fail = 0;
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < 10; j++)
+                    {
+                        if (j == 0 || j == 1 || j == 2 || j == 5 || j == 6)
+                        {
+                            string aa = gvData.Rows[i].Cells[j].Text;
+                            if (gvData.Rows[i].Cells[j].Text.Equals("&nbsp;"))
+                            {
+                                fail++;
+                                break;
+                            }
+                        }
+                    }
+                }
+                this.L8ALL.Text = gvData.Rows.Count.ToString();
+                this.L8PASS.Text = pass.ToString();
+                this.L8FAIL.Text = fail.ToString();
+                if (this.L8FAIL.Text.Equals("0"))
+                {
+                    this.L8RESULT.Text = "Pass";
+                    this.L8RESULT.BackColor = Color.Green;
+                }
+                else
+                {
+                    this.L8RESULT.Text = "Fail";
+                    this.L8RESULT.BackColor = Color.Red;
+                }
+            }
+
+            if (strName.Trim().Equals("SFC.R_WIP_TRACKING_T.xls"))
+            {
+                int pass = 0;
+                int fail = 0;
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < 47; j++)
+                    {
+                        if (j == 0 || j == 2 || j == 3 || j == 5 || j == 6 || j == 7 || j == 8 || j == 9 || j == 13 || j == 14 || j == 16 || j == 39)
+                        {
+                            string aa = gvData.Rows[i].Cells[j].Text;
+                            if (gvData.Rows[i].Cells[j].Text.Equals("&nbsp;"))
+                            {
+                                fail++;
+                                break;
+                            }
+                        }
+                    }
+                }
+                this.L9ALL.Text = gvData.Rows.Count.ToString();
+                this.L9PASS.Text = pass.ToString();
+                this.L9FAIL.Text = fail.ToString();
+                if (this.L9FAIL.Text.Equals("0"))
+                {
+                    this.L9RESULT.Text = "Pass";
+                    this.L9RESULT.BackColor = Color.Green;
+                }
+                else
+                {
+                    this.L9RESULT.Text = "Fail";
+                    this.L9RESULT.BackColor = Color.Red;
+                }
+            }
+        }
+        if (L1RESULT.Text.Equals("Pass") && L2RESULT.Text.Equals("Pass") && L3RESULT.Text.Equals("Pass") && L4RESULT.Text.Equals("Pass") && L5RESULT.Text.Equals("Pass") && L6RESULT.Text.Equals("Pass") && L7RESULT.Text.Equals("Pass") && L8RESULT.Text.Equals("Pass") && L9RESULT.Text.Equals("Pass"))
+        {
+            if (Convert.ToInt32(L1ALL.Text) == Convert.ToInt32(L3ALL.Text) && Convert.ToInt32(L1ALL.Text) == Convert.ToInt32(L4ALL.Text) && Convert.ToInt32(L1ALL.Text) == Convert.ToInt32(L5ALL.Text) && Convert.ToInt32(L1ALL.Text) * 2 == Convert.ToInt32(L2ALL.Text) && Convert.ToInt32(L1ALL.Text) * 5 == Convert.ToInt32(L6ALL.Text))
+            {
+                this.btnUpLoad.Enabled = true;
+                this.lblResult.Text = "PASS";
+                this.lblResult.ForeColor = Color.Green;
+            }
+            else
+            {
+                this.lblResult.Text = "FAIL";
+                this.lblResult.ForeColor = Color.Red;
+            }
+        }
+    }
+
+    protected void btnUpLoad_Click(object sender, EventArgs e)
+    {
+        #region
+        foreach (string str in filesName)
+        {
+            string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source = " + str + ";Extended Properties ='Excel 8.0;HDR=YES;IMEX=1'";//导入时包含Excel中的第一行数据，并且将数字和字符混合的单元格视为文本进行导入
+            string strExcel = "select  * from   [Sheet 1$]";
+            OleDbConnection conn = new OleDbConnection(strConn);
+            conn.Open();
+            OleDbDataAdapter myCommand = new OleDbDataAdapter(strExcel, strConn);
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
+            myCommand.Fill(ds);
+            dt = ds.Tables[0];
+            gvData.DataSource = dt;
+            gvData.DataBind();
+            string strName = str.Substring(10);
+
+            string tableName = "";
+            string strConnInsert = "Data Source=TESTSFC221;User ID=sfis1;Password=sfis1";
+            OracleConnection connInsert = new OracleConnection(strConnInsert);
+            connInsert.Open();
+            OracleCommand cmdInsert = new OracleCommand();
+
+
+            if (strName.Trim().Equals("SFC.MES_ASSY_WIP.xls"))
+            {
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    string sql = "insert into SFC.MES_ASSY_WIP values(decode('" + gvData.Rows[i].Cells[0].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[0].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[1].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[1].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[2].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[2].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[3].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[3].Text + "')" +
+                    ",to_date(decode('" + gvData.Rows[i].Cells[4].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[4].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                    ",decode('" + gvData.Rows[i].Cells[5].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[5].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[6].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[6].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[7].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[7].Text + "'))";
+                    cmdInsert.Connection = connInsert;
+                    cmdInsert.CommandText = sql;
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+            if (strName.Trim().Equals("SFC.MES_ASSY_HISTORY.xls"))
+            {
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    string sql = "insert into SFC.MES_ASSY_HISTORY values(decode('" + gvData.Rows[i].Cells[0].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[0].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[1].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[1].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[2].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[2].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[3].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[3].Text + "')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[4].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[4].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[5].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[5].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[6].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[6].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[7].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[7].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[8].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[8].Text + "'))";
+
+                    cmdInsert.Connection = connInsert;
+                    cmdInsert.CommandText = sql;
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+            if (strName.Trim().Equals("SFC.MES_ASSY_PID_JOIN.xls"))
+            {
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    string sql = "insert into SFC.MES_ASSY_PID_JOIN values(decode('" + gvData.Rows[i].Cells[0].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[0].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[1].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[1].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[2].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[2].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[3].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[3].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[4].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[4].Text + "')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[5].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[5].Text + "'),'mm/dd/yyyy hh24:mi:ss'))";
+                    cmdInsert.Connection = connInsert;
+                    cmdInsert.CommandText = sql;
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+            if (strName.Trim().Equals("SFC.MES_PCBA_HISTORY.xls"))
+            {
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    string sql = "insert into SFC.MES_PCBA_HISTORY values(decode('" + gvData.Rows[i].Cells[0].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[0].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[1].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[1].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[2].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[2].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[3].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[3].Text + "')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[4].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[4].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[5].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[5].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[6].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[6].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[7].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[7].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[8].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[8].Text + "'))";
+                    cmdInsert.Connection = connInsert;
+                    cmdInsert.CommandText = sql;
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+            if (strName.Trim().Equals("SFC.R_WIP_TRACKING_T_PID.xls"))
+            {
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    string sql = "insert into SFC.R_WIP_TRACKING_T_PID values(decode('" + gvData.Rows[i].Cells[0].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[0].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[1].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[1].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[2].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[2].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[3].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[3].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[4].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[4].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[5].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[5].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[6].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[6].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[7].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[7].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[8].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[8].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[9].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[9].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[10].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[10].Text + "')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[11].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[11].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[12].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[12].Text + "')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[13].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[13].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[14].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[14].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[15].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[15].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",decode('" + gvData.Rows[i].Cells[16].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[16].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[17].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[17].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[18].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[18].Text + "')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[19].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[19].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[20].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[20].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[21].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[21].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[22].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[22].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[23].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[23].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[24].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[24].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[25].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[25].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[26].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[26].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[27].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[27].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[28].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[28].Text + "')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[29].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[29].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[30].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[30].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[31].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[31].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[32].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[32].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[33].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[33].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[34].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[34].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[35].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[35].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[36].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[36].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[37].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[37].Text + "')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[38].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[38].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",decode('" + gvData.Rows[i].Cells[39].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[39].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[40].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[40].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[41].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[41].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[42].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[42].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[43].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[43].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[44].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[44].Text + "')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[45].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[45].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[46].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[46].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[47].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[47].Text + "'))";
+                    cmdInsert.Connection = connInsert;
+                    cmdInsert.CommandText = sql;
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+            if (strName.Trim().Equals("TESTINFO.TESTINFO_HEAD.xls"))
+            {
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    string sql = "insert into TESTINFO.TESTINFO_HEAD values(" +
+                    "to_number(decode('" + gvData.Rows[i].Cells[0].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[0].Text + "'))" +
+                    ",to_date(decode('" + gvData.Rows[i].Cells[1].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[1].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                    ",decode('" + gvData.Rows[i].Cells[2].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[2].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[3].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[3].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[4].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[4].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[5].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[5].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[6].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[6].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[7].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[7].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[8].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[8].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[9].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[9].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[10].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[10].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[11].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[11].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[12].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[12].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[13].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[13].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[14].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[14].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[15].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[15].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[16].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[16].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[17].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[17].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[18].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[18].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[19].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[19].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[20].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[20].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[21].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[21].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[22].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[22].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[23].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[23].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[24].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[24].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[25].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[25].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[26].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[26].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[27].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[27].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[28].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[28].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[29].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[29].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[30].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[30].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[31].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[31].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[32].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[32].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[33].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[33].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[34].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[34].Text + "')" +
+                    ",decode('" + gvData.Rows[i].Cells[35].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[35].Text + "'))";
+                    cmdInsert.Connection = connInsert;
+                    cmdInsert.CommandText = sql;
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+            if (strName.Trim().Equals("SHP.ROS_TCH_PN.xls"))
+            {
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    string sql = "insert into SHP.ROS_TCH_PN values(decode('" + gvData.Rows[i].Cells[0].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[0].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[1].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[1].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[2].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[2].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[3].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[3].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[4].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[4].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[5].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[5].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[6].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[6].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[7].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[7].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[8].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[8].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[9].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[9].Text + "')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[10].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[10].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[11].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[11].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[12].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[12].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[13].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[13].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[14].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[14].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[15].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[15].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[16].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[16].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[17].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[17].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[18].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[18].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[19].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[19].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[20].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[20].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[21].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[21].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[22].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[22].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[23].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[23].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[24].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[24].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[25].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[25].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[26].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[26].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[27].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[27].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[28].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[28].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[29].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[29].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[30].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[30].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[31].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[31].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[32].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[32].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[33].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[33].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[34].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[34].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[35].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[35].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[36].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[36].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[37].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[37].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[38].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[38].Text + "'))";
+                    cmdInsert.Connection = connInsert;
+                    cmdInsert.CommandText = sql;
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+            if (strName.Trim().Equals("SHP.CMCS_SFC_AORDER.xls"))
+            {
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    string sql = "insert into SHP.CMCS_SFC_AORDER values(decode('" + gvData.Rows[i].Cells[0].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[0].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[1].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[1].Text + "')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[2].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[2].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[3].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[3].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[4].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[4].Text + "')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[5].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[5].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[6].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[6].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[7].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[7].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[8].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[8].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[9].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[9].Text + "'))";
+                    cmdInsert.Connection = connInsert;
+                    cmdInsert.CommandText = sql;
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+
+            if (strName.Trim().Equals("SFC.R_WIP_TRACKING_T.xls"))
+            {
+                for (int i = 0; i < gvData.Rows.Count; i++)
+                {
+                    string sql = "insert into SFC.R_WIP_TRACKING_T values(decode('" + gvData.Rows[i].Cells[0].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[0].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[1].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[1].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[2].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[2].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[3].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[3].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[4].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[4].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[5].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[5].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[6].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[6].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[7].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[7].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[8].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[8].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[9].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[9].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[10].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[10].Text + "')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[11].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[11].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[12].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[12].Text + "')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[13].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[13].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[14].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[14].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[15].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[15].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",decode('" + gvData.Rows[i].Cells[16].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[16].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[17].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[17].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[18].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[18].Text + "')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[19].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[19].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[20].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[20].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[21].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[21].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[22].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[22].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[23].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[23].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[24].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[24].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[25].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[25].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[26].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[26].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[27].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[27].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[28].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[28].Text + "')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[29].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[29].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[30].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[30].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[31].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[31].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[32].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[32].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[33].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[33].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[34].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[34].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[35].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[35].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[36].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[36].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[37].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[37].Text + "')" +
+                   ",to_date(decode('" + gvData.Rows[i].Cells[38].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[38].Text + "'),'mm/dd/yyyy hh24:mi:ss')" +
+                   ",decode('" + gvData.Rows[i].Cells[39].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[39].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[40].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[40].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[41].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[41].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[42].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[42].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[43].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[43].Text + "')" +
+                   ",decode('" + gvData.Rows[i].Cells[44].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[44].Text + "')" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[45].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[45].Text + "'))" +
+                   ",to_number(decode('" + gvData.Rows[i].Cells[46].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[46].Text + "'))" +
+                   ",decode('" + gvData.Rows[i].Cells[47].Text + "','&nbsp;','','" + gvData.Rows[i].Cells[47].Text + "'))";
+                    cmdInsert.Connection = connInsert;
+                    cmdInsert.CommandText = sql;
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+        }
+        #endregion
+
+        this.lblResult.Text = "Successful";
+    }
+
+    /// <summary>
+    /// 查詢指定文件夾有無文件
+    /// </summary>
+    /// <param name="DirFullPath"></param>
+    /// <returns></returns>
+    private List<string> GetDirFiles(string DirFullPath)
+    {
+        if (Directory.Exists(DirFullPath) == true)
+        {
+            List<string> list = new List<string>();
+            //获取当前目录下指定文件类型的文件列表
+            string[] stringList = Directory.GetFiles(DirFullPath);
+
+            foreach (string str in stringList)
+            {
+                string fileName;
+                fileName = System.IO.Path.GetFileNameWithoutExtension(str);
+                list.Add(fileName);
+            }
+            return list;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+}

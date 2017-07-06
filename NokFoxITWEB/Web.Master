@@ -1,0 +1,176 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Web.master.cs" Inherits="MicroView.Web.Web" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title></title>    
+    <link rel="stylesheet" type="text/css" href="Jscript/sys.css" />
+    <%--<meta http-equiv="refresh" content="30" /> 30秒自动刷新页面--%>
+      <script language="javascript" type="text/javascript" src="App_Themes/SkinFile/popcalendar.js" ></script>
+      <script language="javascript" type="text/javascript" src="App_Themes/SkinFile/calendar.js"></script>
+      <script language="javascript" type="text/javascript" src="Jscript/JSCommon.js"></script>
+
+    <style type="text/css">
+        .style1
+        {
+            width: 100%;
+        }
+        .style2
+        {
+            width: 218px;
+        }
+    </style>
+    
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body background="images/index_bg.gif">
+    <form id="form1" runat="server">
+    <div>
+         <table border="0" cellspacing="0" cellpadding="0" style="text-align:center; width:100%;border:0px;" align="center">
+        <tbody>
+            <tr>
+                <td valign="center" align="middle">
+                    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td height="85" valign=middle  align="middle">
+                                    &nbsp;
+                                    <table width="100%" cellpadding="0" cellspacing="0">  
+			                           <tr align=right valign=top>
+		
+                                          <td align=right  class=daohang2 colSpan=0><img src="images/home.gif">&nbsp;<A class='Bottom' href='#' onClick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://10.186.33.109/ELVGscmd');"><font color="#000000">setHomePage</font></A> &nbsp; <img src="images/gift.gif"> &nbsp; <A class=Bottom href="javascript:window.external.addFavorite('http://10.186.33.109/ELVGscmd','ELV GSCMD WEB System');"><font color="#000000">addFavorite</font></A>  &nbsp;<img src="images/mail.gif"> &nbsp; <A class=Bottom href="mailto:Wen-Zheng Wang/FIH/FOXCONN"><font color="#000000">mailto</font></A>  &nbsp;&nbsp;</td>
+                                       </tr>
+			                           <tr>
+				                         <td align=right>
+                                              <table> 
+					                             <script language="javascript">
+					                                 today = new Date();
+					                                 function initArray() {
+					                                     this.length = initArray.arguments.length
+					                                     for (var i = 0; i < this.length; i++)
+					                                         this[i + 1] = initArray.arguments[i]
+					                                 }
+					                                 var d = new initArray("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
+					                                 document.write("<tr><td>&nbsp;</td></tr><tr><td align='center'><font color='blue' style='FONT-SIZE: 12px; COLOR: blue;TEXT-ALIGN: right'>", today.getFullYear(), "-", today.getMonth() + 1, "-", today.getDate(), "</font></td><td align='center'><font color='blue' style='FONT-SIZE: 12px; COLOR: blue;TEXT-ALIGN: right'>", d[today.getDay() + 1], "</font></td></tr>");
+							                    </script>
+				                              </table>	
+				                         </td>
+		                               </tr>
+	                                </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td valign="center" align="middle">
+                    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td valign="center" width="4" align="middle">
+                                    <img src="Images/daohang1-01.gif" width="4" height="32">
+                                </td>
+                                <td bgcolor="#7a7a7a" valign="center" align="middle">
+                                    <table border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+                                        <tbody>
+                                            <tr>
+                                                <td valign="center" width="85" align="middle">
+                                                    <a class="dh1" href="message.aspx">Home</a>
+                                                </td>
+                                                <td valign="center" width="110" align="middle">
+                                                    <a class="dh1" href="Default.aspx">Missing Data Query</a>
+                                                </td>
+                                                <td valign="center" width="110" align="middle">
+                                                    <a class="dh1" href="StandByInsert.aspx">InsertData</a>
+                                                </td>
+                                                <td valign="center" width="110" align="middle">
+                                                    <a class="dh1" href="UpLoad_Check.aspx">Check From CellonData </a>
+                                                </td>
+                                                <td valign="center" width="110" align="middle">
+                                                    <a class="dh1" href="message.aspx">Query</a>
+                                                </td>
+                                                <td valign="center" width="110" align="middle">
+                                                    <a class="dh1" href="message.aspx">Query</a>
+                                                </td>
+                                                <td valign="center" width="110" align="middle">
+                                                    <a class="dh1" href="message.aspx">Query</a>
+                                                </td>
+                                                <td valign="center" width="120" align="middle">
+                                                    <a class="dh1" href="message.aspx">Query</a>
+                                                </td>
+                                                <td valign="center" width="75" align="middle">
+                                                    <a class="dh1" href="message.aspx">Exit</a>
+                                                </td>                                          
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td valign="center" width="4" align="middle">
+                                    <img  src="Images/daohang1-02.gif" width="4" height="32" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td height="26" valign="center" align="middle">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td  valign="center" align="middle">
+                    <table border="0" cellspacing="1" cellpadding="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td >
+                                    <table border="0" cellspacing="5" cellpadding="0" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td valign="center" align="middle">
+                                                    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                                        <tbody>
+
+                                                            <tr>
+                                                                 <td valign=top align="middle"  height="655">
+                                                                        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                                                                        </asp:ContentPlaceHolder>
+                                                                 </td>
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="bq1" height="50" valign="center" align="right">
+                    <table border="0" cellspacing="5" cellpadding="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td class="bq1" valign="center" align="right">
+                                    <font color=silver> Copyright &copy; 2011.Foxconn, Inc. | Designer：FIH BF IT | EXT：566-27000 | Propositional resolution：1152*864</font>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+        <br />
+    </div>
+    </form>
+</body>
+</html>

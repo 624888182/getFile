@@ -1,0 +1,153 @@
+﻿*
+{
+    padding: 0;
+	text-align: left;
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 0;
+	}
+body
+{
+    font-family: Tahoma,@宋体,MS Sans Serif, Nina, Roman;
+    font-size: 12px;
+    color: #000000;
+    background-color: #FFFFFF;
+    margin-top: 1px;
+}
+h1, h2, h3, h4
+{
+    font-size: 16px;
+    font-weight: bolder;
+    text-align: left;
+}
+table
+{
+    border: 0px;
+}
+td
+{
+    font-size: 12px;
+	text-align: left;
+}
+td.content
+{
+    border: solid 1px #000000;
+    background-color: #FFFFFF;
+    width: 100%;
+}
+a:link
+{
+    font-size: 12px;
+    text-decoration: none;
+    color: #000000;
+}
+a:hover
+{
+    text-decoration: underline;
+    font-size: 12px;
+    color: #0000ff;
+}
+a:visited
+{
+    font-size: 12px;
+    color: #0000ff;
+}
+/*System mainOut Start*/
+.header
+{
+    background:url(images/headerBg.jpg) repeat-x;
+    height: 53px;
+}
+#logo
+{
+    float:left;
+    background:url(images/logoMS.jpg) no-repeat;
+    width:463px;
+    height:53px;
+}
+.banner
+{
+    float:right;
+    background:url(images/banner.jpg) no-repeat;
+    width:474px;
+    height:53px;
+}
+.banner02
+{
+    float:right;
+    background:url(images/banner02.jpg) no-repeat;
+    width:183px;
+    height:23px;
+}
+.nav
+{
+    background: url(images/navBg.jpg) repeat-x;
+    color: #000;
+    height:23px;
+}
+ 
+.welcome
+{
+    float:left;
+    width:168px;
+    font-size:12px;
+  
+}
+ 
+#home ul
+{
+    list-style-type: none;
+}
+#home ul li
+{
+    float: left;
+    margin: 0 2px;
+}
+#home ul li a:link, #home ul li a:visited
+{
+    text-decoration: none;
+    color:#000;
+}
+#home ul li a:hover
+{
+    text-decoration: underline;
+}
+#time
+{
+    float:left;
+    width:178px;
+    padding-left:5px;
+	height: 470px;
+}
+.copyRight
+{
+	color: #0000ff;
+	padding-left: 5px;
+	border-top: solid 1px #ABABAB;
+	font-size:12px;
+	
+}
+.leftMenu
+{
+    width:200px;
+    background-color:#F4FBFF;
+    border:solid 1px #69B2E4; 
+}
+.rightMenu
+{
+    background-color:#F3F7F9;
+    border:solid 1px #69B2E4; 
+}
+table .menu
+{
+    width:150px;
+    margin:0px 0px;
+}
+.contenter
+{
+    border:solid 1px #ABABAB;
+    background-color:#FFFFFF;
+    width:100%;
+}
+
+

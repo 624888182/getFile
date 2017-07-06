@@ -1,0 +1,253 @@
+/*
+
+Main control CSS class
+*/
+.igdd_Control
+{
+	width: 100%;
+	border: 1px solid #ABC1DE;
+	padding-left: 5px;
+}
+
+/*
+ Main Control CSS class when it's disabled
+*/
+.igdd_ControlDisabled
+{
+	
+}
+
+/*
+ Main control css class on hover
+*/
+.igdd_ControlHover
+{
+	
+}
+
+/*
+
+*/
+.igdd_ControlFocus
+{
+	
+}
+
+/*
+ CSS class for the table that accomodates the value display and the drop down button, and which is a 
+ child of the main control (div)
+*/
+.igdd_ValueDisplayTable
+{
+	
+}
+
+/*
+CSS class for the actual input field (<input type="text" />)
+*/
+.igdd_ValueDisplay
+{
+	width: 100%;
+	font-weight: normal;
+	border: 0px;
+	background-color: Transparent;
+	padding: 0px;
+	margin: 0px;
+}
+
+/*
+
+*/
+.igdd_ValueDisplayHover
+{
+	
+}
+
+/*
+
+*/
+.igdd_ValueDisplayFocus
+{
+	
+}
+
+/*
+
+*/
+.igdd_ValueDisplayDisabled
+{
+	
+}
+
+/*
+
+*/
+.igdd_ValueDisplayReadOnly
+{
+	
+}
+
+/*
+
+*/
+.igdd_DropDownList
+{
+	margin: 0px;
+	padding: 0px;
+	padding-left: 5px;
+	font-size: 12px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	margin-left: 0px;
+}
+
+/*
+
+*/
+.igdd_DropDownListHover
+{
+	
+}
+
+/*
+
+*/
+.igdd_DropDownListDisabled
+{
+	
+}
+
+/*
+
+*/
+.igdd_DropDownListFocus
+{
+	
+}
+
+/*
+
+*/
+.igdd_DropDownListReadOnly
+{
+	
+}
+
+/*
+	
+*/
+.igdd_DropDownListContainer
+{
+	position: relative;
+	float: left;
+	border: 1px solid #ABC1DE;
+	background-color: #FFFFFF;
+}
+
+/*
+
+*/
+.igdd_DropDownListContainerFocus
+{
+	
+}
+
+/*
+
+*/
+.igdd_DropDownListContainerHover
+{
+	
+}
+
+/*
+
+*/
+.igdd_DropDownButton
+{
+	
+}
+
+/*
+
+*/
+.igdd_DropDownButtonHover
+{
+	
+}
+
+/*
+	
+*/
+.igdd_DropDownButtonFocus
+{
+	
+}
+
+/*
+
+*/
+.igdd_DropDownButtonDisabled
+{
+	
+}
+
+/*
+CSS class that controls the style of the LI items in the list
+*/
+.igdd_ListItem
+{
+	list-style-type: none;
+	width: auto;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+/*
+
+*/
+.igdd_ListItemHover
+{
+	list-style-type: none;
+	width: auto;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	background-position: top;
+	background-image: url(images/header.gif);
+	background-repeat: repeat-x;
+	border:solid 1px #699BC9;
+	background-color: #77B9E5;
+	color: #FFFFFF;
+}
+
+/*
+
+*/
+.igdd_ListItemSelected
+{
+	list-style-type: none;
+	width: auto;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+/*
+
+*/
+.igdd_ListItemDisabled
+{
+	list-style-type: none;
+	width: auto;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+/*
+
+*/
+.igdd_ListItemFocus
+{
+	list-style-type: none;
+	width: auto;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}

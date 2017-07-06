@@ -1,0 +1,152 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="CartonCheck.aspx.cs" Inherits="CartonCheck" %>
+
+<%@ Register Src="WebControler/Controls/Calendar1.ascx" TagName="Calendar1" TagPrefix="uc2" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>檢查Carton對應的出貨數量</title>
+    <style type="text/css">
+        .style1
+        {
+            width: 70%;
+        }
+        .style2
+        {
+            width: 13%;
+        }
+        .style3
+        {
+            width: 20%;
+        }
+        .style4
+        {
+            width: 33%;
+        }
+        .style5
+        {
+            text-align: center;
+            font-size: xx-large;
+            color: red;
+        }
+    </style>
+
+    <script language="javascript" type="text/jscript" src="Jscript/Calendar.js">
+    
+    </script>
+
+</head>
+<body bgcolor="#7ECED5">
+    <form id="form1" runat="server">
+    <div>
+        <table class="style1" style="text-align: left" align="center">
+            <tr>
+                <td class="style5" colspan="5">
+                    <asp:Label ID="lblNote" runat="server" ForeColor="#FF0066" Text="Check Carton"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <asp:Label ID="lblConditions" runat="server" ForeColor="#FF0066" Text="請選擇查詢條件，輸入或選擇相關值進行查詢："></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td class="style2" rowspan="2">
+                    <asp:RadioButtonList ID="rboCondition" runat="server">
+                        <asp:ListItem Value="1">By Date</asp:ListItem>
+                        <asp:ListItem Value="2" Selected="True">By DN</asp:ListItem>
+                    </asp:RadioButtonList>
+                </td>
+                <td class="style3">
+                    <asp:Label ID="lblStartDate" runat="server" Text="開始日期"></asp:Label>
+                </td>
+                <td class="style3">
+                    <asp:TextBox ID="txtStartDate" runat="server" onkeypress="javascript:event.returnValue=false;"
+                        onclick="showCalendar();" ForeColor="#0081AC"></asp:TextBox>
+                </td>
+                <td class="style2">
+                    <asp:Label ID="lblEndDate" runat="server" Text="結束日期"></asp:Label>
+                </td>
+                <td>
+                    <asp:TextBox ID="txtEndDate" runat="server" onkeypress="javascript:event.returnValue=false;"
+                        onclick="showCalendar();" ForeColor="#0081AC"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    <asp:TextBox ID="txtDN" runat="server"></asp:TextBox>
+                </td>
+                <td class="style3">
+                    <asp:DropDownList ID="ddlDN" runat="server" OnSelectedIndexChanged="ddlDN_SelectedIndexChanged"
+                        AutoPostBack="True">
+                    </asp:DropDownList>
+                </td>
+                <td class="style2">
+                    <asp:Button ID="btnQuery" runat="server" Text="Query" OnClick="btnQuery_Click" />
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="style4">
+                    <asp:Label ID="lblCarton_QuantityCounts" runat="server" Text="Carton對應數量不一致總數："></asp:Label>
+                </td>
+                <td class="style3">
+                    <asp:Label ID="lblNoEualCounts" runat="server" ForeColor="#FF0066"></asp:Label>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="style4">
+                    <asp:Label ID="lblEqualCount" runat="server" Text="DN的Carton都相等，總量為："></asp:Label>
+                </td>
+                <td class="style3">
+                    <asp:Label ID="lblEqualCountInFo" runat="server" ForeColor="#FF0066"></asp:Label>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+            </tr>
+        </table>
+        <table align="center">
+            <tr>
+                <td>
+                    <asp:GridView ID="gvCartonCheck" runat="server" AllowPaging="True" AutoGenerateColumns="False"
+                        OnPageIndexChanging="gvCartonCheck_PageIndexChanging" OnRowDataBound="gvCartonCheck_RowDataBound"
+                        PageSize="30">
+                        <RowStyle BackColor="#EFF3FC" BorderColor="#000000" BorderStyle="Solid" ForeColor="#000000"
+                            HorizontalAlign="Center" />
+                        <Columns>
+                            <asp:BoundField HeaderText="NO">
+                                <HeaderStyle />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="INVOICE_NUMBER" HeaderText="DN">
+                                <HeaderStyle />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="INTERNAL_CARTON" HeaderText="CARTON_NO">
+                                <HeaderStyle />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="QUANTITY" HeaderText="SAPQUANTITY">
+                                <HeaderStyle />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="SHIP_TO_QUANTITY" HeaderText="SHIP_TO_QUANTITY">
+                                <HeaderStyle />
+                            </asp:BoundField>
+                            <asp:BoundField DataField="SHIP_DATE" HeaderText="SHIP_DATE">
+                                <HeaderStyle />
+                            </asp:BoundField>
+                        </Columns>
+                        <AlternatingRowStyle BackColor="#FFFFFF" ForeColor="#000000" />
+                        <PagerStyle BackColor="#EBE8E1" Font-Bold="true" ForeColor="#000000" />
+                        <HeaderStyle BackColor="#3399FF" HorizontalAlign="Center" />
+                    </asp:GridView>
+                </td>
+            </tr>
+        </table>
+    </div>
+    </form>
+</body>
+</html>

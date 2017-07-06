@@ -1,0 +1,334 @@
+﻿using System.Globalization;
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using Economy.BLL;
+using Economy.Publibrary;
+// using SCM.GSCMDKen;
+// using Prilibrary.FsplitNew;
+using System.Data.SqlClient;
+using System.IO;
+using System.Windows.Forms;
+using System.Threading;
+using EconomyUser;
+using SFC.TJWEB;
+
+
+public partial class Main_MainAutoZZTiptop : System.Web.UI.Page
+{
+ 
+    static string NetSqlDB4 = ConfigurationManager.AppSettings["SqlZZWebString"]; 
+    static string OraL10DBAMain = "";      // 76  Oracle Unix
+    static string OraL10DBAStandBy = "";    // 211 Oracle Unix
+    static string OraL6DBAMain = "";        // 214 Oracle Unix 
+    static string OraL6DBAStandBy = "";     // 
+    static string OraWebCTLDBA = "";        // 221 Oracle Window
+    static string SqlWebCTLDBA = "";        // 221 Sql Windoq 
+    string SiteName = "ZZSFC";
+    public static string PPSite = "ZZSFC";
+
+    //ClassLibrarySCM1.Class1 LibSCM1Pointer = new ClassLibrarySCM1.Class1();
+    //ClassLibraryUSR1.Class1 LibUSR1Pointer = new ClassLibraryUSR1.Class1();   
+    //UsrCtllib   UsrCtllibPointer   = new UsrCtllib();
+    SFCLinkTiptop SFCLinkTiptopPointer = new SFCLinkTiptop();
+
+    // SCMMain SCMMainPointer = new SCMMain();
+    static string Username, FPassword, LoginFlag, PSFlag="N", Acttype = "C", CallTiptoptype = "I";
+   
+    public string VUrl;
+    //static string ParaAutoflag = "";
+    static int Aerrcnt = 0;
+    static int Arunstatus = 0, ASysCount = 1;
+    static int firstcnt=0;
+    static int Aautoctlflag = 1; // Auto Control
+    static int AautoCount = 1;   // Auto Control
+    protected string oraDba = "oracle";
+    string tmpstr = "";
+    static int ArrMax = 200;
+    static string[] ReadTxtArray = new string[ArrMax];
+        
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        string r1 = "", t11="";
+        int    in1 = 0;
+
+        if (!Page.IsPostBack)
+        {
+                InitVar();
+                TextBox1.Focus();
+                TextBox4.Text = " TJ IDM Web Server http://10.186.171.197/ZZIDMWeb/MainAutoZZ.aspx ";
+                Timer1.Enabled = false;               
+             
+                if ( Aautoctlflag == 1 )
+                {
+                    Button17.Text  = "系統自動啟動 ZZ Site SFC Link Tiptop ";
+                     TextBox4.Text = "系統自動啟動 ZZ Site" + ASysCount.ToString();
+                     firstcnt++;           
+                     Aautoctlflag = Aautoctlflag;
+                     // t11 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "FirstTimeMainloop", "", "", "", NetSqlDB4, "sql");         // 10 Code
+                     tmpstr = MainLoop();
+                     Timer1.Enabled = true;
+                }   
+                
+        }
+              
+
+        if (Aautoctlflag == 1)
+        {
+            Timer1.Enabled = true;
+            AautoCount++;
+        }
+       
+
+    }   // end Page_load;
+
+  
+
+    protected string MainLoop()
+    {
+        int i = 3;
+        string Ret1 = "";
+        Timer1.Enabled = false;
+        TextBox4.Text = "系統自動啟動" + "IDMMainLoop" + ASysCount.ToString();
+        // string t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "MainLoop", "", "", "", NetSqlDB4, "sql");         // 10 Code
+        AutoSFCLinkTiptopProc();
+        return ("");        
+     
+    }
+  
+
+
+    private void InitVar()
+    {
+       Username="";
+       FPassword="";
+       PSFlag="N";
+       Acttype = "C";
+       LoginFlag = "N";
+       Session["SUsername"] = "web";
+       Session["SReadFlag"] = "";
+       string p2 = ReadParaTxt("WebReadParam.txt", "23101");
+       string p1 = SiteName.ToLower();
+       ClassLibraryPDBA1.Class1 LibPDBA1Pointer = new ClassLibraryPDBA1.Class1();
+       string t2 = LibPDBA1Pointer.Gooinit_var(p1, p2);
+    
+    }  // initvar
+
+protected void  Button1_Click(object sender, EventArgs e)
+{
+    ChkUsrPS();
+}
+
+public void ChkUsrPS()
+{
+               
+}   // end ChkUsrPS()
+
+
+protected void Button2_Click(object sender, EventArgs e)  // Modify 
+{
+    return;    
+}
+
+protected void Button3_Click(object sender, EventArgs e)
+{
+    string s1="";
+
+    if (LoginFlag != "Y") return;
+    
+    // 會先執行完本 SubRoutine 再 Run 此網站
+    Response.Write("<script>window.open( '"+TextBox3.Text+"','one','width=500,height=200,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=220,left=350');</script>");
+    // Response.Redirect(TextBox3.Text);
+    // Response.Redirect(WebSrverDir);
+}
+
+protected void TextBox2_TextChanged(object sender, EventArgs e)
+{
+    FPassword = TextBox2.Text;
+    // ChkUsrPS(); 
+}
+
+public string tChkUsr(string tUsername, string tFPassword, string tSPassword, string tPSDB, string tPSPath, string tPSType)
+{
+
+    string rets = ""; 
+
+    return (rets);
+}  // end ChkUsr
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Encl String Algorithm : 
+// 1. Input string  default for (v1 = 0; v1 < 20; v1++) trschar[v1] = Convert.ToChar((v1*v1+47) % 255 );
+//    Put Password in this array from start
+// 2. encchar string default  encchar[v1] = Convert.ToChar((v1*v1+4703) % 255 );
+// 3. OutPut string  rchar = trschar[v1] ^= encchar[v1]; 
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+protected void Button4_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+    string aa;
+    aa = (Session["SUsername"]).ToString();
+
+    // Response.Write("<script>window.open( 'Fusrm1.aspx','one','width=1000,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    Response.Write("<script>window.open( 'Fusrm1.aspx?SUsername="+ Username +"','one','width=1000,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+  
+}
+
+protected void tvManuTree_SelectedNodeChanged(object sender, EventArgs e)
+{
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+//  1000  for 1 second,  //  60000 for 1 minute, 1800000 for 30 minute
+//  
+protected void Timer1_Tick(object sender, EventArgs e)
+{
+    string s1 = "";
+    TextBox4.Text = "Timer Interrupt";
+    ASysCount++;
+    //Aautoctlflag = Aautoctlflag; //Auto only
+     
+    // return; // not auto only
+
+    // Aautoctlflag = Aautoctlflag;
+    AautoCount++;
+    if (Aautoctlflag == 1)  // boot automatic runnning
+    {
+        if (Arunstatus == 0) // go to running
+        {
+            s1 = MainLoop();
+        }
+        else
+            Aerrcnt++;
+    }
+     
+    if (Aerrcnt > 2)
+    {
+        Aerrcnt = 0;
+        Arunstatus = 0;
+    }
+
+    return;
+    // if ( ASysCount >= 1 )  // 一次 20 分, 3*20=60 次 60*20=1200/60=20 Hr 
+    //      Response.Write("<SCRIPT   LANGUAGE='JavaScript'>window.opener=null;window.close();</SCRIPT> "); // close system
+   
+   
+
+}
+
+///////////////////////////////////////////////////////////////////////
+protected void btnLogout_Click(object sender, EventArgs e)
+{
+    Response.Write("<SCRIPT   LANGUAGE='JavaScript'>window.opener=null;window.close();</SCRIPT> ");
+}
+
+
+protected void Button17_Click(object sender, EventArgs e)
+{
+    if (FPassword.ToLower() != "kenken") return;
+    Timer1.Enabled = true;
+    // Aautoctlflag = 1; // auto only
+    Button17.Text = "系統自動啟動中";
+    TextBox4.Text = "系統自動啟動";
+    string tmpstr = MainLoop();    
+}
+
+
+//  OraL10DBAMain, ref OraL10DBAStandBy, ref OraL6DBAMain, ref OraL6DBAStandBy, ref OraWebCTLDBA, ref SqlWebCTLDBA,
+//  Add   PUBLIB.CUSTOMERMODEL New Model 
+public void AutoSFCLinkTiptopProc()
+{
+    //Call Toptop
+    //1.1	ZRFC_WLBG_KIT_P02_1  (  MRP02.MOCTA, MRP02.MOCTB ) 
+    //1.2	T_ZQM_HEADE_STRU_1  [SAP.SPA_WORK_LIST, [
+    //1.3	T_ZQM_COMPONENT_STRU_1 [SAP.SAP_WO_COMP,]
+    //1.4	ZSD_SFC_GET_HU_DATA_1 [SAP.CMCS_SFC_PACKING_LINE_ALL]
+
+    //Call Toptop
+    //1.1	ZRFC_WLBG_KIT_P02_2    (  MRP02.MOCTA, MRP02.MOCTB ) 
+    //1.2	T_ZQM_HEADE_STRU_2     [SAP.SPA_WORK_LIST, [
+    //1.3	T_ZQM_COMPONENT_STRU_2 [SAP.SAP_WO_COMP,]
+    //1.4	ZSD_SFC_GET_HU_DATA_2  [SAP.CMCS_SFC_PACKING_LINE_ALL]
+    Timer1.Enabled = false;
+    string Dtype = "I", SysDate = DateTime.Today.ToString("yyyyMMdd"), DBType = "oracle";
+    string DBReadString = ReadParaTxt("WebReadParam.txt", "23301");  // L10
+    string DBWriString = ReadParaTxt("WebReadParam.txt", "23301");  // L10
+    string PCode = ReadParaTxt("WebReadParam.txt", "23101");
+    Session["ZZPCode"] = ReadParaTxt("WebReadParam.txt", "23101");
+    Session["ZZPSite"] = "tjsfc";
+    //DBReadString = ConfigurationManager.AppSettings["OraZZL10DBConnectionString"]; 
+    //DBWriString  = ConfigurationManager.AppSettings["OraZZL10DBConnectionString"];
+    //string Retstr1 = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P0_3("1", "oracle", DBReadString, DBWriString, "1");  
+    if ( CallTiptoptype != "" ) Dtype = CallTiptoptype;
+    string Retstr = "";
+    string BSite = PPSite;
+  
+    CallTiptoptype = "";          
+    
+}
+
+
+
+///////////////////////////////////////////////////////
+// 0 - 5 為代號, 第 6 位開始為 Para   // 代表無效
+// 10001 : Raed DB6 String
+// 10002 : Write Moto  L10
+// 10003 : Wrute Intel L10
+private string ReadParaTxt(string FilePara, string ParaNum)
+{
+    string retPara = "";
+    int ArrMax = 100;
+    string[] ReadTxtArray = new string[ArrMax];
+    string FileName = "SetReadParam.txt";
+    if (FilePara != "") FileName = FilePara;
+    string ServerPath = Server.MapPath("~\\" + FileName);
+    FileInfo fi = new FileInfo(ServerPath);
+    StreamReader sr = fi.OpenText();
+    string InString = "";
+    int i = 0, strlen = 0;
+
+    while (((InString = sr.ReadLine()) != null) && (i < ArrMax))
+    {
+        ReadTxtArray[i] = InString;
+        //             Response.Write(ReadTxtArray[i]);
+        //             Response.Write("<br>");
+        if ((InString != "") && (InString != " ") && (InString.Substring(0, 2) != "//"))
+        {
+            strlen = InString.Length - 1;
+            if ((InString.Substring(0, 5) == ParaNum) && (strlen >= 6))
+            {
+                retPara = InString.Substring(6, strlen - 5);
+                i = ArrMax;  // Break
+            }
+
+        }
+        i++;
+
+    }
+
+    sr.Close();
+    return (retPara);
+}
+
+// Call Tiptop  by DN or spec
+protected void Button20_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+    Timer1.Enabled = false;
+    CallTiptoptype = "C";
+    AutoSFCLinkTiptopProc();   
+    Timer1.Enabled = true;
+}
+}  // end public partial class Main ////// End all SubRoutine ////////////////////////////////////////////

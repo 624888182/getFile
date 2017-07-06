@@ -1,0 +1,773 @@
+﻿<%@ Page Language="C#"   AutoEventWireup="true" CodeFile="Fbomm3.aspx.cs" Inherits="Fbomm3" Title="无标题页" StyleSheetTheme="SkinFile"%>
+
+<script runat="server">
+
+
+    protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+   
+</script>
+
+<head id="Head1" runat="server">
+  
+    <style type="text/css">
+
+        .style7
+        {
+            font-weight: bold;
+            text-align: center;
+            font-size: large;
+        }
+        .style16
+        {
+            text-align: left;
+            height: 35px;
+        }
+        .style17
+        {
+            width: 89px;
+            text-align: center;
+        }
+        .style20
+        {
+            height: 141px;
+        }
+        .style21
+        {
+            text-align: center;
+            height: 29px;
+        }
+        .style22
+        {
+            height: 29px;
+        }
+        .style23
+        {
+            width: 24px;
+            text-align: center;
+        }
+        .style24
+        {
+            text-align: center;
+            height: 29px;
+            width: 24px;
+        }
+        .style26
+        {
+            width: 41px;
+        }
+        .style28
+        {
+            width: 20px;
+        }
+        .style31
+        {
+            text-align: center;
+            height: 29px;
+            width: 94px;
+        }
+        .style32
+        {
+            width: 94px;
+            text-align: center;
+        }
+        .style33
+        {
+            width: 33px;
+        }
+        .style34
+        {
+            width: 87px;
+        }
+        .style35
+        {
+            text-align: left;
+            height: 39px;
+        }
+        .style36
+        {
+            text-align: left;
+            height: 23px;
+        }
+        .style37
+        {
+            width: 44px;
+        }
+        .style39
+        {
+            width: 100px;
+        }
+        .style40
+        {
+            text-align: left;
+        }
+        </style>
+
+ 
+</head>
+    <body background="index_bg.gif">
+ 
+    <form id="form1" runat="server">
+ 
+    <table style="width: 100%; height: 38%;">
+    <tr>
+        <td class="style20">
+            <div style="border-style: groove; height: 163px;">
+                <table style="width:100%; height: 63px;" class="gvMain">
+                    <tr>
+                        <td class="style7" colspan="10">
+                                BOM Maintain</td>
+                    </tr>
+                    <tr>
+                        <td class="style17">
+                                BOM ITEM：</td>
+                        <td class="style32">
+                            <asp:TextBox ID="TextBox1" runat="server" ontextchanged="TextBox1_TextChanged" 
+                                AutoPostBack="True"></asp:TextBox>
+                        </td>
+                        <td class="style23">
+                                Rev：</td>
+                        <td class="style37">
+                            <asp:TextBox ID="TextBox2" runat="server" Width="51px" Height="20px"></asp:TextBox>
+                        </td>
+                        <td class="style26">
+                            Part：</td>
+                        <td class="style28">
+                            <asp:TextBox ID="TextBox5" runat="server" Width="100px" 
+                                ontextchanged="TextBox5_TextChanged"></asp:TextBox>
+                        </td>
+                        <td class="style33">
+                            Rev：</td>
+                        <td class="style39">
+                            <asp:TextBox ID="TextBox6" runat="server" Width="42px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </td>
+                        <td class="style34">
+                            New ITEM :</td>
+                        <td class="style34">
+                            <asp:TextBox ID="TextBox160" runat="server" Width="100px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style21" valign="top">
+                            <br />
+                <asp:Label ID="Label4" runat="server" Text="應用站點:"></asp:Label>
+                        </td>
+                        <td class="style31" valign="top">
+                            <br />
+                            <asp:DropDownList ID="DropDownList2" runat="server" Height="26px" 
+                    Width="87px">
+                    <asp:ListItem Selected="True">LH</asp:ListItem>
+                    <asp:ListItem>BJ</asp:ListItem>
+                    <asp:ListItem>LF</asp:ListItem>
+                </asp:DropDownList>
+                        </td>
+                        <td class="style24" valign="top">
+                            <br />
+                            QTY：:</td>
+                        <td class="style37">
+                            <asp:TextBox ID="TextBox4" runat="server" Width="54px"></asp:TextBox>
+                        </td>
+                        <td class="style26">
+                            Location:</td>
+                        <td class="style22" colspan="3">
+                            <asp:TextBox ID="TextBox3" runat="server" Height="21px" TextMode="MultiLine" 
+                                Width="100px" ontextchanged="TextBox3_TextChanged"></asp:TextBox>
+                        &nbsp;
+                            <asp:TextBox ID="TextBox7" runat="server" Width="69px"></asp:TextBox>
+                            &nbsp;
+                            <asp:DropDownList ID="DropDownList1" runat="server" SkinID="ddlMain" 
+                                Width="82px">
+                            </asp:DropDownList>
+                        </td>
+                        <td class="style22">
+                            New ITEM Ver :</td>
+                        <td class="style22">
+                            <asp:TextBox ID="TextBox161" runat="server" Width="42px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style16" colspan="10">
+                            <asp:Button ID="Button2" runat="server" Text="Add BOM" SkinID="mainButton" 
+                                onclick="Button2_Click" Height="23px" Width="60px" />
+                            &nbsp;
+                            <asp:Button ID="Button3" runat="server" Height="23px" SkinID="mainButton" 
+                                Text="ModiBOM" onclick="Button3_Click" Width="60px" />
+                        &nbsp;&nbsp;<asp:Button ID="Button4" runat="server" Height="23px" SkinID="mainButton" 
+                                Text="Due BOM" Width="60px" onclick="Button4_Click" />
+                            &nbsp;
+                            <asp:Button ID="Button5" runat="server" Height="23px" SkinID="mainButton" 
+                                Text="Del BOM" Width="60px" onclick="Button5_Click" />
+                            &nbsp;&nbsp;<asp:Button ID="Button7" runat="server" Height="23px" SkinID="mainButton" 
+                                Text="BDelBOM" Width="60px" />
+                            &nbsp;
+                            <asp:Button ID="Button6" runat="server" Height="23px" SkinID="mainButton" 
+                                Text="CopyBOM" Width="60px" onclick="Button6_Click" />
+                            &nbsp;
+                            <asp:Button ID="Button8" runat="server" Height="23px" SkinID="mainButton" 
+                                Text="ReadBOM" Width="60px" onclick="Button8_Click" />
+                            &nbsp;
+                            <asp:Button ID="Button9" runat="server" Height="23px" SkinID="mainButton" 
+                                Text="Au-RBOM" Width="60px" onclick="Button9_Click" />
+                            &nbsp;
+                            <asp:Button ID="Button10" runat="server" Text="Add ITEM" SkinID="mainButton" 
+                                Height="23px" Width="60px" onclick="Button10_Click" />
+                        &nbsp;&nbsp;<asp:Button ID="Button19" runat="server" Text="PageDn" SkinID="mainButton" 
+                                Height="23px" onclick="Button19_Click" Width="60px" />
+                            &nbsp;
+                            <asp:Button ID="Button20" runat="server" Text="PageUp" SkinID="mainButton" 
+                                Height="23px" onclick="Button20_Click" Width="60px" />
+                            &nbsp; 
+                            <asp:Button ID="Button21" runat="server" SkinID="mainButton" 
+                                Height="23px" onclick="Button20_Click" Width="16px" Text="Cnt" />
+                            &nbsp;
+                            <asp:Button ID="Button22" runat="server" Text="ExecAct" SkinID="mainButton" 
+                                Height="23px" onclick="Button22_Click" Width="60px" />
+                        &nbsp;
+                            <asp:Button ID="Button24" runat="server" Text="Refresh" SkinID="mainButton" 
+                                Height="23px" Width="60px" onclick="Button24_Click" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style16" colspan="10">
+                        &nbsp;<asp:Button ID="Button11" runat="server" Text="機種代碼" SkinID="mainButton" 
+                                Height="23px" Width="79px" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:Button ID="Button12" runat="server" Text="版本" SkinID="mainButton" 
+                                Height="23px" Width="53px" />
+                        &nbsp;&nbsp;
+                            <asp:Button ID="Button13" runat="server" Text="料號代碼" SkinID="mainButton" 
+                                Height="23px" Width="88px" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:Button ID="Button14" runat="server" Text="版本" SkinID="mainButton" 
+                                Height="23px" Width="57px" />
+                        &nbsp;&nbsp;
+                            <asp:Button ID="Button15" runat="server" Text="數量" SkinID="mainButton" 
+                                Height="23px" Width="43px" />
+                        &nbsp;&nbsp;&nbsp;
+                            <asp:Button ID="Button16" runat="server" Text="規格" SkinID="mainButton" 
+                                Height="23px" Width="103px" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:Button ID="Button17" runat="server" Text="規格" SkinID="mainButton" 
+                                Height="23px" Width="77px" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:Button ID="Button18" runat="server" Text="位置" SkinID="mainButton" 
+                                Height="23px" Width="38px" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:Button ID="Button23" runat="server" Text="確認" SkinID="mainButton" 
+                                Height="23px" Width="38px" Visible="False" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style16" colspan="10">
+                            <asp:TextBox ID="TextBox8" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox9" runat="server" 
+                                AutoPostBack="True" Width="32px" Height="20px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox10" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox11" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox12" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;<asp:TextBox ID="TextBox13" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox14" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox15" runat="server" 
+                                AutoPostBack="True" Width="41px"></asp:TextBox>
+                        &nbsp;
+                            <asp:Button ID="Button25" runat="server" onclick="Button25_Click" Text="選" 
+                                Width="20px" />
+                            <asp:TextBox ID="TextBox18" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox19" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox20" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox21" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox22" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox23" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox24" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style16" colspan="10">
+                            <asp:TextBox ID="TextBox25" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox26" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox27" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox28" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox29" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;<asp:TextBox ID="TextBox30" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox31" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox32" runat="server" 
+                                AutoPostBack="True" Width="41px"></asp:TextBox>
+                        &nbsp;
+                            <asp:Button ID="Button26" runat="server" onclick="Button26_Click" Text="選" 
+                                Width="20px" />
+                            <asp:TextBox ID="TextBox34" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox35" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox36" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox37" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox38" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox39" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style16" colspan="10">
+                            <asp:TextBox ID="TextBox40" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox41" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox42" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox43" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox44" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;<asp:TextBox ID="TextBox45" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox46" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox47" runat="server" 
+                                AutoPostBack="True" Width="41px"></asp:TextBox>
+                        &nbsp;
+                            <asp:Button ID="Button27" runat="server" onclick="Button27_Click" Text="選" 
+                                Width="20px" />
+                            <asp:TextBox ID="TextBox49" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox50" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox51" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox52" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox53" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox54" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style40" colspan="10">
+                            <asp:TextBox ID="TextBox55" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox56" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox57" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox58" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox59" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                            &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox60" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox61" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox62" runat="server" 
+                                AutoPostBack="True" Width="41px"></asp:TextBox>
+                        &nbsp;
+                            <asp:Button ID="Button28" runat="server" onclick="Button28_Click" Text="選" 
+                                Width="20px" />
+                            <asp:TextBox ID="TextBox64" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox65" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox66" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox67" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox68" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox69" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style16" colspan="10">
+                            <asp:TextBox ID="TextBox70" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox71" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox72" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox73" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox74" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                            &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox75" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox76" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox77" runat="server" 
+                                AutoPostBack="True" Width="41px" Height="20px"></asp:TextBox>
+                        &nbsp;&nbsp;<asp:Button ID="Button29" runat="server" onclick="Button29_Click" 
+                                Text="選" Width="20px" />
+&nbsp;<asp:TextBox ID="TextBox78" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox79" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox80" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox81" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox82" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox83" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox84" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style40" colspan="10">
+                            <asp:TextBox ID="TextBox85" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox86" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox87" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox88" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox89" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;<asp:TextBox ID="TextBox90" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox91" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox92" runat="server" 
+                                AutoPostBack="True" Width="41px" Height="20px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:Button ID="Button30" runat="server" onclick="Button30_Click" Text="選" 
+                                Width="20px" />
+                            <asp:TextBox ID="TextBox94" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox95" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox96" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox97" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox98" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox99" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style16" colspan="10">
+                            <asp:TextBox ID="TextBox100" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox101" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox102" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox103" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox104" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                            &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox105" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox106" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox107" runat="server" 
+                                AutoPostBack="True" Width="41px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:Button ID="Button31" runat="server" onclick="Button31_Click" Text="選" 
+                                Width="20px" />
+                            <asp:TextBox ID="TextBox109" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox110" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox111" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox112" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox113" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox114" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style40" colspan="10">
+                            <asp:TextBox ID="TextBox115" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox116" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox117" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox118" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox119" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                            &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox120" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox121" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox122" runat="server" 
+                                AutoPostBack="True" Width="41px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:Button ID="Button32" runat="server" onclick="Button32_Click" Text="選" 
+                                Width="20px" />
+                            <asp:TextBox ID="TextBox124" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox125" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox126" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox127" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox128" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox129" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="style36" colspan="10">
+                            <asp:TextBox ID="TextBox130" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox131" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox132" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox133" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp; &nbsp;
+                            <asp:TextBox ID="TextBox134" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                            &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox135" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox136" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox137" runat="server" 
+                                AutoPostBack="True" Width="41px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:Button ID="Button33" runat="server" onclick="Button33_Click" Text="選" 
+                                Width="20px" />
+                            <asp:TextBox ID="TextBox139" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox140" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox141" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox142" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox143" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox144" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        &nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td class="style35" colspan="10">
+                            <asp:TextBox ID="TextBox145" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox146" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox147" runat="server" 
+                                AutoPostBack="True" Width="104px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox148" runat="server" 
+                                AutoPostBack="True" Width="32px"></asp:TextBox>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox149" runat="server" 
+                                AutoPostBack="True" Width="40px"></asp:TextBox>
+                            &nbsp;&nbsp;&nbsp;<asp:TextBox ID="TextBox150" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox151" runat="server" 
+                                AutoPostBack="True" Width="187px"></asp:TextBox>
+                        &nbsp;&nbsp;
+                            <asp:TextBox ID="TextBox152" runat="server" 
+                                AutoPostBack="True" Width="41px"></asp:TextBox>
+                        &nbsp;&nbsp;<asp:Button ID="Button34" runat="server" onclick="Button34_Click" 
+                                Text="選" Width="20px" />
+&nbsp;<asp:TextBox ID="TextBox153" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox154" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox155" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox156" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox157" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox158" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                            <asp:TextBox ID="TextBox159" runat="server" 
+                                AutoPostBack="True" Visible="False" Width="10px"></asp:TextBox>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td  
+            style="top: 1px; visibility: collapse; clip: rect(0px, auto, auto, 0px);">
+            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" 
+                    SkinID="gvMain" DataKeyNames="Item" ShowFooter="True" 
+                onrowdatabound="GridView1_RowDataBound"
+                 onselectedindexchanging="GridView1_SelectedIndexChanging" 
+                onpageindexchanging="GridView1_PageIndexChanging" OnRowDeleting="ImageButton2_Click" 
+                AllowPaging="True" PageSize="16" >
+                <Columns>
+                    <asp:BoundField DataField="Item" HeaderText="機種代碼" />
+                    <asp:BoundField DataField="ItemRev" HeaderText="版本" />
+                    <asp:BoundField DataField="Part" HeaderText="料號代碼" />
+                    <asp:BoundField DataField="PartRev" HeaderText="版本" />          
+                    <asp:BoundField DataField="Qty" HeaderText="數量" />       
+                    <asp:BoundField DataField="Desp2" HeaderText="PartDesp"  />                       
+                      <asp:BoundField DataField="Location" HeaderText="位置" />  
+                      <asp:BoundField DataField="DueDate" HeaderText="到期日" /> 
+                    <asp:TemplateField HeaderText="結案/反結案">
+                    
+                    
+            <EditItemTemplate>
+                &nbsp;&nbsp;
+            </EditItemTemplate>
+            <ItemTemplate>
+                <asp:ImageButton ID="ibtnDelete" runat="server" CommandName="Delete"  
+                 ImageUrl="~/App_Themes/SkinFile/images/280.gif" />
+            </ItemTemplate>
+            
+           
+            
+            <HeaderStyle Wrap="False" />
+            <ItemStyle Wrap="False" />
+        </asp:TemplateField>
+                    
+                    <asp:BoundField DataField="Desp1" HeaderText="規格" />
+                      <asp:CommandField ShowSelectButton="True" />
+                </Columns>
+                
+                
+                   
+            </asp:GridView>
+        </td>
+    </tr>
+</table>
+ 
+
+            <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" 
+                    SkinID="gvMain" DataKeyNames="Item" ShowFooter="True" 
+                AllowPaging="True" PageSize="20" 
+        onselectedindexchanging="GridView2_SelectedIndexChanging" 
+        onpageindexchanging="GridView2_PageIndexChanging" >
+                <Columns>
+                    <asp:BoundField DataField="Item" HeaderText="機種代碼" />
+                    <asp:BoundField DataField="ItemRev" HeaderText="版本" />
+                    <asp:BoundField DataField="EngDescription" HeaderText="EngDesp" />
+                    <asp:BoundField DataField="Type" HeaderText="Type" />          
+                     <asp:BoundField DataField="Level" HeaderText="Level" />         
+                    <asp:TemplateField HeaderText="結案/反結案">
+                    
+            <EditItemTemplate>
+                &nbsp;&nbsp;
+            </EditItemTemplate>
+            <ItemTemplate>
+                <asp:ImageButton ID="ibtnDelete0" runat="server" CommandName="Delete"  
+                 ImageUrl="~/App_Themes/SkinFile/images/280.gif" />
+            </ItemTemplate>
+            
+           
+            
+            <HeaderStyle Wrap="False" />
+            <ItemStyle Wrap="False" />
+        </asp:TemplateField>
+                    
+                    <asp:BoundField DataField="CItem" HeaderText="CustomerPN" />
+                      <asp:CommandField ShowSelectButton="True" />
+                </Columns>
+                
+                
+                   
+            </asp:GridView>
+ 
+
+</form>
+
+ 
+

@@ -1,0 +1,314 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Web.Master" AutoEventWireup="true" CodeFile="Foxconn_Receive_Module.aspx.cs" Inherits="Foxconn_Receive_Module" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+    <style type="text/css">
+        .style4
+        {
+        }
+        .style5
+        {
+            width: 105px;
+            height: 26px;
+        }
+        .style7
+        {
+            height: 26px;
+            width: 114px;
+        }
+        .style11
+        {
+            height: 26px;
+            width: 38px;
+        }
+        .style12
+        {
+            width: 38px;
+        }
+        .style14
+        {
+            height: 25px;
+            width: 255px;
+        }
+        .style16
+        {
+            width: 255px;
+        }
+        .style18
+        {
+            width: 105px;
+            height: 27px;
+        }
+        .style20
+        {
+            height: 27px;
+            width: 38px;
+        }
+        .style22
+        {
+            height: 27px;
+            width: 114px;
+        }
+        .style24
+        {
+            height: 25px;
+        }
+        .style26
+        {
+            height: 25px;
+            width: 38px;
+        }
+        .style27
+        {
+            height: 25px;
+            width: 114px;
+        }
+        .style29
+        {
+            height: 27px;
+            width: 255px;
+        }
+        .style30
+        {
+            height: 26px;
+            width: 255px;
+        }
+        .style31
+        {
+            height: 26px;
+            width: 3px;
+        }
+        .style32
+        {
+            width: 3px;
+        }
+        .style33
+        {
+            height: 27px;
+            width: 3px;
+        }
+        .style35
+        {
+            height: 21px;
+        }
+        .style36
+        {
+            height: 21px;
+            width: 38px;
+        }
+        .style37
+        {
+            height: 21px;
+            width: 255px;
+        }
+        .style38
+        {
+            height: 26px;
+            width: 115px;
+        }
+        .style39
+        {
+            height: 25px;
+            width: 115px;
+        }
+        .style40
+        {
+            width: 115px;
+        }
+        .style41
+        {
+            height: 27px;
+            width: 115px;
+        }
+        .style42
+        {
+            height: 21px;
+            width: 115px;
+        }
+        .style43
+        {
+            width: 114px;
+        }
+        .style44
+        {
+            height: 21px;
+            width: 114px;
+        }
+    </style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <table class="style1">
+        <tr>
+            <td colspan="6">
+                <asp:Label ID="Label1" runat="server" Text="Foxconn Receive Module"></asp:Label>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" class="style5" rowspan="3">
+                Choose Doc ID</td>
+            <td class="style31" rowspan="3">
+                <asp:ListBox ID="lst_Doc" runat="server" 
+                    onselectedindexchanged="lst_Doc_SelectedIndexChanged" 
+                    ontextchanged="lst_Doc_TextChanged" Width="168px"></asp:ListBox>
+            </td>
+            <td class="style11" rowspan="3">
+            </td>
+            <td align="left" class="style30">
+                <asp:Label ID="lbl_PSN" runat="server" Text="Label"></asp:Label>
+            </td>
+            <td align="center" class="style38">
+                Scan Count</td>
+            <td class="style7">
+                Total Count</td>
+        </tr>
+        <tr>
+            <td align="left" class="style30">
+                <asp:Label ID="lbl_Doc" runat="server" Text="Label"></asp:Label>
+            </td>
+            <td align="right" class="style38">
+                <asp:Label ID="lbl_ScanCount" runat="server" Text="Label"></asp:Label>
+                </td>
+            <td align ="right"  class="style7">
+                <asp:Label ID="lbl_Total" runat="server" Text="Label"></asp:Label>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" class="style16">
+                F0(R_WIP_TRACKING_T)</td>
+            <td align="right" class="style40">
+                <asp:Label ID="lbl_F0" runat="server" Text="Label"></asp:Label>
+            </td>
+            <td class="style7">
+            </td>
+        </tr>
+        <tr>
+            <td align="left" class="style4">
+                &nbsp;</td>
+            <td class="style32">
+                <asp:Button ID="btn_Sel" runat="server" Height="21px" onclick="btn_Sel_Click" 
+                    Text="Choose Document ID" Width="166px" />
+            </td>
+            <td class="style12">
+                &nbsp;</td>
+            <td align="left" class="style16">
+                F1(R_WIP_TRACKING_T_PID)</td>
+            <td align="right" class="style40">
+                <asp:Label ID="lbl_F1" runat="server" Text="Label"></asp:Label>
+            </td>
+            <td class="style43">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td align="left" class="style18">
+                Document ID</td>
+            <td class="style33">
+                <asp:TextBox ID="txt_Doc" runat="server" ontextchanged="TextBox1_TextChanged" 
+                    Width="161px"></asp:TextBox>
+            </td>
+            <td class="style20">
+            </td>
+            <td align="left" class="style29">
+                F2(MES_ASSY_HISTORY)</td>
+            <td align="right" class="style41">
+                <asp:Label ID="lbl_F2" runat="server" Text="Label"></asp:Label>
+            </td>
+            <td class="style22">
+            </td>
+        </tr>
+        <tr>
+            <td align="left" class="style24" colspan="2">
+                <asp:RadioButtonList ID="RadioButtonList1" runat="server" AutoPostBack="True" 
+                    onselectedindexchanged="RadioButtonList1_SelectedIndexChanged" 
+                    RepeatDirection="Horizontal">
+                    <asp:ListItem>ScanPSN</asp:ListItem>
+                    <asp:ListItem Selected="True">ScanCarton</asp:ListItem>
+                </asp:RadioButtonList>
+            </td>
+            <td class="style26">
+            </td>
+            <td align="left" class="style14">
+                F3(MES_ASSY_PID_JOIN)</td>
+            <td align="right" class="style39">
+                <asp:Label ID="lbl_F3" runat="server" Text="Label"></asp:Label>
+            </td>
+            <td class="style27">
+            </td>
+        </tr>
+        <tr>
+            <td align="left" class="style35">
+                Scan PSN</td>
+            <td align="left" class="style35">
+                <asp:TextBox ID="txt_PSN" runat="server" ontextchanged="TextBox1_TextChanged" 
+                    Width="161px" Enabled="False"></asp:TextBox>
+            </td>
+            <td class="style36">
+            </td>
+            <td align="left" class="style37">
+                F4(MES_ASSIY_WIP)</td>
+            <td align="right" class="style42">
+                <asp:Label ID="lbl_F4" runat="server" Text="Label"></asp:Label>
+            </td>
+            <td class="style44">
+            </td>
+        </tr>
+        <tr>
+            <td align="left" class="style4">
+                Scan Carton</td>
+            <td align="left" class="style4">
+                <asp:TextBox ID="txt_Carton" runat="server" ontextchanged="TextBox1_TextChanged" 
+                    Width="161px"></asp:TextBox>
+            </td>
+            <td align="left" class="style4">
+                &nbsp;</td>
+            <td align="left" class="style16">
+                F5(MES_PCBA_HISTORY)</td>
+            <td align="right" class="style40">
+                <asp:Label ID="lbl_F5" runat="server" Text="Label"></asp:Label>
+            </td>
+            <td class="style43">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td class="style4" align ="left"  colspan="2">
+                <asp:Label ID="lbl_Status" runat="server" BackColor="Yellow" Text="Label"></asp:Label>
+            </td>
+            <td class="style12">
+                &nbsp;</td>
+            <td class="style16" align="left">
+                F6(TESTINFO_HEAD)</td>
+            <td align ="right" class="style40">
+                <asp:Label ID="lbl_F6" runat="server" Text="Label"></asp:Label>
+            </td>
+            <td class="style43">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td class="style4">
+                &nbsp;</td>
+            <td align="left" class="style33">
+                &nbsp;</td>
+            <td class="style12">
+                &nbsp;</td>
+            <td class="style16">
+                &nbsp;</td>
+            <td class="style40">
+                &nbsp;</td>
+            <td class="style43">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td class="style4">
+                &nbsp;</td>
+            <td class="style32">
+                &nbsp;</td>
+            <td class="style12">
+                &nbsp;</td>
+            <td class="style16">
+                &nbsp;</td>
+            <td class="style40">
+                &nbsp;</td>
+            <td class="style43">
+                &nbsp;</td>
+        </tr>
+    </table>
+</asp:Content>
+

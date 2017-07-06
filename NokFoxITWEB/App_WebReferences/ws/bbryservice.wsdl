@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.efoxconn.com/fusereport/webservice" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.efoxconn.com/fusereport/webservice" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.efoxconn.com/fusereport/webservice">
+      <s:element name="ExecuteInsertRecodeHead">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dic" type="tns:MyDictionaryOfStringString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="MyDictionaryOfStringString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Items" type="tns:ArrayOfMyKeyValuePairOfStringString" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfMyKeyValuePairOfStringString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MyKeyValuePairOfStringString" nillable="true" type="tns:MyKeyValuePairOfStringString" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MyKeyValuePairOfStringString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Key" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ExecuteInsertRecodeHeadResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExecuteInsertRecodeHeadResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExecuteGetDataByDNN">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strDNN" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExecuteGetDataByDNNResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExecuteGetDataByDNNResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExecuteConfirmSendDataByDNN">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strDNN" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExecuteConfirmSendDataByDNNResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExecuteConfirmSendDataByDNNResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ExecuteInsertRecodeHeadSoapIn">
+    <wsdl:part name="parameters" element="tns:ExecuteInsertRecodeHead" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteInsertRecodeHeadSoapOut">
+    <wsdl:part name="parameters" element="tns:ExecuteInsertRecodeHeadResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteGetDataByDNNSoapIn">
+    <wsdl:part name="parameters" element="tns:ExecuteGetDataByDNN" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteGetDataByDNNSoapOut">
+    <wsdl:part name="parameters" element="tns:ExecuteGetDataByDNNResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteConfirmSendDataByDNNSoapIn">
+    <wsdl:part name="parameters" element="tns:ExecuteConfirmSendDataByDNN" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteConfirmSendDataByDNNSoapOut">
+    <wsdl:part name="parameters" element="tns:ExecuteConfirmSendDataByDNNResponse" />
+  </wsdl:message>
+  <wsdl:portType name="BBRYWebServiceSoap">
+    <wsdl:operation name="ExecuteInsertRecodeHead">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">BBRY Upload Test Head Web Services</wsdl:documentation>
+      <wsdl:input message="tns:ExecuteInsertRecodeHeadSoapIn" />
+      <wsdl:output message="tns:ExecuteInsertRecodeHeadSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteGetDataByDNN">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">BBRY Get Data By DNN</wsdl:documentation>
+      <wsdl:input message="tns:ExecuteGetDataByDNNSoapIn" />
+      <wsdl:output message="tns:ExecuteGetDataByDNNSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteConfirmSendDataByDNN">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">BBRY Confirm Send Data By DNN</wsdl:documentation>
+      <wsdl:input message="tns:ExecuteConfirmSendDataByDNNSoapIn" />
+      <wsdl:output message="tns:ExecuteConfirmSendDataByDNNSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BBRYWebServiceSoap" type="tns:BBRYWebServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ExecuteInsertRecodeHead">
+      <soap:operation soapAction="http://www.efoxconn.com/fusereport/webservice/ExecuteInsertRecodeHead" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteGetDataByDNN">
+      <soap:operation soapAction="http://www.efoxconn.com/fusereport/webservice/ExecuteGetDataByDNN" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteConfirmSendDataByDNN">
+      <soap:operation soapAction="http://www.efoxconn.com/fusereport/webservice/ExecuteConfirmSendDataByDNN" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BBRYWebServiceSoap12" type="tns:BBRYWebServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ExecuteInsertRecodeHead">
+      <soap12:operation soapAction="http://www.efoxconn.com/fusereport/webservice/ExecuteInsertRecodeHead" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteGetDataByDNN">
+      <soap12:operation soapAction="http://www.efoxconn.com/fusereport/webservice/ExecuteGetDataByDNN" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteConfirmSendDataByDNN">
+      <soap12:operation soapAction="http://www.efoxconn.com/fusereport/webservice/ExecuteConfirmSendDataByDNN" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BBRYWebService">
+    <wsdl:port name="BBRYWebServiceSoap" binding="tns:BBRYWebServiceSoap">
+      <soap:address location="http://10.74.14.48/report/webservice/bbryservice.asmx" />
+    </wsdl:port>
+    <wsdl:port name="BBRYWebServiceSoap12" binding="tns:BBRYWebServiceSoap12">
+      <soap12:address location="http://10.74.14.48/report/webservice/bbryservice.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

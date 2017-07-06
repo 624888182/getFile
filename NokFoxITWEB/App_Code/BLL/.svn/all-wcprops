@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/MainMot/!svn/ver/71/App_Code/BLL
+END
+DbEngine.cs
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/MainMot/!svn/ver/1/App_Code/BLL/DbEngine.cs
+END
+vssver.scc
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/MainMot/!svn/ver/1/App_Code/BLL/vssver.scc
+END
+StringFormat.cs
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MainMot/!svn/ver/1/App_Code/BLL/StringFormat.cs
+END
+CoverOrNot.cs
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/MainMot/!svn/ver/1/App_Code/BLL/CoverOrNot.cs
+END
+Operation.cs
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/MainMot/!svn/ver/1/App_Code/BLL/Operation.cs
+END
+Users.cs
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/MainMot/!svn/ver/1/App_Code/BLL/Users.cs
+END
+DataBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/MainMot/!svn/ver/71/App_Code/BLL/DataBase.cs
+END
+MenuModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/MainMot/!svn/ver/1/App_Code/BLL/MenuModel.cs
+END
+ExcelEngine.cs
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/MainMot/!svn/ver/1/App_Code/BLL/ExcelEngine.cs
+END
+DataConn.cs
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/MainMot/!svn/ver/1/App_Code/BLL/DataConn.cs
+END
+ExcelWR.cs
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/MainMot/!svn/ver/1/App_Code/BLL/ExcelWR.cs
+END
+OraDataConn.cs
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MainMot/!svn/ver/23/App_Code/BLL/OraDataConn.cs
+END

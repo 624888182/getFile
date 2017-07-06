@@ -1,0 +1,269 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="FindDNByPOSO.aspx.cs" Inherits="FindDNByPOSO" %>
+
+<%@ Register Src="WebControler/Controls/Calendar1.ascx" TagName="Calendar1" TagPrefix="uc2" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Find DN By PO/SO/Carton</title>
+    <style type="text/css">
+        .style1
+        {
+            width: 70%;
+        }
+        .style2
+        {
+            text-align: center;
+            font-size: xx-large;
+            color: red;
+        }
+        .style3
+        {
+            width: 25%;
+        }
+        .style4
+        {
+            width: 27%;
+        }
+        .style5
+        {
+            width: 20%;
+        }
+        .style6
+        {
+            width: 24%;
+        }
+        .style7
+        {
+            width: 28%;
+        }
+    </style>
+
+    <script language="javascript" type="text/jscript" src="Jscript/Calendar.js">
+    
+    </script>
+
+</head>
+<body bgcolor="#7ECED5">
+    <form id="form1" runat="server">
+    <div>
+        <table class="style1" align="center">
+            <tr>
+                <td colspan="4" class="style2">
+                    <asp:Label ID="lblSubject" runat="server" Text="Find DN By PO/SO/Carton"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td class="style3">
+                    <asp:Label ID="lblSelectCondition" runat="server" Text="請選擇查詢條件：" ForeColor="#FF0066"
+                        Font-Size="Large"></asp:Label>
+                </td>
+                <td class="style4">
+                    <asp:RadioButtonList ID="rboConditions" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rboConditions_SelectedIndexChanged">
+                        <asp:ListItem Value="1" Selected="True">By Date</asp:ListItem>
+                        <asp:ListItem Value="2">By PO</asp:ListItem>
+                        <asp:ListItem Value="3">By Manual SO</asp:ListItem>
+                        <asp:ListItem Value="4">By SAP SO</asp:ListItem>
+                        <asp:ListItem Value="5">By Carton</asp:ListItem>
+                    </asp:RadioButtonList>
+                </td>
+                <td>
+                    <asp:Button ID="BtnQuery" runat="server" Text="Query" OnClick="BtnQuery_Click" />
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <asp:Panel ID="panelDate" runat="server">
+                        <table width="100%">
+                            <tr>
+                                <td class="style7">
+                                    <asp:Label ID="lblStartDate" runat="server" Text="Begin Date：" ForeColor="#FF0066"></asp:Label>
+                                </td>
+                                <td class="style6">
+                                    <asp:TextBox ID="txtStartDate" runat="server" ForeColor="#0081AC" onclick="showCalendar();"
+                                        onkeypress="javascript:event.returnValue=false;"></asp:TextBox>
+                                </td>
+                                <td class="style5">
+                                    <asp:Label ID="lblEndDate" runat="server" Text="End Date：" ForeColor="#FF0066"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtEndDate" runat="server" ForeColor="#0081AC" onclick="showCalendar();"
+                                        onkeypress="javascript:event.returnValue=false;"></asp:TextBox>
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <asp:Panel ID="panelPO" runat="server">
+                        <table width="100%">
+                            <tr>
+                                <td class="style7">
+                                    <asp:Label ID="lblPO" runat="server" Text="請輸入或選擇PO:" ForeColor="#FF0066"></asp:Label>
+                                </td>
+                                <td class="style6">
+                                    <asp:TextBox ID="txtPO" runat="server"></asp:TextBox>
+                                </td>
+                                <td>
+                                    <asp:DropDownList ID="ddlPO" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlPO_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <asp:Panel ID="panelManualSO" runat="server">
+                        <table width="100%">
+                            <tr>
+                                <td class="style7">
+                                    <asp:Label ID="lblManualSO" runat="server" Text="請輸入或選擇Manual SO:" ForeColor="#FF0066"></asp:Label>
+                                </td>
+                                <td class="style6">
+                                    <asp:TextBox ID="txtManualSO" runat="server"></asp:TextBox>
+                                </td>
+                                <td>
+                                    <asp:DropDownList ID="ddlManualSO" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlManualSO_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <asp:Panel ID="panelSapSO" runat="server">
+                        <table width="100%">
+                            <tr>
+                                <td class="style7">
+                                    <asp:Label ID="lblSapSO" runat="server" Text="請輸入或選擇Sap SO:" ForeColor="#FF0066"></asp:Label>
+                                </td>
+                                <td class="style6">
+                                    <asp:TextBox ID="txtSapSO" runat="server"></asp:TextBox>
+                                </td>
+                                <td>
+                                    <asp:DropDownList ID="ddlSapSO" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlSapSO_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <asp:Panel ID="panelCarton" runat="server">
+                        <table width="100%">
+                            <tr>
+                                <td class="style7">
+                                    <asp:Label ID="lblCarton" runat="server" Text="請輸入或選擇CartonID:" ForeColor="#FF0066"></asp:Label>
+                                </td>
+                                <td class="style6">
+                                    <asp:TextBox ID="txtCartonID" runat="server"></asp:TextBox>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+                </td>
+            </tr>
+            <tr>
+                <td class="style7">
+                    <asp:Label ID="lblTotal" runat="server" Text="SAP 總量：" ForeColor="#FF0066"></asp:Label>
+                </td>
+                <td class="style6">
+                    <asp:Label ID="lblTotalQuantity" runat="server" Font-Bold="True" Font-Size="Large"
+                        ForeColor="Blue"></asp:Label>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+            </tr>
+        </table>
+        <table align="center">
+            <tr>
+                <td align="center">
+                    <asp:GridView ID="gvList" runat="server" AutoGenerateColumns="False" AllowPaging="True"
+                        OnPageIndexChanging="gvList_PageIndexChanging" OnRowDataBound="gvList_RowDataBound"
+                        PageSize="20">
+                        <RowStyle BackColor="#EFF3FC" BorderColor="#000000" BorderStyle="Solid" ForeColor="#000000"
+                            HorizontalAlign="Center" />
+                        <Columns>
+                            <asp:TemplateField HeaderText="NO">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblBindNO" runat="server" Text="<%# Container.DataItemIndex+1%>"></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="PO">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblBindPO" runat="server" Text='<%# DataBinder.Eval(Container.DataItem,"CUSTOMER_PO") %>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="SAP_SO">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblSapSO" runat="server" Text='<%#DataBinder.Eval(Container.DataItem,"SO_NO")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Manual_SO">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblManualSO" runat="server" Text='<%#DataBinder.Eval(Container.DataItem,"SO_NUMBER")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="DN">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblDN" runat="server" Text='<%#DataBinder.Eval(Container.DataItem,"INVOICE_NUMBER")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="QUANTITY">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblQuantity" runat="server" Text='<%#DataBinder.Eval(Container.DataItem,"QUANTITY")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="SHIP_TO_CUSTOMERNAME">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblCustomer" runat="server" Text='<%# DataBinder.Eval(Container.DataItem," SHIP_TO_CUSTOMERNAME")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="SHIP_TO_COUNTRY">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblCountry" runat="server" Text='<%# DataBinder.Eval(Container.DataItem,"SHIP_TO_COUNTRY")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="SHIP_TO_CITY">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblCity" runat="server" Text='<%# DataBinder.Eval(Container.DataItem,"SHIP_TO_CITY")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="SHIP_DATE">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblShipDate" runat="server" Text='<%#DataBinder.Eval(Container.DataItem,"SHIP_DATE")%>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                        <AlternatingRowStyle BackColor="#FFFFFF" ForeColor="#000000" />
+                        <PagerStyle BackColor="#EBE8E1" Font-Bold="true" ForeColor="#000000" />
+                        <HeaderStyle BackColor="#3399FF" HorizontalAlign="Center" />
+                    </asp:GridView>
+                </td>
+            </tr>
+        </table>
+    </div>
+    </form>
+</body>
+</html>

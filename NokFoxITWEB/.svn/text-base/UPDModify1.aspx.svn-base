@@ -1,0 +1,44 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="UPDModify1.aspx.cs" Inherits="UPDModify1" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Untitled Page</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <table align="center" style="border: solid 1px red; text-align: center;" cellpadding="1px">
+            <tr>
+                <td colspan="2" bgcolor="red" style="height: 50px">
+                    <asp:Label Text="系统登陆" runat="server"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td align="center" style="height: 30px">
+                    <asp:Label Text="用户名" BackColor="Green" runat="server" Width="100px">
+                    </asp:Label>
+                </td>
+                <td>
+                    <asp:TextBox ID="namebox" runat="server" Width="180px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td align="center" style="height: 30px">
+                    <asp:Label ID="Label1" Text="密   码" BackColor="Green" runat="server" Width="100px">
+                    </asp:Label>
+                </td>
+                <td>
+                    <asp:TextBox ID="passwordbox" runat="server" Width="180px" TextMode="Password"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="right">
+                    <asp:Button ID="checkname" runat="server" Text="登陆" onclick="checkname_Click" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    </form>
+</body>
+</html>

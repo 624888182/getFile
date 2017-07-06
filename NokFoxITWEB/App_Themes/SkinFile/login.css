@@ -1,0 +1,35 @@
+﻿/*login start*/
+#login
+{
+    position:relative;
+    top:30%;
+    margin:0 auto;
+    background:url(images/login.jpg) no-repeat;
+    width:493px;
+    height:290px;
+}
+#user
+{
+    margin:260px 0px 0px 10px;
+    width:475px;
+    height:25px;
+    text-align:left;
+}
+.loginButton
+{
+    border-style: none;
+	border-color: inherit;
+	border-width: 0px;
+	width:77px;
+    	height:19px;
+    	background:url(images/loginButton.gif) no-repeat;    
+    	padding-left:8px;
+	text-align: center;
+}
+#loginMessage
+{
+    margin-top:10px;
+    margin-left:20px;
+    width:400px;
+}
+ /*login end*/

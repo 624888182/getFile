@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base
+END
+UsersBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base/UsersBase.cs
+END
+vssver2.scc
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base/vssver2.scc
+END
+DepartmentBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base/DepartmentBase.cs
+END
+SysConfigBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base/SysConfigBase.cs
+END
+SysModuleBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base/SysModuleBase.cs
+END
+DeptRoleGpBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base/DeptRoleGpBase.cs
+END
+OperRoleDetailBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base/OperRoleDetailBase.cs
+END
+OperRoleGpBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base/OperRoleGpBase.cs
+END
+OperateBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/SqlServer/base/OperateBase.cs
+END

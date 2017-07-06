@@ -1,0 +1,4 @@
+2011/08/03 20:25:56 || [ERROR] ORA-01017: invalid username/password; logon denied
+:COracleDB()
+2011/08/03 20:25:58 || [ERROR] ORA-01017: invalid username/password; logon denied
+:GetDataReader()

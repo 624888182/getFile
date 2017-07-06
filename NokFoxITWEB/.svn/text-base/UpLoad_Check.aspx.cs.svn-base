@@ -1,0 +1,855 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+using System.Data;
+using System.Data.OleDb;
+using System.Collections;
+using System.Net;
+using System.IO;
+using System.Data.OracleClient;
+using System.Threading;
+using System.Diagnostics;
+using System.ComponentModel;
+
+
+public partial class UpLoad_Check : System.Web.UI.Page
+{
+    public static readonly string UPLOAD_DIR = @"D:\UPLOAD\TestData";
+    public static readonly string[] UPLOAD_BAK ={@"D:\UPLOAD\TJCellon\",
+                                                 @"D:\UPLOAD\TJNLX\",
+                                                };
+    public static readonly string ZIP_CMD = @"C:\Program Files\7-Zip\7z.exe";
+    public static readonly string [] TableName = { "SFC.R_WIP_TRACKING_T",
+                                                   "SFC.R_WIP_TRACKING_T_PID", 
+                                                   "SFC.MES_ASSY_HISTORY",
+                                                   "SFC.MES_ASSY_PID_JOIN", 
+                                                   "SFC.MES_ASSY_WIP",
+                                                   "SFC.MES_PCBA_HISTORY",
+                                                   "TESTINFO.TESTINFO_HEAD" };
+    CheckData CD = new CheckData();
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!Page.IsPostBack)
+        {
+            if (Directory.Exists(UPLOAD_DIR))
+            {
+                Directory.CreateDirectory(UPLOAD_DIR);
+            }
+            flashCheckCount();
+            flashCheckfield();
+
+        }
+        
+    }
+
+    /// <summary>
+    /// Check .xls File Event
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void btnCheck_Click(object sender, EventArgs e)
+    {
+        if (this.tableSwitch.Visible == false)
+        {
+            this.tableSwitch.Visible = true;
+            this.tabDbOpertion.Visible = false;
+            return;
+        }
+    }   
+
+    /// <summary>
+    /// 獲取指定.xls文件的內容
+    /// </summary>
+    /// <param name="FileName"></param>
+    /// <returns></returns>
+    private DataSet getDataFromExcel(string FileName)
+    {
+        DataSet dsXls = new DataSet();
+        string strSheetName = string.Empty;
+        string strConn;
+        strConn = "Provider=Microsoft.Jet.OLEDB.4.0;"
+            + "Data Source=" + FileName + ";"
+            + "Extended Properties='Excel 8.0;HDR=Yes;IMEX=1';";   
+        OleDbConnection objConn = new OleDbConnection(strConn);
+        objConn.Open();
+        DataTable schemaTable = objConn.GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, null);
+        int i;
+        for (i = 0; i < schemaTable.Rows.Count; i++)
+        {
+            strSheetName = schemaTable.Rows[i][2].ToString().Trim();
+
+            try
+            {
+                OleDbCommand cmdXls = new OleDbCommand("SELECT * FROM [" + strSheetName + "]", objConn);
+                OleDbDataAdapter objAdapter = new OleDbDataAdapter();
+                objAdapter.SelectCommand = cmdXls;
+                objAdapter.Fill(dsXls);
+            }
+            finally
+            {
+               //
+            }
+        }
+        objConn.Close();
+        return dsXls;
+    }
+
+    /// <summary>
+    /// 查詢指定文件夾有無文件
+    /// </summary>
+    /// <param name="DirFullPath"></param>
+    /// <returns></returns>
+    private List<string> GetDirFiles(string DirFullPath)
+    {
+        if (Directory.Exists(DirFullPath) == true)
+        {
+            List<string> list = new List<string>();
+            //获取当前目录下指定文件类型的文件列表
+            string[] stringList = Directory.GetFiles(DirFullPath);
+
+            foreach (string str in stringList)
+            {
+                string fileName;
+                fileName = System.IO.Path.GetFileNameWithoutExtension(str);
+                list.Add(fileName);
+
+            }
+            return list;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// 去除中間空格
+    /// </summary>
+    /// <param name="Source"></param>
+    /// <returns></returns>
+    private string DeleteTrim(string Source)
+    {
+        string YuanStr=string.Empty;
+        string NewStr=string.Empty;
+        YuanStr=Source;
+        CharEnumerator CE = YuanStr.GetEnumerator();
+        while (CE.MoveNext())
+        {
+            byte[] array = new byte[1];
+            array = System.Text.Encoding.ASCII.GetBytes(CE.Current.ToString());
+            int AsciiCode = (short)(array[0]);
+            if (AsciiCode != 32)
+            {
+                NewStr += CE.Current.ToString();
+            }
+        }
+        return NewStr;
+    }
+
+    /// <summary>
+    /// flash
+    /// </summary>
+    private void flashCheckCount()
+    {
+        this.tbMessage.Visible = false;
+        this.tberrorMessage.Visible = false;
+        this.tbCountMessage.Visible = false;
+        this.tableGrivwDisay.Visible = false;
+        this.tabDbOpertion.Visible = false;
+        this.tbCartonMesage.Visible = false;
+        this.tableSwitch.Visible = false;
+        this.tableUploadFile.Visible = false;
+    }
+
+    private void flashCheckfield()
+    {
+        this.taCheackvalue.Visible = false;
+    }
+
+    /// <summary>
+    /// RowCreated
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void GridViewftram1_RowCreated(object sender, GridViewRowEventArgs e)
+    {
+        e.Row.Attributes.Add("onmouseover", "c=this.style.backgroundColor;this.style.backgroundColor='#0099ff'");
+        e.Row.Attributes.Add("onmouseout", "this.style.backgroundColor=c;");
+    }
+
+    /// <summary>
+    /// PageIndexChanging
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void GridViewftram1_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        this.GridViewftram1.PageIndex = e.NewPageIndex;
+        GetBind();
+    }
+
+    /// <summary>
+    /// Bind Event
+    /// </summary>
+    private void GetBind()
+    {
+        int iRet = 0;
+        string strSql = string.Empty;
+        DataTable dtPage=new DataTable();
+        dtPage = null;
+        strSql = @"SELECT DOCUMENTID,PSN,F0,F1,F2,F3,F4,F5,F6 FROM sfis1.check_data ORDER BY DOCUMENTID";
+        iRet = CD.PageGet(strSql, ref dtPage);
+        this.GridViewftram1.DataSource = dtPage;
+        this.GridViewftram1.DataBind();
+
+    }
+
+    /// <summary>
+    /// 壓縮
+    /// </summary>
+    /// <param name="strSrcPath"></param>
+    /// <param name="strTarPath"></param>
+    /// <returns></returns>
+    private  bool ZipFile(string strSrcPath, string strTarPath)
+    {
+        bool bRet = true;
+        try
+        {
+
+            Process p = new Process();
+            p.StartInfo.FileName = ZIP_CMD;
+            p.StartInfo.Arguments = @" a -tzip " + strTarPath + " " + strSrcPath;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.CreateNoWindow = true;
+            p.Start();
+            p.StandardInput.WriteLine("haha");
+            p.StandardInput.WriteLine("exit");
+            p.StandardOutput.ReadToEnd();
+            p.Close();
+        }
+        catch (Win32Exception ex)
+        {
+            bRet = false;
+        }
+        return bRet;
+    }
+
+   /// <summary>
+   /// 解壓縮
+   /// </summary>
+   /// <param name="direcInfo"></param>
+   /// <returns></returns>
+    private bool UnZipFile(DirectoryInfo direcInfo)
+　　{
+      bool bRet = false;
+      string PathAtt = Server.MapPath(".");
+      PathAtt += @"\DataCheck";
+      try
+      {
+          if (direcInfo.Exists)
+          {
+              foreach (FileInfo fileInfo in direcInfo.GetFiles("*.rar"))
+              {
+                  Process ps = new Process();
+                  ps.StartInfo.FileName = ZIP_CMD;
+                  ps.StartInfo.Arguments = " e " + direcInfo + fileInfo.Name + " -o" + PathAtt;
+                  ps.StartInfo.UseShellExecute = false;
+                  ps.StartInfo.RedirectStandardInput = true;
+                  ps.StartInfo.RedirectStandardOutput = true;
+                  ps.StartInfo.RedirectStandardError = true;
+                  ps.Start();
+                  bRet = true;
+              }
+              foreach (FileInfo fileInfo in direcInfo.GetFiles("*.zip"))
+              {
+                  Process ps = new Process();
+                  ps.StartInfo.FileName = ZIP_CMD;
+                  ps.StartInfo.Arguments = " e " + direcInfo + fileInfo.Name + " -o" + PathAtt;
+                  ps.StartInfo.UseShellExecute = false;
+                  ps.StartInfo.RedirectStandardInput = true;
+                  ps.StartInfo.RedirectStandardOutput = true;
+                  ps.StartInfo.RedirectStandardError = true;
+                  ps.Start();
+                  bRet = true;
+              }
+              foreach (FileInfo fileInfo in direcInfo.GetFiles("*.7z"))
+              {
+                  Process ps = new Process();
+                  ps.StartInfo.FileName = ZIP_CMD;
+                  ps.StartInfo.Arguments = " e " + direcInfo + fileInfo.Name + " -o" + PathAtt;
+                  ps.StartInfo.UseShellExecute = false;
+                  ps.StartInfo.RedirectStandardInput = true;
+                  ps.StartInfo.RedirectStandardOutput = true;
+                  ps.StartInfo.RedirectStandardError = true;
+                  ps.Start();
+                  bRet = true;
+              }
+          }
+      }
+      catch (Exception ex)
+      { 
+        
+      }
+
+      return bRet;
+　　}
+
+    /// <summary>
+    /// Check Table Field Values Event
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        string sSourceFileName = string.Empty;
+        string UploadFileName = string.Empty;
+        string Rename = string.Empty;
+        string ErrorMessage=string.Empty;
+        string FindError = string.Empty;
+        bool iRet =false;
+        FileOperation FP = new FileOperation();
+
+        List<string> FileName = GetDirFiles(UPLOAD_DIR);
+        if (FileName.Count == 0)
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('文件目錄為空!'); </script>");
+            FindError = UPLOAD_DIR + "文件目錄為空";
+            this.LabMessage.Text = FindError;
+            this.tberrorMessage.Visible = true;
+            return;
+        }
+        string[] GetPathList = Directory.GetFiles(UPLOAD_DIR);
+        for (int i = 0; i < GetPathList.Length; i++)
+        {
+            int errortempCount = 0;
+            DataTable dt = getDataFromExcel(GetPathList[i].ToString()).Tables[0];
+            string TableSoure = System.IO.Path.GetFileNameWithoutExtension(GetPathList[i].ToString());
+            TableSoure = DeleteTrim(TableSoure);
+            try
+            {
+                iRet = CD.CheckField(TableSoure, dt, ref errortempCount, ref ErrorMessage);
+
+                if (!iRet)
+                {
+                    disaylabel(TableSoure, errortempCount);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+        }
+        flashCheckCount();
+        this.taCheackvalue.Visible = true;
+    }
+
+    private void disaylabel(string TableName, int error)
+    {
+        if (TableName == "SFC.R_WIP_TRACKING_T")
+        {
+            if (error == 0)
+            {
+                this.lbltracking_t.Text = "";
+                this.lbltracking_t.Visible = false;
+            }
+            else
+            {
+                this.lbltracking_t.Text = Convert.ToString(error); 
+            }
+            
+
+        }
+        else if (TableName == "SFC.R_WIP_TRACKING_T_PID")
+        {
+            if (error == 0)
+            {
+                this.lbltracking_t_pid.Text = "";
+                this.LinkTracking_t_pid.Visible = false;
+            }
+            else
+            {
+                this.lbltracking_t_pid.Text = Convert.ToString(error);
+            }
+        }
+        else if (TableName == "SFC.MES_ASSY_HISTORY")
+        {
+            if (error == 0)
+            {
+                this.lblhistory.Text = "";
+                this.LinkAssyHistory.Visible = false;
+            }
+            else
+            {
+                this.lblhistory.Text = Convert.ToString(error);
+            }
+        }
+        else if (TableName == "SFC.MES_ASSY_PID_JOIN")
+        {
+            if (error == 0)
+            {
+                this.lblassypidjoin.Text = "";
+                this.LinkAssyPidJoin.Visible = false;
+            }
+            else
+            {
+                this.lblassypidjoin.Text = Convert.ToString(error);
+            }
+        }
+        else if (TableName == "SFC.MES_ASSY_WIP")
+        {
+            if (error == 0)
+            {
+                this.lblassywip.Text = "";
+                this.LinkAssyWip.Visible = false;
+            }
+            else
+            {
+                this.lblassywip.Text = Convert.ToString(error);
+            }
+        }
+        else if (TableName == "SFC.MES_PCBA_HISTORY")
+        {
+            if (error == 0)
+            {
+                this.lblpcbahistory.Text ="";
+                this.LinkPcbaHistory.Visible = false;
+            }
+            else
+            {
+               this.lblpcbahistory.Text = Convert.ToString(error);
+            }
+        }
+        else if (TableName == "TESTINFO.TESTINFO_HEAD")
+        {
+            if (error == 0)
+            {
+                this.lbltestinfohead.Text ="";
+                this.LinkTestinfoHead.Visible = false;
+            }
+            else
+            {
+                this.lbltestinfohead.Text = Convert.ToString(error);     
+            }
+        }
+        else
+        {
+
+        }
+    }
+
+    /// <summary>
+    /// 文件下載
+    /// </summary>
+    /// <param name="PathName"></param>
+    private void DownLoadFile(string PathName)
+    {
+        if (File.Exists(PathName))
+        {
+            Response.Clear();
+            Response.ClearHeaders();
+            Response.Buffer = false;
+            Response.ContentType = "application/octet-stream";
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(PathName, System.Text.Encoding.UTF8));
+            Response.TransmitFile(PathName);
+            Response.Flush();
+            Response.End();
+        }
+        else
+        {
+            Response.Write("<script language='javascript'>alert('無附件,請確認！');</script>");
+
+        }
+
+    }
+
+    /// <summary>
+    /// 遞歸刪除文件夾及文件
+    /// </summary>
+    /// <param name="dir"></param>
+    public void DeleteFolder(string dir)
+    {
+        if (Directory.Exists(dir)) //如果存在这个文件夹删除之 
+        {
+            foreach (string d in Directory.GetFileSystemEntries(dir))
+            {
+                if (File.Exists(d))
+                    File.Delete(d); //直接删除其中的文件 
+                else
+                    DeleteFolder(d); //递归删除子文件夹 
+            }
+        }
+    } 
+
+
+    protected void LinkTracking_t_Click(object sender, EventArgs e)
+    {
+        string Path=AppDomain.CurrentDomain.BaseDirectory + "\\CheckLog\\";
+        string PathName = Path + "SFC.R_WIP_TRACKING_T" + ".txt";
+        DownLoadFile(PathName);
+    }
+
+    protected void LinkTracking_t_pid_Click(object sender, EventArgs e)
+    {
+        string Path = AppDomain.CurrentDomain.BaseDirectory + "\\CheckLog\\";
+        string PathName = Path + "SFC.R_WIP_TRACKING_T_PID" + ".txt";
+        DownLoadFile(PathName);
+    }
+
+    protected void LinkAssyHistory_Click(object sender, EventArgs e)
+    {
+        string Path = AppDomain.CurrentDomain.BaseDirectory + "\\CheckLog\\";
+        string PathName = Path + "SFC.MES_ASSY_HISTORY" + ".txt";
+        DownLoadFile(PathName);
+    }
+
+    protected void LinkAssyPidJoin_Click(object sender, EventArgs e)
+    {
+        string Path = AppDomain.CurrentDomain.BaseDirectory + "\\CheckLog\\";
+        string PathName = Path + "SFC.MES_ASSY_PID_JOIN" + ".txt";
+        DownLoadFile(PathName);
+    }
+    
+    protected void LinkAssyWip_Click(object sender, EventArgs e)
+    {
+        string Path = AppDomain.CurrentDomain.BaseDirectory + "\\CheckLog\\";
+        string PathName = Path + "SFC.MES_ASSY_WIP" + ".txt";
+        DownLoadFile(PathName);
+    }
+    
+    protected void LinkPcbaHistory_Click(object sender, EventArgs e)
+    {
+        string Path = AppDomain.CurrentDomain.BaseDirectory + "\\CheckLog\\";
+        string PathName = Path + "SFC.MES_PCBA_HISTORY" + ".txt";
+        DownLoadFile(PathName);
+    }
+    
+    protected void LinkTestinfoHead_Click(object sender, EventArgs e)
+    {
+        string Path = AppDomain.CurrentDomain.BaseDirectory + "\\CheckLog\\";
+        string PathName = Path + "TESTINFO.TESTINFO_HEAD" + ".txt";
+        DownLoadFile(PathName);
+    }
+
+    protected void BtnOpertion_Click(object sender, EventArgs e)
+    {
+        this.tableSwitch.Visible = false;
+        this.tableUploadFile.Visible = false;
+         flashCheckCount();
+         this.tabDbOpertion.Visible = true;
+    }
+
+    protected void ButDel_Click(object sender, EventArgs e)
+    {
+        string RecStatus = "D";
+        string DropDownField=string.Empty;
+        string TextField=string.Empty;
+        int iRet=0;
+        if (DropDownSwitch.SelectedValue == "")
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('請選擇操作方式!'); </script>");
+            RadioWitch.Focus();
+            return;
+        }
+        if (TextInput.Text.Equals(""))
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('請輸入有效值!'); </script>");
+            RadioWitch.Focus();
+            return;
+        }
+        DropDownField=DropDownSwitch.SelectedValue.ToString();
+        TextField=TextInput.Text.ToString().Trim();
+        try
+        {
+            iRet = CD.DbOperton(DropDownField, TextField, RecStatus);
+        }
+        catch(Exception ex)
+        {
+            ex.ToString();
+        }
+        if (iRet == 0)
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('操作成功!'); </script>");
+            RadioWitch.Focus();
+            return;
+        }
+        if (iRet == -1)
+        {
+            this.LabMessage.Text = CD.GetFerror();
+            this.tberrorMessage.Visible = true;
+        }
+
+
+    }
+
+    protected void ButFail_Click(object sender, EventArgs e)
+    {
+        string RecStatus = "E";
+        string DropDownField = string.Empty;
+        string TextField = string.Empty;
+        int iRet = 0;
+        if (DropDownSwitch.SelectedValue == "")
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('請選擇操作方式!'); </script>");
+            RadioWitch.Focus();
+            return;
+        }
+        if (TextInput.Text.Equals(""))
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('請輸入有效值!'); </script>");
+            RadioWitch.Focus();
+            return;
+        }
+        DropDownField = DropDownSwitch.SelectedValue.ToString();
+        TextField = TextInput.Text.ToString().Trim();
+        try
+        {
+            iRet = CD.DbOperton(DropDownField, TextField, RecStatus);
+        }
+        catch (Exception ex)
+        {
+            ex.ToString();
+        }
+        if (iRet == 0)
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('操作成功!'); </script>");
+            RadioWitch.Focus();
+            return;
+        }
+        if (iRet == -1)
+        {
+            this.LabMessage.Text = CD.GetFerror();
+            this.tberrorMessage.Visible = true;
+        }
+     
+    }
+
+    /// <summary>
+    /// 上傳客戶傳來的打包文件
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void BtnUpload_Click(object sender, EventArgs e)
+    {
+        string sSourceFileName = string.Empty;
+        string UploadFilePath = string.Empty;
+        if (Directory.Exists(UPLOAD_DIR))
+         {
+             string[] FileNameCount = Directory.GetFiles(UPLOAD_DIR);
+             if (FileNameCount.Length > 0)
+             {
+                 foreach (string FN in FileNameCount)
+                 {
+                     File.Delete(FN);
+                 }
+             }
+         }
+        if (FileUpload1.FileName == "")
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('驗證文件為空！'); </script>");
+            return;
+        }
+        string FileName = FileUpload1.FileName;
+        string FileNameTop = System.IO.Path.GetFileNameWithoutExtension(FileName);
+        string isExtension = FileName.Substring(FileName.LastIndexOf(".") + 1);
+        if (!(isExtension.Equals("zip") || isExtension.Equals("rar") || isExtension.Equals("7z")))
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('驗證文件為空！'); </script>");
+            return;
+        }
+        if (FileUpload1.PostedFile != null && FileUpload1.PostedFile.ContentLength != 0)
+        {
+            sSourceFileName = Server.MapPath("");
+            UploadFilePath = sSourceFileName + @"\Upload\";
+            sSourceFileName = sSourceFileName + @"\Upload\" + FileUpload1.FileName;
+            FileUpload1.SaveAs(sSourceFileName);
+        }
+        else
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('上傳失敗!'); </script>");
+            return;
+        }
+        DirectoryInfo dir = new DirectoryInfo(UploadFilePath);
+        bool UpZipRet = UnZipFile(dir);
+        if (!UpZipRet)
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('上傳成功但解壓失敗!'); </script>");
+            return;
+        }
+        System.IO.File.Delete(sSourceFileName);
+        this.tableSwitch.Visible = true;
+        this.tableUploadFile.Visible = false;
+
+    }
+
+    /// <summary>
+    /// 驗證文件內容
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void BtnApllication_Click(object sender, EventArgs e)
+    {
+        string sSourceFileName = string.Empty;
+        string UploadFileName = string.Empty;
+        string Rename = string.Empty;
+        string DoucumentId = string.Empty;
+        string PSN = string.Empty;
+        string FindError = string.Empty;
+        int iRet = 0;
+        int InsertSucess = 0; int InsertError = 0; int UpdateSucess = 0; int UpdateError = 0; int ALLCount = 0; int RightCount = 0;
+        int TableCount = 0;
+        string SwitchBak = string.Empty;
+        FileOperation FP = new FileOperation();
+        
+        if (RadioWitch.SelectedValue == "")
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('請選擇資料來源!'); </script>");
+            RadioWitch.Focus();
+            return;
+        }
+        if (RadioWitch.SelectedValue == "A")
+        {
+            SwitchBak = UPLOAD_BAK[0].ToString();
+        }
+        if (RadioWitch.SelectedValue == "B")
+        {
+            SwitchBak = UPLOAD_BAK[1].ToString();
+        }
+        string SwithcValue = RadioWitch.SelectedValue;
+        List<string> FileName = GetDirFiles(UPLOAD_DIR);
+        if (FileName.Count == 0)
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('文件目錄為空!'); </script>");
+            FindError = UPLOAD_DIR + "文件目錄為空";
+            this.LabMessage.Text = FindError;
+            this.tberrorMessage.Visible = true;
+            return;
+        }
+       
+        string[] GetPathList = Directory.GetFiles(UPLOAD_DIR);
+        DoucumentId = DateTime.Now.ToString("yyyyMMddHHss");
+        for (int i = 0; i < GetPathList.Length; i++)
+        {
+            int InsertSucessTemp = 0; int InsertErrorTemp = 0; int UpdateSucessTemp = 0; int UpdateErrorTemp = 0;
+            TableCount++;
+            DataTable dt = getDataFromExcel(GetPathList[i].ToString()).Tables[0];
+            string TableSoure = System.IO.Path.GetFileNameWithoutExtension(GetPathList[i].ToString());
+            TableSoure = DeleteTrim(TableSoure);
+            if (TableSoure == "SFC.R_WIP_TRACKING_T")
+            {
+                continue;
+            }
+            if (TableSoure == "CARTON_PSN")
+            {
+                continue;
+            }
+            if (TableSoure == "SFC.R_MO_BASE_T")
+            {
+                continue;
+            }
+            if (TableSoure == "SHP.CMCS_SFC_AORDER")
+            {
+                continue;
+            }
+            try
+            {
+                iRet = CD.InsertData(TableSoure, DoucumentId, dt, ref InsertSucessTemp, ref InsertErrorTemp, ref UpdateSucessTemp, ref UpdateErrorTemp);
+                InsertSucess = InsertSucess + InsertSucessTemp;
+                InsertError = InsertError + InsertErrorTemp;
+                UpdateSucess = UpdateSucess + UpdateSucessTemp;
+                UpdateError = UpdateError + UpdateErrorTemp;
+
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+
+        }
+        int UpdateCountSucessTemp = 0; int UpdateCountErrorTemp = 0; int UpdateCountFailErrorTemp = 0;
+        if (RadioWitch.SelectedValue=="A")
+        {
+            if (iRet == 0)
+            {
+                string CartonTablePath = UPLOAD_DIR + "\\" + "CARTON_PSN.xls";
+                DataTable dt = getDataFromExcel(CartonTablePath).Tables[0];
+                string TableSoure = System.IO.Path.GetFileNameWithoutExtension(CartonTablePath);
+                if (TableSoure.Length != 0)
+                {
+                    TableSoure = DeleteTrim(TableSoure);
+                    try
+                    {
+                        iRet = CD.InsertCartonData(TableSoure, DoucumentId, dt, ref UpdateCountSucessTemp, ref UpdateCountFailErrorTemp, ref UpdateCountErrorTemp);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.ToString();
+                    }
+                }
+            }
+        }
+        try
+        {
+            DataTable dtAll = new DataTable();
+            iRet = CD.CollectData(DoucumentId, ref ALLCount, ref RightCount, ref dtAll, SwithcValue);
+            if (iRet == 0)
+            {
+                this.GridViewftram1.DataSource = dtAll;
+                this.GridViewftram1.DataBind();
+                this.labInsertSucessStatus.Text = Convert.ToString(InsertSucess);
+                this.labInsertErrorStatus.Text = Convert.ToString(InsertError);
+                this.LabUpdateSucessStatus.Text = Convert.ToString(UpdateSucess);
+                this.LabUpdateErrorStatus.Text = Convert.ToString(UpdateError);
+                this.LabCountResult.Text = Convert.ToString(ALLCount);
+                this.LabCountSucessResult.Text = Convert.ToString(RightCount);
+                this.Labetablestus.Text = Convert.ToString(TableCount);
+                this.LabelCountScess.Text = Convert.ToString(UpdateCountSucessTemp);
+                this.LabelCountFail.Text = Convert.ToString(UpdateCountFailErrorTemp);
+                this.LabelCountError.Text = Convert.ToString(UpdateCountErrorTemp);
+                this.labDocumentIDStatus.Text = DoucumentId;
+                this.tbMessage.Visible = true;
+                this.tbCountMessage.Visible = true;
+                this.tableGrivwDisay.Visible = true;
+                this.tbCartonMesage.Visible = true;
+                InsertSucess = 0; InsertError = 0; UpdateSucess = 0; UpdateError = 0;
+            }
+            if (iRet == -1)
+            {
+                FindError = CD.GetFerror();
+                this.tberrorMessage.Visible = true;
+            }
+            flashCheckfield();
+        }
+        catch (Exception ex)
+        {
+            ex.ToString();
+        }
+
+        try
+        {
+
+            bool Get7Z = ZipFile(UPLOAD_DIR, SwitchBak + DateTime.Now.ToString("yyyyMMddHHss") + ".7Z");
+            if (Get7Z)
+            {
+                DeleteFolder(UPLOAD_DIR);
+                Page.RegisterStartupScript("dd", "<script>alert('文件已驗證,資料已經自動打包到備份目錄!'); </script>");
+                return;
+            }
+            this.tableSwitch.Visible = false;
+        }
+        catch (Exception ex)
+        {
+            FindError += ex.Message;
+        }
+    }
+}

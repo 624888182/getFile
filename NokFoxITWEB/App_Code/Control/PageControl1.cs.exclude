@@ -1,0 +1,1008 @@
+using System;
+using System.IO;
+using System.Drawing;
+using System.Data;
+using System.Data.OracleClient;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.ComponentModel;
+using System.Configuration;
+using System.Text;
+
+namespace IMS.ServerControls
+{
+
+	/// <summary>
+	/// 分頁控制項
+	/// </summary>
+	public class PageControl :WebControl, INamingContainer
+	{
+		#region 私有成員
+		private const string s_connPrefix = "User ID=ims;Data Source=dev;Password=flower";
+		private DataTable _dataSource;
+		private Control _controlToPaginate;
+               
+		private string CurrentPageText = "頁數：&nbsp;{0} /&nbsp;{1}";
+		private string NoPageSelectedText = "沒有頁被選擇";
+
+
+		private string QueryPageCommandText = "SELECT * FROM (SELECT T0.*,ROWNUM ROWNO FROM ({0} ORDER BY {3} {4}) T0) "
+			+ " WHERE ROWNO BETWEEN {1} AND {2} ORDER BY {3} {4}";
+
+		private string QueryPageCommandTextNoOrder = "SELECT * FROM (SELECT T0.*,ROWNUM ROWNO FROM ({0}) T0) "
+			+ " WHERE ROWNO BETWEEN {1} AND {2}";
+
+		private string QueryCountCommandText = "SELECT COUNT(*) FROM ({0})";
+		#endregion
+
+		#region 構造函數
+		public PageControl()
+		{
+			_dataSource = null;
+			_controlToPaginate = null;
+			Font.Name = "宋體";
+			Font.Size = FontUnit.Point(8);
+			BackColor = Color.Gainsboro;
+			ForeColor = Color.Black;
+			BorderStyle = BorderStyle.Outset;
+			BorderWidth = Unit.Parse("1px");            
+			PagerStyle = PagerStyle.NextPrev;
+			PagerHorizonalAlign = HorizontalAlign.Left;
+			SortingMode = SortingMode.ASC;
+			CurrentPageIndex = 0;
+			SelectCommand = "";
+			ItemsPerPage = 10;
+			TotalPages = -1;
+			RecordCount = 0;
+			IsPostBack = false;
+			IsSorted = false;
+		}
+		#endregion
+
+		#region 公共成員介面
+       
+		public delegate void PageChangedEventHandler(object sender, PageChangedEventArgs e);
+		public event PageChangedEventHandler PageIndexChanged;
+
+		protected virtual void OnPageIndexChanged(PageChangedEventArgs e)
+		{
+			if (PageIndexChanged != null)
+			{
+				PageIndexChanged(this, e);
+			}
+		}
+
+		[Description("導航控制項對齊方式")]
+		public HorizontalAlign PagerHorizonalAlign
+		{
+			get
+			{
+				return (HorizontalAlign)ViewState["HorizonalAlign"];
+			}
+			set
+			{
+				ViewState["HorizonalAlign"] = value;
+			}
+		}
+
+		[Description("獲取和設置分頁控制項的導航樣式")]
+		public PagerStyle PagerStyle
+		{
+			get
+			{
+				return (PagerStyle)ViewState["PagerStyle"];
+			}
+			set
+			{
+				ViewState["PagerStyle"] = value;
+			}
+		}
+
+		[Description("獲取和設置默認的排序方式")]
+		public SortingMode SortingMode
+		{
+			get
+			{
+				return (SortingMode)ViewState["SortingMode"];
+			}
+			set
+			{
+				ViewState["SortingMode"] = value;
+			}
+		}
+
+		[Description("獲取和設置需要分頁控制項的名稱")]
+		public string ControlToPaginate
+		{
+			get
+			{
+				return Convert.ToString(ViewState["ControlToPaginate"]);
+			}
+			set
+			{
+				ViewState["ControlToPaginate"] = value;
+			}
+		}
+
+		[Description("獲取和設置每頁顯示的記錄數")]
+		public int ItemsPerPage
+		{
+			get
+			{
+				return Convert.ToInt32(ViewState["ItemsPerPage"]);
+			}
+			set
+			{
+				ViewState["ItemsPerPage"] = value;
+			}
+		}
+
+		[Description("獲取和設置當前頁數")]
+		public int CurrentPageIndex
+		{
+			get
+			{
+				return Convert.ToInt32(ViewState["CurrentPageIndex"]);
+			}
+			set
+			{
+				ViewState["CurrentPageIndex"] = value;
+			}
+		}
+
+		[Description("獲取和設置記錄數")]
+		public int RecordCount
+		{
+			get
+			{
+				return Convert.ToInt32(ViewState["RecordCount"]);
+			}
+			set
+			{
+				ViewState["RecordCount"] = value;
+			}
+		}
+
+		[Browsable(false)]
+		private bool IsSorted
+		{
+			get
+			{
+				return Convert.ToBoolean(ViewState["SqlPager_IsSorted"]);
+			}
+			set
+			{
+				ViewState["SqlPager_IsSorted"] = value;
+			}
+		}
+
+		[Browsable(false)]
+		private bool IsPostBack
+		{
+			get
+			{
+				return Convert.ToBoolean(ViewState["SqlPager_IsPostBack"]);
+			}
+			set
+			{
+				ViewState["SqlPager_IsPostBack"] = value;
+			}
+		}
+        
+		[Browsable(false)]
+		private string ConnectionString
+		{
+			get
+			{
+				return ConfigurationSettings.AppSettings["ConnectionString"].ToString();
+			}
+		}
+
+		[Description("獲取和設置查詢的SQL語句")]
+		public string SelectCommand
+		{
+			get
+			{
+				return Convert.ToString(ViewState["SelectCommand"]);
+			}
+			set
+			{
+				ViewState["SelectCommand"] = value;
+			}
+		}
+
+		[Description("獲取和設置排序欄位")]
+		public string SortField
+		{
+			get
+			{
+				return Convert.ToString(ViewState["SortKeyField"]);
+			}
+			set
+			{
+				ViewState["SortKeyField"] = value;
+			}
+		}
+
+		[Browsable(false)]
+		public int PageCount
+		{
+			get
+			{
+				return TotalPages;
+			}
+		}
+
+		protected int TotalPages
+		{
+			get
+			{
+				return Convert.ToInt32(ViewState["TotalPages"]);
+			}
+			set
+			{
+				ViewState["TotalPages"] = value;
+			}
+		}
+
+		public override void DataBind()
+		{
+			IsPostBack = false;
+			CurrentPageIndex = 0;
+			BindDataControl();
+			IsPostBack = true;
+		}
+
+		public void ReDataBind()
+		{
+			IsPostBack = false;            
+			BindDataControl();
+			IsPostBack = true;
+		}
+
+		private void BindDataControl()
+		{
+			base.DataBind();
+			ChildControlsCreated = false;
+			if (ControlToPaginate == "")
+			{
+				return;
+			}
+			_controlToPaginate = this.Page.FindControl(ControlToPaginate);
+
+			//_controlToPaginate = Page.FindControl(ControlToPaginate);
+			if (_controlToPaginate == null)
+			{
+				return;
+			}
+
+			if (!(_controlToPaginate is DataGrid || _controlToPaginate is BaseDataList || _controlToPaginate is ListControl))
+			{
+				return;
+			}
+
+			if (ConnectionString == "" || SelectCommand == "")
+			{
+				return;
+			}
+          
+			FetchPageData();
+			DataGrid compositeDataBoundControl = null;
+			BaseDataList baseDataListControl = null;
+			ListControl listControl = null;
+			if (_controlToPaginate is DataGrid)
+			{
+				compositeDataBoundControl = (DataGrid)_controlToPaginate;
+				compositeDataBoundControl.DataSource = _dataSource;
+				compositeDataBoundControl.DataBind();
+				return;
+			}
+			if (_controlToPaginate is BaseDataList)
+			{
+				baseDataListControl = (BaseDataList)_controlToPaginate;
+				baseDataListControl.DataSource = _dataSource;
+				baseDataListControl.DataBind();
+				return;
+			}
+			if (_controlToPaginate is ListControl)
+			{
+				listControl = (ListControl)_controlToPaginate;
+				listControl.Items.Clear();
+				listControl.DataSource = _dataSource;
+				listControl.DataBind();
+				return;
+			}
+		}       
+
+		protected override void Render(HtmlTextWriter writer)
+		{
+			if (Site != null && Site.DesignMode)
+			{
+				CreateChildControls();
+			}
+			base.Render(writer);
+		}
+
+		protected override void CreateChildControls()
+		{
+			Controls.Clear();            
+			BuildControlHierarchy();
+			ClearChildViewState();
+		}        
+
+		public void Sort(string sortExpress)
+		{
+			if (string.Equals(null,sortExpress))
+			{
+				return;
+			}
+			if (sortExpress.ToLower() == SortField.ToLower())
+			{
+				if (SortingMode == SortingMode.ASC)
+				{
+					SortingMode = SortingMode.DESC;
+				}
+				else
+				{
+					SortingMode = SortingMode.ASC;
+				}
+			}
+			else
+			{
+				SortingMode = SortingMode.ASC;
+			}
+			CurrentPageIndex = 0;
+			SortField = sortExpress;
+			SortHandle();
+			BindDataControl();
+			
+		}
+
+		private void SortHandle()
+		{
+			Control pagerList = Page.FindControl(ControlToPaginate);
+			if (pagerList is DataGrid)
+			{
+				DataGrid dgd = pagerList as DataGrid;
+				if (dgd == null)
+				{
+					return;
+				}
+					
+			
+				DataGridColumnCollection columns = dgd.Columns;
+				foreach(DataGridColumn column in columns)
+				{
+					if(column.SortExpression != null && column.SortExpression != "")
+					{
+						string headStr = column.HeaderText.Trim();						
+								
+						headStr = headStr.Replace("▼","");
+						headStr = headStr.Replace("▲","");
+							
+						if(column.SortExpression.ToLower() == SortField.ToLower())
+						{
+							if(SortingMode == SortingMode.ASC)
+							{
+								headStr += "▲";
+							}
+							if(SortingMode == SortingMode.DESC)
+							{
+								headStr += "▼";
+							}								
+						}
+						column.HeaderText = headStr;
+					}
+				}				
+			}
+		}		
+		
+		#endregion
+
+		#region 私有方法       
+		private void BuildControlHierarchy()
+		{
+			Table t = new Table();
+			t.Font.Name = Font.Name;
+			t.Font.Size = Font.Size;
+			t.BorderStyle = BorderStyle;
+			t.BorderWidth = BorderWidth;
+			t.BorderColor = BorderColor;
+			t.Width = Width;
+			t.Height = Height;
+			t.BackColor = BackColor;
+			t.ForeColor = ForeColor;
+
+			TableRow row = new TableRow();
+			t.Rows.Add(row);
+
+			TableCell cellNavBar = new TableCell();
+			cellNavBar.HorizontalAlign = PagerHorizonalAlign;
+			BuildCurrentPage(cellNavBar);
+			cellNavBar.Controls.Add(new LiteralControl("&nbsp;&nbsp;&nbsp;&nbsp;"));
+			if (PagerStyle == PagerStyle.NextPrev)
+			{
+				BuildNextPrevUI(cellNavBar);
+			}
+			else if (PagerStyle == PagerStyle.NumericPages)
+			{
+				BuildNumericPagesUI(cellNavBar);
+			}
+			else
+			{
+				BuildTextPagesUI(cellNavBar);
+			}
+			cellNavBar.Controls.Add(new LiteralControl("&nbsp;&nbsp;&nbsp;&nbsp;"));
+			BuildGoToPagesUI(cellNavBar);
+			row.Cells.Add(cellNavBar);
+			Controls.Add(t);
+		}
+		private void BuildNextPrevUI(TableCell cell)
+		{
+			bool isValidPage = (CurrentPageIndex >= 0 && CurrentPageIndex <= TotalPages - 1);
+			bool canMoveBack = (CurrentPageIndex > 0);
+			bool canMoveForward = (CurrentPageIndex < TotalPages - 1);
+
+			LinkButton first = new LinkButton();
+			first.CausesValidation = false;
+			first.ID = "First";
+			first.Click += new EventHandler(First_Click);
+			first.Font.Name = "webdings";
+			first.Font.Size = Font.Size;
+			first.ForeColor = ForeColor;
+			first.ToolTip = "首頁";
+			first.Text = "9";
+			first.Enabled = isValidPage && canMoveBack;
+			cell.Controls.Add(first);
+
+			cell.Controls.Add(new LiteralControl("&nbsp;&nbsp;"));
+
+			LinkButton prev = new LinkButton();
+			prev.CausesValidation = false;
+			prev.ID = "Prev";
+			prev.Click += new EventHandler(Prev_Click);
+			prev.Font.Name = "webdings";
+			prev.Font.Size = Font.Size;
+			prev.ForeColor = ForeColor;
+			prev.ToolTip = "上一頁";
+			prev.Text = "3";
+			prev.Enabled = isValidPage && canMoveBack;
+			cell.Controls.Add(prev);
+
+			cell.Controls.Add(new LiteralControl("&nbsp;&nbsp;"));            
+
+			LinkButton next = new LinkButton();
+			next.CausesValidation = false;
+			next.ID = "Next";
+			next.Click += new EventHandler(Next_Click);
+			next.Font.Name = "webdings";
+			next.Font.Size = Font.Size;
+			next.ForeColor = ForeColor;
+			next.ToolTip = "下一頁";
+			next.Text = "4";
+			next.Enabled = isValidPage && canMoveForward;
+			cell.Controls.Add(next);
+
+			cell.Controls.Add(new LiteralControl("&nbsp;&nbsp;"));
+
+			LinkButton last = new LinkButton();
+			last.CausesValidation = false;
+			last.ID = "Last";
+			last.Click += new EventHandler(Last_Click);
+			last.Font.Name = "webdings";
+			last.Font.Size = Font.Size;
+			last.ForeColor = ForeColor;
+			last.ToolTip = "尾頁";
+			last.Text = ":";
+			last.Enabled = isValidPage && canMoveForward;
+			cell.Controls.Add(last);
+		}
+		private void BuildNumericPagesUI(TableCell cell)
+		{
+			bool isValidPage = (CurrentPageIndex >= 0 && CurrentPageIndex <= TotalPages - 1);
+			bool canMoveBack = (CurrentPageIndex > 0);
+			bool canMoveForward = (CurrentPageIndex < TotalPages - 1);
+
+			LinkButton first = new LinkButton();
+			first.CausesValidation = false;
+			first.ID = "First";
+			first.Click += new EventHandler(First_Click);
+			first.Font.Name = "webdings";
+			first.Font.Size = Font.Size;
+			first.ForeColor = ForeColor;
+			first.ToolTip = "首頁";
+			first.Text = "9";
+			first.Enabled = isValidPage && canMoveBack;
+			cell.Controls.Add(first);
+
+			cell.Controls.Add(new LiteralControl("&nbsp;"));
+
+			LinkButton prev = new LinkButton();
+			prev.CausesValidation = false;
+			prev.ID = "Prev";
+			prev.Click += new EventHandler(Prev_Click);
+			prev.Font.Name = "webdings";
+			prev.Font.Size = Font.Size;
+			prev.ForeColor = ForeColor;
+			prev.ToolTip = "上一頁";
+			prev.Text = "3";
+			prev.Enabled = isValidPage && canMoveBack;
+			cell.Controls.Add(prev);
+
+			cell.Controls.Add(new LiteralControl("&nbsp;"));
+
+			if (PageCount <= 10)
+			{
+				for (int i = 0; i < PageCount; i++)
+				{
+					LinkButton lbt = new LinkButton();
+					lbt.CausesValidation = false;
+					lbt.ID = "Numeric" + i.ToString();
+					lbt.Click += new EventHandler(NumericLinkButton_Click);
+					lbt.Font.Size = Font.Size;
+					lbt.Text = (i + 1).ToString();
+					if (i == CurrentPageIndex)
+					{
+						lbt.Enabled = false;
+					}
+					cell.Controls.Add(lbt);
+					cell.Controls.Add(new LiteralControl("&nbsp;"));
+				}
+			}
+			else
+			{
+				int maxPageIndex;
+				int minPageIndex = 0;
+				if ((CurrentPageIndex + 4) > (PageCount - 1))
+				{
+					maxPageIndex = PageCount - 1;
+				}
+				else
+				{
+					maxPageIndex = CurrentPageIndex + 4;
+				}
+				if (maxPageIndex < 9)
+				{
+					maxPageIndex = 9;
+				}
+				minPageIndex = maxPageIndex - 9;
+				for (int i = minPageIndex; i <= maxPageIndex; i++)
+				{
+					LinkButton lbt = new LinkButton();
+					lbt.CausesValidation = false;
+					lbt.ID = "Numeric" + i.ToString();
+					lbt.Click += new EventHandler(NumericLinkButton_Click);
+					lbt.Font.Size = Font.Size;
+					lbt.Text = (i + 1).ToString();
+					if (i == CurrentPageIndex)
+					{
+						lbt.Enabled = false;
+					}
+					cell.Controls.Add(lbt);
+					cell.Controls.Add(new LiteralControl("&nbsp;"));
+				}
+			}
+			LinkButton next = new LinkButton();
+			next.CausesValidation = false;
+			next.ID = "Next";
+			next.Click += new EventHandler(Next_Click);
+			next.Font.Name = "webdings";
+			next.Font.Size = Font.Size;
+			next.ForeColor = ForeColor;
+			next.ToolTip = "下一頁";
+			next.Text = "4";
+			next.Enabled = isValidPage && canMoveForward;
+			cell.Controls.Add(next);
+
+			cell.Controls.Add(new LiteralControl("&nbsp;"));
+
+			LinkButton last = new LinkButton();
+			last.CausesValidation = false;
+			last.ID = "Last";
+			last.Click += new EventHandler(Last_Click);
+			last.Font.Name = "webdings";
+			last.Font.Size = Font.Size;
+			last.ForeColor = ForeColor;
+			last.ToolTip = "尾頁";
+			last.Text = ":";
+			last.Enabled = isValidPage && canMoveForward;
+			cell.Controls.Add(last);
+		}
+
+		private void BuildTextPagesUI(TableCell cell)
+		{
+			bool isValidPage = (CurrentPageIndex >= 0 && CurrentPageIndex <= TotalPages - 1);
+			bool canMoveBack = (CurrentPageIndex > 0);
+			bool canMoveForward = (CurrentPageIndex < TotalPages - 1);
+
+			LinkButton first = new LinkButton();
+			first.CausesValidation = false;
+			first.ID = "First";
+			first.Click += new EventHandler(First_Click);
+			first.Font.Name = Font.Name;
+			first.Font.Size = Font.Size;
+			first.ForeColor = ForeColor;
+			first.Text = "首頁";
+			first.Enabled = isValidPage && canMoveBack;
+			cell.Controls.Add(first);
+
+			cell.Controls.Add(new LiteralControl("&nbsp;&nbsp;"));
+
+			LinkButton prev = new LinkButton();
+			prev.CausesValidation = false;
+			prev.ID = "Prev";
+			prev.Click += new EventHandler(Prev_Click);
+			prev.Font.Name = Font.Name;
+			prev.Font.Size = Font.Size;
+			prev.ForeColor = ForeColor;
+			prev.Text = "上一頁";
+			prev.Enabled = isValidPage && canMoveBack;
+			cell.Controls.Add(prev);
+
+			cell.Controls.Add(new LiteralControl("&nbsp;&nbsp;"));
+
+			LinkButton next = new LinkButton();
+			next.CausesValidation = false;
+			next.ID = "Next";
+			next.Click += new EventHandler(Next_Click);
+			next.Font.Name = Font.Name;
+			next.Font.Size = Font.Size;
+			next.ForeColor = ForeColor;
+			next.Text = "下一頁";
+			next.Enabled = isValidPage && canMoveForward;
+			cell.Controls.Add(next);
+
+			cell.Controls.Add(new LiteralControl("&nbsp;&nbsp;"));
+
+			LinkButton last = new LinkButton();
+			last.CausesValidation = false;
+			last.ID = "Last";
+			last.Click += new EventHandler(Last_Click);
+			last.Font.Name = Font.Name;
+			last.Font.Size = Font.Size;
+			last.ForeColor = ForeColor;
+			last.Text = "尾頁";
+			last.Enabled = isValidPage && canMoveForward;
+			cell.Controls.Add(last);
+		}
+
+		private void BuildGoToPagesUI(TableCell cell)
+		{
+			DropDownList pageList = new DropDownList();
+			//pageList.CausesValidation = false;
+			pageList.Enabled =true;
+			pageList.ID = "PageList";
+			pageList.AutoPostBack = true;
+			pageList.SelectedIndexChanged += new EventHandler(PageList_Click);
+			pageList.Font.Name = Font.Name;
+			pageList.Font.Size = Font.Size;
+			pageList.ForeColor = ForeColor;
+
+			if (TotalPages <= 0 || CurrentPageIndex == -1)
+			{
+				pageList.Items.Add("沒有記錄");
+				pageList.Enabled = false;
+				pageList.SelectedIndex = 0;
+			}
+			else
+			{
+				for (int i = 1; i <= TotalPages; i++)
+				{
+					ListItem item = new ListItem(i.ToString(), (i - 1).ToString());
+					pageList.Items.Add(item);
+				}
+				pageList.SelectedIndex = CurrentPageIndex;
+			}
+			cell.Controls.Add(new LiteralControl("跳轉至&nbsp;"));
+			cell.Controls.Add(pageList);
+			cell.Controls.Add(new LiteralControl("&nbsp;頁"));
+		}
+		private void BuildCurrentPage(TableCell cell)
+		{
+			if (CurrentPageIndex < 0 || CurrentPageIndex >= TotalPages)
+			{
+				cell.Controls.Add(new LiteralControl(NoPageSelectedText));
+			}
+			else
+			{
+				cell.Controls.Add(new LiteralControl(string.Format(CurrentPageText, (CurrentPageIndex + 1), TotalPages)));
+			}
+			cell.Controls.Add(new LiteralControl("&nbsp;&nbsp;每頁&nbsp;&nbsp;"));
+			DropDownList ddl = new DropDownList();
+			//ddl.CausesValidation = false;
+			ddl.Enabled=true;
+			ddl.AutoPostBack = true;
+			ddl.SelectedIndexChanged += new EventHandler(ChangeItemsPerPage);
+			ddl.Font.Name = Font.Name;
+			ddl.Font.Size = Font.Size;
+			ddl.ForeColor = ForeColor;            
+			for (int i = 0; i <9; i++)
+			{
+				int itemsPerPage = 10 + 5*i;
+				ddl.Items.Add(new ListItem(itemsPerPage.ToString(), itemsPerPage.ToString()));
+			}
+            
+			ddl.SelectedIndex = (ItemsPerPage - 10) / 5;
+			cell.Controls.Add(ddl);
+			cell.Controls.Add(new LiteralControl("&nbsp;&nbsp;行"));
+		}
+		private void ValidatePageIndex()
+		{
+			if (!(CurrentPageIndex >= 0 && CurrentPageIndex < TotalPages))
+			{
+				CurrentPageIndex = 0;
+			}           
+			return;
+		}
+        
+		private void FetchPageData()
+		{
+			AdjustSelectCommand();
+			VirtualRecordCount countInfo = new VirtualRecordCount();
+			if (!IsPostBack)
+			{
+				countInfo = CalculateVirtualRecordCount();
+				TotalPages = countInfo.PageCount;
+				RecordCount = countInfo.RecordCount;
+			}
+			else
+			{
+				countInfo.PageCount = PageCount;
+				countInfo.RecordCount = RecordCount;
+				countInfo.RecordsInLastPage = ItemsPerPage;
+				int remainer = RecordCount % ItemsPerPage;
+				if (remainer > 0)
+				{
+					countInfo.RecordsInLastPage = remainer;
+				}
+			}
+
+			ValidatePageIndex();
+			if (CurrentPageIndex == -1)
+			{
+				return;
+			}
+			OracleCommand cmd = PrepareCommand(countInfo);
+			if (cmd == null)
+			{
+				return;
+			}
+			OracleDataAdapter adapter = new OracleDataAdapter(cmd);
+			//DataTable data = new DataTable();
+			//adapter.Fill(data);
+			_dataSource = new DataTable();            
+			adapter.Fill(_dataSource);
+			//if (_dataSource == null)
+			//{
+			//    _dataSource = new PagedDataSource();
+			//}
+			//_dataSource.AllowCustomPaging = true;
+			//_dataSource.AllowPaging = true;
+			//_dataSource.CurrentPageIndex = 0;
+			//if (CurrentPageIndex == countInfo.PageCount - 1)
+			//{
+			//    _dataSource.PageSize = countInfo.RecordsInLastPage;
+			//}
+			//else
+			//{
+			//    _dataSource.PageSize = ItemsPerPage;
+			//}
+			//_dataSource.VirtualCount = countInfo.RecordCount;
+			//_dataSource.DataSource = data.DefaultView;
+		}
+
+		private void AdjustSelectCommand()
+		{
+			string temp = SelectCommand.ToLower();
+			int pos = temp.IndexOf("order by");
+			if (pos > -1)
+			{
+				SelectCommand = SelectCommand.Substring(0, pos);
+			}            
+		}
+
+		private VirtualRecordCount CalculateVirtualRecordCount()
+		{
+			VirtualRecordCount count = new VirtualRecordCount();
+			count.RecordCount = GetQueryVirtualCount();
+			count.RecordsInLastPage = ItemsPerPage;
+			int lastPage = count.RecordCount / ItemsPerPage;
+			int remainder = count.RecordCount % ItemsPerPage;
+			if (remainder > 0)
+			{
+				lastPage++;
+				count.RecordsInLastPage = remainder;
+			}
+			count.PageCount = lastPage;           
+			return count;
+		}
+
+		private OracleCommand PrepareCommand(VirtualRecordCount countInfo)
+		{
+//			if (SortField == "")
+//			{
+//				string text;
+//				if (SelectCommand.ToUpper().IndexOf("WHERE ") > 0)
+//				{
+//					text = SelectCommand + " AND 1>2";
+//				}
+//				else
+//				{
+//					text = SelectCommand + " WHERE 1>2";
+//				}
+//				
+//				// string text = "SET FMTONLY ON;" + SelectCommand + ";SET FMTONLY OFF;";
+//				OracleDataAdapter adapter = new OracleDataAdapter(text, ConnectionString);
+//				DataTable t = new DataTable();
+//				adapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
+//				adapter.Fill(t);
+//				DataColumn col = null;
+//				if (t.PrimaryKey.Length > 0)
+//				{
+//					col = t.PrimaryKey[0];
+//				}
+//				else
+//				{
+//					col = t.Columns[0];
+//				}
+//				SortField = col.ColumnName;
+//			}
+
+			int recsToRetrieve = ItemsPerPage;
+			if (CurrentPageIndex == countInfo.PageCount - 1)
+			{
+				recsToRetrieve = countInfo.RecordsInLastPage;
+			}
+			string cmdText;
+			if(SortField == string.Empty)
+			{
+				cmdText = string.Format(QueryPageCommandTextNoOrder,
+					SelectCommand,
+					ItemsPerPage * CurrentPageIndex + 1,
+					ItemsPerPage * CurrentPageIndex + recsToRetrieve);
+			}
+			else
+			{
+				switch (SortingMode)
+				{
+					case SortingMode.ASC:
+						cmdText = string.Format(QueryPageCommandText,
+							SelectCommand,
+							ItemsPerPage * CurrentPageIndex + 1,
+							ItemsPerPage * CurrentPageIndex + recsToRetrieve,							
+							SortField,
+							"ASC"
+							);
+						break;
+					case SortingMode.DESC:
+						cmdText = string.Format(QueryPageCommandText,
+							SelectCommand,
+							ItemsPerPage * CurrentPageIndex + 1,
+							ItemsPerPage * CurrentPageIndex + recsToRetrieve,							
+							SortField,
+							"DESC"
+							);
+						break;
+					default:
+						cmdText = string.Format(QueryPageCommandText,
+							SelectCommand,
+							ItemsPerPage * CurrentPageIndex + 1,
+							ItemsPerPage * CurrentPageIndex + recsToRetrieve,							
+							SortField,
+							"ASC"
+							);
+						break;
+				}
+			}
+
+			OracleConnection conn = new OracleConnection(ConnectionString);
+			OracleCommand cmd = new OracleCommand(cmdText, conn);
+			return cmd;
+		}
+
+		private int GetQueryVirtualCount()
+		{
+			string cmdText = string.Format(QueryCountCommandText, SelectCommand);
+			OracleConnection conn = new OracleConnection(ConnectionString);
+			OracleCommand cmd = new OracleCommand(cmdText, conn);
+			cmd.Connection.Open();
+			int recCount = int.Parse(cmd.ExecuteScalar().ToString());
+			cmd.Connection.Close();
+			return recCount;
+		}
+
+		private void GoToPage(int pageIndex)
+		{
+			PageChangedEventArgs e = new PageChangedEventArgs();
+			e.OldPageIndex = CurrentPageIndex;
+			e.NewPageIndex = pageIndex;
+			CurrentPageIndex = pageIndex;
+			OnPageIndexChanged(e);
+			BindDataControl();
+		}
+
+		private void First_Click(object sender, EventArgs e)
+		{
+			GoToPage(0);
+		}
+
+		private void Prev_Click(object sender, EventArgs e)
+		{
+			GoToPage(CurrentPageIndex - 1);
+		}
+
+		private void Next_Click(object sender, EventArgs e)
+		{
+			GoToPage(CurrentPageIndex + 1);
+		}
+
+		private void Last_Click(object sender, EventArgs e)
+		{
+			GoToPage(TotalPages - 1);
+		}
+
+		private void PageList_Click(object sender, EventArgs e)
+		{
+			DropDownList pageList = (DropDownList)sender;
+			int pageIndex = Convert.ToInt32(pageList.SelectedItem.Value);
+			GoToPage(pageIndex);
+		}
+
+		private void ChangeItemsPerPage(object sender, EventArgs e)
+		{
+			DropDownList ddl = (DropDownList)sender;
+			ItemsPerPage = Convert.ToInt32(ddl.SelectedItem.Value);
+			int lastPage = RecordCount / ItemsPerPage;
+			int remainer = RecordCount % ItemsPerPage;
+			if (remainer > 0)
+			{
+				lastPage++;                
+			}
+			TotalPages = lastPage;
+			int pageIndex = (CurrentPageIndex > lastPage) ? (lastPage - 1) : CurrentPageIndex;
+			GoToPage(pageIndex);
+		}
+		private void NumericLinkButton_Click(object sender, EventArgs e)
+		{
+			LinkButton lbt = (LinkButton)sender;
+			int pageIndex = Convert.ToInt32(lbt.Text) - 1;
+			GoToPage(pageIndex);
+		}
+		#endregion
+	}
+
+	#region 排序模式
+	public enum SortingMode
+	{
+		ASC,
+		DESC
+	}
+	#endregion
+
+	#region 分頁樣式
+	public enum PagerStyle
+	{
+		NextPrev,
+		NumericPages,
+		TextPages
+	}
+	#endregion
+
+	#region 虛擬記錄數類
+	public class VirtualRecordCount
+	{
+		public int RecordCount;
+		public int PageCount;
+		public int RecordsInLastPage;
+	}
+	#endregion
+
+	#region 分頁事件參數類
+	public class PageChangedEventArgs : EventArgs
+	{
+		public int OldPageIndex;
+		public int NewPageIndex;
+	}
+	#endregion
+}

@@ -1,0 +1,257 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data.OracleClient;
+
+public partial class StandByInsert : System.Web.UI.Page
+{
+    public static DateTime D3 = new DateTime(); 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+    }
+    protected void btnInsert_Click(object sender, EventArgs e)
+    {
+
+        //InsertFrStaBy();
+        String  D1 = "";
+        DateTime D2 = new DateTime(); 
+
+        DataSet ds = new DataSet();
+        ds = GetData();
+        if (ds.Tables[0].Rows.Count != 0)
+        {
+
+            for(int i= 0; i<ds.Tables[0].Rows.Count;i++)
+            {
+                TESTINFO_HEAD testinfohead = new TESTINFO_HEAD();
+                testinfohead.ID = Convert.ToInt32(ds.Tables[0].Rows[i]["ID"].ToString());
+                testinfohead.CREATE_DATE = Convert.ToDateTime(ds.Tables[0].Rows[i]["CREATE_DATE"].ToString());
+                D1 = ds.Tables[0].Rows[i]["CREATE_DATE"].ToString();
+                D2 = Convert.ToDateTime(D1); // Convert.ToDateTime(ds.Tables[0].Rows[i]["CREATE_DATE"].ToString());
+                testinfohead.CREATE_DATE = D2;
+         //       D3 = D2;
+              //  testinfohead.CREATE_DATE = Convert.ToDateTime(TrsstringToDateTime(strcreate));
+                testinfohead.UNIQUE_ID = ds.Tables[0].Rows[i]["UNIQUE_ID"].ToString();
+                testinfohead.TRACK_ID = ds.Tables[0].Rows[i]["TRACK_ID"].ToString();
+                testinfohead.STATION_NAME = ds.Tables[0].Rows[i]["STATION_NAME"].ToString();
+                testinfohead.STATUS = ds.Tables[0].Rows[i]["STATUS"].ToString();
+                testinfohead.TH1 = ds.Tables[0].Rows[i]["TH1"].ToString();
+                testinfohead.TH2 = ds.Tables[0].Rows[i]["TH2"].ToString();
+                testinfohead.TH3 = ds.Tables[0].Rows[i]["TH3"].ToString();
+                testinfohead.TH4 = ds.Tables[0].Rows[i]["TH4"].ToString();
+                testinfohead.TH5 = ds.Tables[0].Rows[i]["TH5"].ToString();
+                testinfohead.TH6 = ds.Tables[0].Rows[i]["TH6"].ToString();
+                testinfohead.TH7 = ds.Tables[0].Rows[i]["TH7"].ToString();
+                testinfohead.TH8 = ds.Tables[0].Rows[i]["TH8"].ToString();
+                testinfohead.TH9 = ds.Tables[0].Rows[i]["TH9"].ToString();
+                testinfohead.TH10 = ds.Tables[0].Rows[i]["TH10"].ToString();
+                testinfohead.TH11 = ds.Tables[0].Rows[i]["TH11"].ToString();
+                testinfohead.TH12 = ds.Tables[0].Rows[i]["TH12"].ToString();
+                testinfohead.TH13 = ds.Tables[0].Rows[i]["TH13"].ToString();
+                testinfohead.TH14 = ds.Tables[0].Rows[i]["TH14"].ToString();
+                testinfohead.TH15 = ds.Tables[0].Rows[i]["TH15"].ToString();
+                testinfohead.TH16 = ds.Tables[0].Rows[i]["TH16"].ToString();
+                testinfohead.TH17 = ds.Tables[0].Rows[i]["TH17"].ToString();
+                testinfohead.TH18 = ds.Tables[0].Rows[i]["TH18"].ToString();
+                testinfohead.TH19 = ds.Tables[0].Rows[i]["TH19"].ToString();
+                testinfohead.TH20 = ds.Tables[0].Rows[i]["TH20"].ToString();
+                testinfohead.TH21 = ds.Tables[0].Rows[i]["TH21"].ToString();
+                testinfohead.TH22 = ds.Tables[0].Rows[i]["TH22"].ToString();
+                testinfohead.TH23 = ds.Tables[0].Rows[i]["TH23"].ToString();
+                testinfohead.TH24 = ds.Tables[0].Rows[i]["TH24"].ToString();
+                testinfohead.TH25 = ds.Tables[0].Rows[i]["TH25"].ToString();
+                testinfohead.TH26 = ds.Tables[0].Rows[i]["TH26"].ToString();
+                testinfohead.TH27 = ds.Tables[0].Rows[i]["TH27"].ToString();
+                testinfohead.TH28 = ds.Tables[0].Rows[i]["TH28"].ToString();
+                testinfohead.TH29 = ds.Tables[0].Rows[i]["TH29"].ToString();
+                testinfohead.TH30 = ds.Tables[0].Rows[i]["TH30"].ToString();
+
+                try 
+                
+                {
+                    InsertFrStaBy(testinfohead);
+                }  
+                catch (Exception ex)
+                {
+                    ex.ToString();
+                    continue;
+                }
+            }
+        }
+        else
+        {
+            Page.RegisterStartupScript("dd", "<script>alert('standby-testinfo.TESTINFO_HEAD is no have Data,Please Wait!'); </script>");
+            return;
+        }
+       
+    }
+
+    private void InsertFrStaBy(TESTINFO_HEAD testinfo)
+    {
+        string sqlinstert = @"INSERT INTO TESTINFO.TESTINFO_HEAD(ID," +
+                                                           "CREATE_DATE," +
+                                                           "UNIQUE_ID," +
+                                                           "TRACK_ID," +
+                                                           "STATION_NAME," +
+                                                           "STATUS," +
+                                                           "TH1," +
+                                                           "TH2," +
+                                                           "TH3," +
+                                                           "TH4," +
+                                                           "TH5," +
+                                                           "TH6," +
+                                                           "TH7," +
+                                                           "TH8," +
+                                                           "TH9," +
+                                                           "TH10," +
+                                                           "TH11," +
+                                                           "TH12," +
+                                                           "TH13,"+
+                                                           "TH14,"+
+                                                           "TH15,"+
+                                                           "TH16,"+
+                                                           "TH17,"+
+                                                           "TH18,"+
+                                                           "TH19,"+
+                                                           "TH20,"+
+                                                           "TH21,"+
+                                                           "TH22,"+
+                                                           "TH23,"+
+                                                           "TH24,"+
+                                                           "TH25,"+
+                                                           "TH26,"+
+                                                           "TH27,"+
+                                                           "TH28,"+
+                                                           "TH29,"+
+                                                           "TH30) " +
+                                                   "VALUES('" + testinfo.ID+ "'," +
+                                                           //"TO_DATE('" + testinfo.CREATE_DATE + "','yyyy/MM/dd HH24:MI:SS ')," +
+                                                         //  "'" + testinfo.CREATE_DATE + "'," +
+                                                           "'" + D3 + "'," +
+                                                           "'" + testinfo.UNIQUE_ID + "'," +
+                                                           "'" + testinfo.TRACK_ID + "'," +
+                                                           "'" + testinfo.STATION_NAME + "'," +
+                                                           "'" + testinfo.STATUS + "'," +
+                                                           "'" + testinfo.TH1 + "'," +
+                                                           "'" + testinfo.TH2 + "'," +
+                                                           "'" + testinfo.TH3 + "'," +
+                                                           "'" + testinfo.TH4 + "'," +
+                                                           "'" + testinfo.TH5 + "'," +
+                                                           "'" + testinfo.TH6 + "'," +
+                                                           "'" + testinfo.TH7 + "'," +
+                                                           "'" + testinfo.TH8 + "'," +
+                                                           "'" + testinfo.TH9 + "'," +
+                                                           "'" + testinfo.TH10 + "'," +
+                                                           "'" + testinfo.TH11 + "'," +
+                                                           "'" + testinfo.TH12 + "'," +
+                                                           "'" + testinfo.TH13 + "'," +
+                                                           "'" + testinfo.TH14 + "'," +
+                                                           "'" + testinfo.TH15 + "'," +
+                                                           "'" + testinfo.TH16 + "'," +
+                                                           "'" + testinfo.TH17 + "'," +
+                                                           "'" + testinfo.TH18 + "'," +
+                                                           "'" + testinfo.TH19 + "'," +
+                                                           "'" + testinfo.TH20 + "'," +
+                                                           "'" + testinfo.TH21 + "'," +
+                                                           "'" + testinfo.TH22 + "'," +
+                                                           "'" + testinfo.TH23 + "'," +
+                                                           "'" + testinfo.TH24 + "'," +
+                                                           "'" + testinfo.TH25 + "'," +
+                                                           "'" + testinfo.TH26 + "'," +
+                                                           "'" + testinfo.TH27 + "'," +
+                                                           "'" + testinfo.TH28 + "'," +
+                                                           "'" + testinfo.TH29 + "'," +
+                                                           "'" + testinfo.TH30 + "'" +
+                                                           ")";
+
+                            int i = OracleHelper.ExcuteSqlNew(sqlinstert);
+       
+    }
+
+    private DataSet GetData()
+    {
+        string strsql = @"select * from TESTINFO.TESTINFO_HEAD where create_date > sysdate-1 and rownum <= 10 order by create_date desc";
+        return OracleHelper.Query(strsql);
+
+    }
+
+    private string TrsstringToDateTime(string datepara)  // pass tradatetime
+    {
+        string locvar31 = datepara;
+        // string locvar32    = datepara;
+        // string locvar33    = datepara;
+        string locvarmonth = datepara;
+        string locvarday = datepara;
+        // DateTime dt1;
+
+        if (locvar31 == "") return (locvar31);
+
+        if (locvar31.Substring(5, 1) == "0") locvarmonth = "/" + locvar31.Substring(6, 1);
+        else locvarmonth = "/" + locvar31.Substring(4, 2);
+
+        if (locvar31.Substring(6, 1) == "0") locvarday = "/" + locvar31.Substring(7, 1);
+        else locvarday = "/" + locvar31.Substring(6, 3);
+
+        locvar31 = locvar31.Substring(0, 4) + locvarmonth + locvarday;
+        locvar31 = locvar31.Substring(0, 4) + locvarmonth + locvarday + " AM 12:00:00";
+
+
+        // locvar33 = locvar31 + tradatetime.Substring(8, 20);
+        // dt1 = Convert.ToDateTime(locvar31);
+        return (locvar31);
+    }
+
+
+
+}
+public class TESTINFO_HEAD
+{
+    public int  ID { get; set; }
+    public DateTime  CREATE_DATE { get; set; }
+    public string UNIQUE_ID { get; set; }
+    public string TRACK_ID { get; set; }
+    public string STATION_NAME { get; set; }
+    public string STATUS { get; set; }
+    public string TH1 { get; set; }
+    public string TH2 { get; set; }
+    public string TH3 { get; set; }
+    public string TH4 { get; set; }
+    public string TH5 { get; set; }
+    public string TH6 { get; set; }
+    public string TH7 { get; set; }
+    public string TH8 { get; set; }
+    public string TH9 { get; set; }
+    public string TH10 { get; set; }
+    public string TH11 { get; set; }
+    public string TH12 { get; set; }
+    public string TH13 { get; set; }
+    public string TH14 { get; set; }
+    public string TH15 { get; set; }
+    public string TH16 { get; set; }
+    public string TH17 { get; set; }
+    public string TH18 { get; set; }
+    public string TH19 { get; set; }
+    public string  TH20 {get;set;}
+    public string TH21 { get; set; }
+    public string TH22 {get;set;}
+    public string TH23 { get; set; }
+    public string TH24 { get; set; }
+    public string TH25 { get; set; }
+    public string TH26 {get;set;}
+    public string TH27 { get; set; }
+    public string TH28 { get; set; }
+    public string TH29 { get; set; }
+    public string TH30 { get; set; }
+
+
+
+
+
+
+}
+

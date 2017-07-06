@@ -1,0 +1,2558 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>C1.Web.Command.2</name>
+    </assembly>
+    <members>
+        <member name="M:C1.Win.AboutForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:C1.Win.LicensingForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:C1.Util.Localization.C1DescriptionAttribute">
+            <summary>
+            ------------------------------------------------------------------------
+            C1DescriptionAttribute replaces the DescriptionAttribute
+            and uses the C1Localizer class to return the localized Attribute string
+            </summary>
+        </member>
+        <member name="T:C1.Util.Localization.C1CategoryAttribute">
+            <summary>
+            ------------------------------------------------------------------------
+            C1CategoryAttribute replaces the CategoryAttribute
+            and uses the C1Localizer class to return the localized Attribute string
+            </summary>
+        </member>
+        <member name="T:C1.Util.Localization.C1Localizer">
+            <summary>
+            ------------------------------------------------------------------------
+            C1Localizer contains static methods to load and look up resources
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebCollectionBase">
+            <summary>
+            Base class for collections of group and items.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCollectionBase.Add(System.Object)">
+            <summary>
+            Appends an item to the collection.
+            </summary>
+            <param name="value">The item to add.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCollectionBase.IndexOf(System.Object)">
+            <summary>
+            Searches for the specified item and returns the zero-based index of the first occurrence within the collection.
+            </summary>
+            <param name="value">The item to locate in the collection.</param>
+            <returns>The zero-based index of the first occurrence of item in the collection, if found; otherwise, -1</returns>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCollectionBase.Remove(System.Object)">
+            <summary>
+            Removes an element from a C1WebCollectionBase object.
+            </summary>
+            <param name="value">Object to remove.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCollectionBase.Clear">
+            <summary>
+            Removes all items from a C1WebCollectionBase object.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCollectionBase.AddAt(System.Int32,System.Object)">
+            <summary>
+            Adds an object to a C1WebCollectionBase at specified position.
+            </summary>
+            <param name="index">Position</param>
+            <param name="value">Object to add</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCollectionBase.RemoveAt(System.Int32)">
+            <summary>
+            Removes an object from specified position.
+            </summary>
+            <param name="index">Position.</param>
+        </member>
+        <member name="T:C1.Web.Command.C1WebCommandBase">
+            <summary>
+            Base class for all c1webcommand controls.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.#ctor">
+            <summary>
+            Creates an instance of C1WebCommandBase class
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.SaveLayout(System.String)">
+            <summary>
+            Saves the control layout properties to the file.
+            </summary>
+            <param name="filename">The file where the values of the layout properties will be saved.</param> 
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.SaveLayout(System.IO.Stream)">
+            <summary>
+            Saves control layout properties to the stream.
+            </summary>
+            <param name="stream">The stream where the values of layout properties will be saved.</param> 
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.LoadLayout(System.String)">
+            <summary>
+            Loads control layout properties from the file.
+            </summary>
+            <param name="filename">The file where the values of layout properties will be loaded.</param> 
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.LoadLayout(System.IO.Stream)">
+            <summary>
+            Load control layout properties from the stream.
+            </summary>
+            <param name="stream">The stream where the values of layout properties will be loaded.</param> 
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.LoadLayout(System.String,C1.Web.Command.LayoutTypeFlags)">
+            <summary>
+            Loads control layout properties with specified types from the file.
+            </summary>
+            <param name="filename">The file where the values of layout properties will be loaded.</param> 
+            <param name="layoutTypes">The layout types to load.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.LoadLayout(System.IO.Stream,C1.Web.Command.LayoutTypeFlags)">
+            <summary>
+            Loads the control layout properties with specified types from the stream.
+            </summary>
+            <param name="stream">The stream where the values of the layout properties will be loaded.</param> 
+            <param name="layoutTypes">The layout types to load.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.SaveViewState">
+            <summary>
+            This member overrides Control.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.TrackViewState">
+            <summary>
+            This member overrides Control.TrackViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCommandBase.CreateChildControls">
+            <summary>
+            This member overrides Control.CreateChildControls.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.BackImageUrl">
+            <summary>
+            Background image url.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.AutoPostBack">
+            <summary>
+            Sets or retrieves a value that indicates whether or not the control posts back to the server each time a user interacts with the control. 
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.CausesValidation">
+            <summary>
+            Whether to trigger ASP.NET page validation when a node is selected.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.ItemsUseMouseOverStyle">
+            <summary>
+            Whether to use MouseOverItemStyle and MouseOverSelectedItemStyle.
+            </summary>
+            <remarks>
+            Set this property to false if you don't want to use MouseOverItemStyle and MouseOverSelectedItemStyle.
+            </remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.ClientDir">
+            <summary>
+            Determines where the client scripts are loaded from.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.Padding">
+            <summary>
+            Space between control's border and inner content.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.ItemSpacing">
+            <summary>
+            Default spacing between items in group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.ItemPadding">
+            <summary>
+            Default padding for the link items.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.IconBarWidth">
+            <summary>
+            Sets or returns the width of the icon bar drawn on the side of the groups.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.GroupPadding">
+            <summary>
+            Default space between group's border and items in the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.PreloadImages">
+            <summary>
+            Specifies whether to preload images used in the control.
+            </summary>
+            <remarks>
+            Set value to false if you don't want to preload images.
+            </remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.Target">
+            <summary>
+            Default target (frame or window) to use when navigating. 
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.ItemStyle">
+            <summary>
+            Default style for the child items in normal state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.SelectedItemStyle">
+            <summary>
+            Default style for the child items in selected state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.MouseOverItemStyle">
+            <summary>
+            Default style for the child items when the mouse hovers over it.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.MouseOverSelectedItemStyle">
+            <summary>
+            Default style for the child items when the mouse hovers the selected item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.DisabledItemStyle">
+            <summary>
+            Default style for the child items in disabled state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.SeparatorStyle">
+            <summary>
+            Default style for the separators.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.DisabledGroupStyle">
+            <summary>
+            Default style for the disabled groups.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.GroupStyle">
+            <summary>
+            Default style for the groups.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandBase.ScrollAreaStyle">
+            <summary>
+            Default style for the scrollable area in groups.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebCommandBase.ItemClick">
+            <summary>
+            Fires when an item is clicked.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebCommandBase.ItemSelect">
+            <summary>
+            Fires when an item is selected.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebContentItem">
+            <summary>
+            Item contains custom content.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebItemBase">
+            <summary>
+            Base class for all items.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebItemBase.LoadViewState(System.Object)">
+            <summary>
+            Loads the view state in the item.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebItemBase.SaveViewState">
+            <summary>
+            Saves the view state for the item.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebItemBase.TrackViewState">
+            <summary>
+            Tracks the view state for the item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebItemBase.RootControl">
+            <summary>
+            Root control for the item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebItemBase.OwnerGroup">
+            <summary>
+            Owner group for the item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebItemBase.Index">
+            <summary>
+            Index of the item in the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebItemBase.ViewState">
+            <summary>
+            Represents view state object for the item.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebContentItem.Add(System.Web.UI.Control)">
+            <summary>
+            Adds the specified Control object to the Panel Group's body.
+            </summary>
+            <param name="control">The Control object to add to the group. </param>
+            <remarks>Use this property to add controls to the group programmically.</remarks>
+            <example>
+            
+            </example>
+        </member>
+        <member name="M:C1.Web.Command.C1WebContentItem.LoadViewState(System.Object)">
+            <summary>
+            This member overrides C1WebItemBase.LoadViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebContentItem.SaveViewState">
+            <summary>
+            This member overrides C1WebItemBase.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebContentItem.TrackViewState">
+            <summary>
+            Tracks view state for the item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebContentItem.Content">
+            <summary>
+            Content.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebContentItem.ItemStyle">
+            <summary>
+            Style for the item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebContentItem.ItemPadding">
+            <summary>
+            Space between the item's border and content.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebCustomFlatControl">
+            <summary>
+            Base class for the C1WebToolBar, C1WebTopicBar, and C1WebTabStrip controls
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomFlatControl.SaveViewState">
+            <summary>
+            This member overrides Control.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomFlatControl.TrackViewState">
+            <summary>
+            This member overrides Control.TrackViewState.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomFlatControl.Groups">
+            <summary>
+            Returns collection of C1WebCustomGroup objects.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebCustomGroup">
+            <summary>
+            Base style for the groups.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomGroup.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomGroup.LoadViewState(System.Object)">
+            <summary>
+            Loads view state in the group object.
+            </summary>
+            <param name="state">View state ot load.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomGroup.SaveViewState">
+            <summary>
+            Saves the view state and returns it as an object.
+            </summary>
+            <returns>Saved view state.</returns>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomGroup.TrackViewState">
+            <summary>
+            Tracks the view state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.AllowSelectItem">
+            <summary>
+            If true, one or more items in the group can be selected.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.AllowMultipleSelect">
+            <summary>
+            If false, only a single item can be selected in the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.AllowMultipleSelectInControl">
+            <summary>
+            If false, only a single item can be selected in the all of the groups in the control.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.AlwaysHasSelected">
+            <summary>
+            If true and if AllowSelectItem=true at minimum one item in the group is selected.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.AllowUnselectItem">
+            <summary>
+            If true, user can unselect the item by clicking it the second time.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.ItemStyle">
+            <summary>
+            Style for the child items in the normal state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.SelectedItemStyle">
+            <summary>
+            Style for the child items in the selected state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.MouseOverItemStyle">
+            <summary>
+            Style for the child items when the mouse hovers over it.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.MouseOverSelectedItemStyle">
+            <summary>
+            Style for the child items when the mouse hovers over the selected item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.DisabledItemStyle">
+            <summary>
+            Style for the child items in the disabled state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.DisabledGroupStyle">
+            <summary>
+            Style for the disabled group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.GroupStyle">
+            <summary>
+            Style for the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.SeparatorStyle">
+            <summary>
+            Default style for the separators.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.Items">
+            <summary>
+            Collection of the child items.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.ItemSpacing">
+            <summary>
+            Gets or sets the space between the items in the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.ItemPadding">
+            <summary>
+            Gets or sets default space between the item's border and content.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.IconBarWidth">
+            <summary>
+            Sets or returns the width of the icon bar drawn on the side of the groups.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.GroupPadding">
+            <summary>
+            Default space between the group's border and items in the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the group is enabled. 
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.EnableExpandCollapse">
+            <summary>
+            Gets or sets a value indicating whether the user can expand or collapse the group by double-clicking on the header or clicking on the indicator image.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.ToolTip">
+            <summary>
+            Gets or sets the ToolTip text displayed when the mouse pointer rests over the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.Visible">
+            <summary>
+            Gets or sets a value indicating whether or not the group is visible.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.WrapText">
+            <summary>
+            Gets or sets a value that indicates whether the item's text is wrapped.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.Index">
+            <summary>
+            Index of the group in the control.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.RootControl">
+            <summary>
+            Root control for the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.ViewState">
+            <summary>
+            View state for the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomGroup.IsTrackingViewState">
+            <summary>
+            Indicates whether the server control is saving changes to its view state.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebLinkItem">
+            <summary>
+            Base class for the link items.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebLinkItem.#ctor">
+            <summary>
+             Initializes a new instance of the class without text or a value. 
+            </summary>
+            <remarks>Use this constructor to initialize a new instance of the class using the default values.</remarks>
+            <seealso cref="T:C1.Web.Command.C1WebLinkItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebCommandBase"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebLinkItem.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <remarks>When this constructor is used, all properties in the object are set to their default values. Be sure to set the properties, as necessary, after creating the object. </remarks>
+            <seealso cref="T:C1.Web.Command.C1WebLinkItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebCommandBase"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebLinkItem.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text and navigation URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <seealso cref="T:C1.Web.Command.C1WebLinkItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebCommandBase"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebLinkItem.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text, navigation URL and image URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <param name="imageUrl">The URL to an image that is displayed next to the item in all states.</param>
+            <seealso cref="T:C1.Web.Command.C1WebLinkItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebCommandBase"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebLinkItem.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text, navigation URL and image URLs. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <param name="imageUrl">The URL to an image that is displayed next to the item in normal state.</param>
+            <param name="mouseOverImageUrl">The URL to an image that is displayed next to the item when the mouse hovers over it.</param>
+            <param name="selectedImageUrl">The URL to an image that is displayed next to the item in selected state.</param>
+            <param name="mouseOverSelectedImageUrl">The URL to an image that is displayed next to the selected item when the mouse hovers over it.</param>
+            <param name="disabledImageUrl">The URL to an image that is displayed next to the item in disabled state.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebLinkItem.LoadViewState(System.Object)">
+            <summary>
+            This member overrides C1WebItemBase.LoadViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebLinkItem.SaveViewState">
+            <summary>
+            This member overrides C1WebItemBase.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebLinkItem.TrackViewState">
+            <summary>
+            This member overrides C1WebItemBase.TrackViewState.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.IconBarWidth">
+            <summary>
+            Sets or returns the width of the icon bar drawn on the side of the groups.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.NavigateUrl">
+            <summary>
+            Gets or sets the URL to link to when the hyperlink is clicked in the menu item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.Selected">
+            <summary>
+            Gets or sets a value indicating whether the current item is selected.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.Target">
+            <summary>
+            Gets or sets the target window or frame to display the Web page content linked to when the C1WebLinkItem is clicked.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.Text">
+            <summary>
+            Gets or sets the text displayed for the item in a control.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.ItemStyle">
+            <summary>
+            Style for the item in normal state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.SelectedItemStyle">
+            <summary>
+            Style for the item in selected state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.MouseOverItemStyle">
+            <summary>
+            Style for the item when the mouse hovers over it.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.MouseOverSelectedItemStyle">
+            <summary>
+            Style for the item when the mouse hovers over the selected item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.DisabledItemStyle">
+            <summary>
+            Style for the item in disabled state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.CausesValidation">
+            <summary>
+            Determines whether validation is performed when the item is clicked.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.ClientScripts">
+            <summary>
+            Collection of client-side scripts associated with the item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.WrapText">
+            <summary>
+            Gets or sets a value that indicates whether the text of the item is wrapped.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.Visible">
+            <summary>
+            Gets or sets a value indicating whether or not the item is visible.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.ToolTip">
+            <summary>
+            Gets or sets the ToolTip text displayed when the mouse pointer rests over the item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.CommandName">
+            <summary>
+            Gets or sets the command name associated with the Item passed to the ItemClick and ItemSelected events of the component.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.CommandArgument">
+            <summary>
+            Gets or sets an optional parameter passed to the ItemClick and ItemSelected events of the component along with the associated CommandName.
+            </summary>
+            <remarks>
+            The CommandArgument property complements the CommandName property by allowing you to provide additional information about the command to perform.
+            </remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the item is enabled.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebLinkItem.ItemPadding">
+            <summary>
+            Space between item's border and content.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebCustomTreeControl">
+            <summary>
+            Base class for the C1WebTreeView, C1WebMenu controls
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomTreeControl.SaveViewState">
+            <summary>
+            This member overrides Control.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomTreeControl.TrackViewState">
+            <summary>
+            This member overrides Control.TrackViewState.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomTreeControl.AllowSelectItem">
+            <summary>
+            If true, one or more item in control can be selected.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomTreeControl.AllowMultipleSelect">
+            <summary>
+            If false, only single item can be selected in the control.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomTreeControl.AlwaysHasSelected">
+            <summary>
+            If true and if AllowSelectItem=true at minimum one item in control is selected.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomTreeControl.AllowUnselectItem">
+            <summary>
+            If true, use can unselect the item by second click on it.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomTreeControl.Items">
+            <summary>
+            Returns a collection of the child items.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebCustomTreeItem">
+            <summary>
+            Base class for the C1WebMenu and C1WebTreeView items.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomTreeItem.#ctor">
+            <summary>
+             Initializes a new instance of the class without text or a value. 
+            </summary>
+            <remarks>Use this constructor to initialize a new instance of the class using the default values.</remarks>
+            <seealso cref="T:C1.Web.Command.C1WebCustomTreeItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebCustomTreeControl"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomTreeItem.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <remarks>When this constructor is used, all properties in the object are set to their default values. Be sure to set the properties, as necessary, after creating the object. </remarks>
+            <seealso cref="T:C1.Web.Command.C1WebCustomTreeItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebCustomTreeControl"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomTreeItem.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text and navigation URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <seealso cref="T:C1.Web.Command.C1WebCustomTreeItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebCustomTreeControl"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomTreeItem.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text, navigation URL and image URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <param name="imageUrl">The URL to an image that is displayed next to the item in all states.</param>
+            <seealso cref="T:C1.Web.Command.C1WebCustomTreeItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebCustomTreeControl"/>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:C1.Web.Command.C1WebCustomTreeItem.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String)" -->
+        <member name="M:C1.Web.Command.C1WebCustomTreeItem.CreateChildGroup">
+            <summary>
+            Creates a nested group.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomTreeItem.SaveViewState">
+            <summary>
+            This member overrides Control.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomTreeItem.TrackViewState">
+            <summary>
+            This member overrides Control.TrackViewState.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomTreeItem.ChildGroup">
+            <summary>
+            Nested group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomTreeItem.HasChildGroup">
+            <summary>
+            Returns true if the item has a child group.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebGroupCollection">
+            <summary>
+            Represents a collection of C1WebCustomGroup elements.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebGroupHeader">
+            <summary>
+            Base class for C1WebTopicBarGroup and C1WebTabStripGroup.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebScrollableGroup">
+            <summary>
+            Base class for groups which support scrolling.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebScrollableGroup.LoadViewState(System.Object)">
+            <summary>
+            This member overrides C1WebCustomGroup.LoadViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebScrollableGroup.SaveViewState">
+            <summary>
+            This member overrides C1WebCustomGroup.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebScrollableGroup.TrackViewState">
+            <summary>
+            This member overrides C1WebCustomGroup.TrackViewState.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebScrollableGroup.EnableScrolling">
+            <summary>
+            Enables or disables the scrolling for this group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebScrollableGroup.Height">
+            <summary>
+            Height of the scrollable area.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebScrollableGroup.ScrollAreaStyle">
+            <summary>
+            Style for the scrollable area in the group.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebGroupHeader.LoadViewState(System.Object)">
+            <summary>
+            This member overrides C1WebScrollableGroup.LoadViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebGroupHeader.SaveViewState">
+            <summary>
+            This member overrides C1WebScrollableGroup.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebGroupHeader.TrackViewState">
+            <summary>
+            This member overrides C1WebScrollableGroup.TrackViewState.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebGroupHeader.CaptionImageHeight">
+            <summary>
+            Gets or sets the height of the image set in the CaptionImageUrl property of the header styles.
+            </summary>
+            <remarks>
+            If the property is not set then the width will be calculated automatically (using the physical dimensions of an image).
+            </remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebGroupHeader.CaptionImageWidth">
+            <summary>
+            Gets or sets the image's width set in the CaptionImageUrl property of the header styles.
+            </summary>
+            <remarks>
+            If property is not set then width will be calculated automatically (using physical dimensions of an image)
+            </remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebGroupHeader.Text">
+            <summary>
+            Gets or sets text that is displayed in the group header.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebGroupHeader.TextHeight">
+            <summary>
+            Gets or sets the height of C1WebGroupHeader's text.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebGroupHeader.PopulateOnDemand">
+            <summary>
+            Gets or sets a value that indicates whether the group is populated dynamically.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebGroupHeader.DisabledHeaderStyle">
+            <summary>
+            Style for the group header in the disabled state.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebItemCollection">
+            <summary>
+            Base class for collections of custom items.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebMenu">
+            <summary>
+            Represents the Menu Web control.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenu.CreateItem">
+            <summary>
+            Creates a new instance of C1WebMenuItem.
+            </summary>
+            <returns>A new instance of C1WebMenuItem</returns>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenu.CreateGroup">
+            <summary>
+            Creates a new instance of C1WebSubMenu
+            </summary>
+            <returns>A new instance of C1WebSubMenu</returns>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.Layout">
+            <summary>
+            Indicates whether to layout the web menu items vertically or horizontally.
+            </summary>
+            <remarks>Context menus are always vertical.</remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.HorzPopupDirection">
+            <summary>
+            Gets or sets the horizontal direction of the submenu's appearance.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.VertPopupDirection">
+            <summary>
+            Gets or sets the vertical direction of the submenu's appearance.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.ContextMenu">
+            <summary>
+            Indicates Whether to use the ContextMenu and which type of context menu to use. The types of context menus are the following: Control, Custom, Default, and None.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.ContextControlId">
+            <summary>
+            Client-side ID of the element that the context menu is bounded to.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.ClickToOpen">
+            <summary>
+            If true, the user should click on the root menu so the submenus will appear.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SubMenuStyle">
+            <summary>
+            Default style for nested submenus.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SubMenuItemStyle">
+            <summary>
+            Default style for submenu items in normal state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SubMenuSelectedItemStyle">
+            <summary>
+            Default style for submenu items in selected state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SubMenuDisabledItemStyle">
+            <summary>
+            Default style for submenu items in disabled state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SubMenuMouseOverItemStyle">
+            <summary>
+            Default style for submenu items in mouse over state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SubMenuMouseOverSelectedItemStyle">
+            <summary>
+            Default style for submenu items in mouse over selected state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SubMenuSeparatorStyle">
+            <summary>
+            Default style for submenu separators.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SpecialSymbolStyle">
+            <summary>
+            Default style for the special symbols in the menu.
+            </summary>
+            <remarks>Special symbols are submenu mark, check mark, are radio mark.</remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SubMenuIconBarWidth">
+            <summary>
+            Sets or returns the width of the icon bar drawn on the side of submenus.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenu.SubMenuMark">
+            <summary>
+            Indicates whether space for the submenu mark is displayed.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebMenuItem">
+            <summary>
+            Represents the menu item.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenuItem.#ctor">
+            <summary>
+             Initializes a new instance of the class. 
+            </summary>
+            <remarks>Use this constructor to initialize a new instance of the class using the default values.</remarks>
+            <seealso cref="T:C1.Web.Command.C1WebMenuItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebMenu"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenuItem.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the class. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <remarks>When this constructor is used, all properties in the object are set to their default values. Be sure to set the properties, as necessary, after creating the object. </remarks>
+            <seealso cref="T:C1.Web.Command.C1WebMenuItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebMenu"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenuItem.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <seealso cref="T:C1.Web.Command.C1WebMenuItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebMenu"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenuItem.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <param name="imageUrl">The URL to an image that is displayed next to the item in all states.</param>
+            <seealso cref="T:C1.Web.Command.C1WebMenuItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebMenu"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenuItem.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <param name="imageUrl">The URL to an image that is displayed next to the item in normal state.</param>
+            <param name="mouseOverImageUrl">The URL to an image that is displayed next to the item when the mouse hovers over it.</param>
+            <param name="selectedImageUrl">The URL to an image that is displayed next to the item in selected state.</param>
+            <param name="mouseOverSelectedImageUrl">The URL to an image that is displayed next to the selected item when the mouse hovers over it.</param>
+            <param name="disabledImageUrl">The URL to an image that is displayed next to the item in disabled state.</param>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuItem.ShortCutText">
+            <summary>
+            Short cut text for the item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuItem.SpecialSymbolStyle">
+            <summary>
+            Style for special symbols for the item.
+            </summary>
+            <remarks>The Special symbols styles for the C1WebMenuItem are the following: submenu mark, check mark, and radio mark.</remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuItem.MarkType">
+            <summary>
+            Gets or sets the mark type for the menu item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuItem.SubMenu">
+            <summary>
+            Nested group.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebMenuItemCollection">
+            <summary>
+            Collection of web menu items.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebSubMenu">
+            <summary>
+            Represents a submenu.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSubMenu.SpecialSymbolStyle">
+            <summary>
+            Default style for special symbols in the submenu.
+            </summary>
+            <remarks>Special symbols are the following: submenu mark, check mark, and radio mark.</remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSubMenu.OffsetPixelX">
+            <summary>
+            Offset by X axis for the submenu relative to the parent item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSubMenu.OffsetPixelY">
+            <summary>
+            Offset by Y axis for the submenu relative to the parent item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSubMenu.Opacity">
+            <summary>
+            Opacity - only for IE5+. Uses DirectX filter. Default is 100 (Opaque).
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSubMenu.ShadowColor">
+            <summary>
+            Shadow color - only for IE5+. Uses DirectX filter.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSubMenu.ShadowDirection">
+            <summary>
+            Shadow direction - only for IE5+. Uses DirectX filter.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSubMenu.Items">
+            <summary>
+            Returns collection of C1WebMenuItem objects.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebMultiGroupFlatControl">
+            <summary>
+            Base class for the C1WebToolBar and C1WebTopicBar controls.
+            </summary>
+            <remarks>Has the GroupSpacing property.</remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMultiGroupFlatControl.GroupSpacing">
+            <summary>
+            Reads or writes offset between groups.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebSeparator">
+            <summary>
+            Represents separator.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebSeparator.LoadViewState(System.Object)">
+            <summary>
+            This member overrides C1WebItemBase.LoadViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebSeparator.SaveViewState">
+            <summary>
+            This member overrides C1WebItemBase.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebSeparator.TrackViewState">
+            <summary>
+            This member overrides C1WebItemBase.TrackViewState.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSeparator.SeparatorStyle">
+            <summary>
+            Style for the separator.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTabStrip">
+            <summary>
+            Represents the TabStrip Web control.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.MixedBordersMode">
+            <summary>
+            Determines whether to use the mixing tab mode.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.HideTabSideGroupBorder">
+            <summary>
+            If true border defined at GroupStyle doesn't apply to the Tabs side of the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.CaptionImageHeight">
+            <summary>
+            Gets or sets the height of the image set in the CaptionImageUrl property of header styles.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.CaptionImageWidth">
+            <summary>
+            Gets or sets the width of the image set in the CaptionImageUrl property of the C1WebGroupHeader styles.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.ShowTabs">
+            <summary>
+            Determines whether or not the control will render its group headers.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.SelectedIndex">
+            <summary>
+            Sets or retrieves a value that indicates the index of the selected object.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.TabPosition">
+            <summary>
+            Position of tabs relative to the control.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.SeparatorInactiveImageUrl">
+            <summary>
+            Gets or sets the image url for the inactive separator.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.ActiveHeaderStyle">
+            <summary>
+            Default style for the tab headers in the active state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.InactiveHeaderStyle">
+            <summary>
+            Default style for the tab headers in the inactive state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.DisabledHeaderStyle">
+            <summary>
+            Default style for the tab headers in the disabled state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.MouseOverActiveHeaderStyle">
+            <summary>
+            Default style for the tab headers in the active state when mouse hovers over them.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.MouseOverInactiveHeaderStyle">
+            <summary>
+            Default style for the tab headers in the inactive state when mouse hovers over them.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.CallbackWaitControlID">
+            <summary>
+            Identifies a control that should be shown during callback to provide visual feedback.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStrip.CallbackWaitImageUrl">
+            <summary>
+            Url of an image that should be shown during callback to provide visual feedback.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTabStrip.TabChanged">
+            <summary>
+            Fires after the active tab has been changed.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTabStrip.TabChanging">
+            <summary>
+            Fires before the active tab is changing.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTabStrip.GroupPopulate">
+            <summary>
+            Fires when an group is populating.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTabStripGroup">
+            <summary>
+            Represents a tab strip group (tab).
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTabStripGroup.#ctor(System.String)">
+            <summary>
+            Creates a topicbar group with specified text at the caption.
+            </summary>
+            <param name="text">Caption text.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTabStrip"/>
+            <seealso cref="T:C1.Web.Command.C1WebTabStripGroup"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTabStripGroup.#ctor(System.String,System.String)">
+            <summary>
+            Creates a topicbar group with specified text at the caption.
+            </summary>
+            <param name="text">Caption text.</param>
+            <param name="imageUrl">URL of a image to use in the group's header.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTabStrip"/>
+            <seealso cref="T:C1.Web.Command.C1WebTabStripGroup"/>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStripGroup.InactiveHeaderStyle">
+            <summary>
+            Style for the group header in the normal state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStripGroup.ActiveHeaderStyle">
+            <summary>
+            Style for the group header in the selected state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStripGroup.MouseOverInactiveHeaderStyle">
+            <summary>
+            Style for the group header when the mouse hovers over it.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStripGroup.MouseOverActiveHeaderStyle">
+            <summary>
+            Style for the group header when the mouse hovers the selected item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStripGroup.Active">
+            <summary>
+            Determines whether or not the tab is active.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTabStripItem">
+            <summary>
+            Represents Tab strip item.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTabStripItem.#ctor">
+            <summary>
+             Initializes a new instance of the class without text or a value. 
+            </summary>
+            <remarks>Use this constructor to initialize a new instance of the class using the default values.</remarks>
+            <seealso cref="T:C1.Web.Command.C1WebTabStripItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTabStrip"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTabStripItem.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <remarks>When this constructor is used, all properties in the object are set to their default values. Be sure to set the properties, as necessary, after creating the object. </remarks>
+            <seealso cref="T:C1.Web.Command.C1WebTabStripItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTabStrip"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTabStripItem.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text and navigation URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTabStripItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTabStrip"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTabStripItem.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text, navigation URL and image URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <param name="imageUrl">The URL to an image that is displayed next to the item in all states.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTabStripItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTabStrip"/>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:C1.Web.Command.C1WebTabStripItem.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String)" -->
+        <member name="T:C1.Web.Command.C1WebTabStripItemCollection">
+            <summary>
+            Represents collection of C1WebTabStripItem items.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTabStripGroupCollection">
+            <summary>
+            Represents a collection of C1WebTabStripGroup elements
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTabStripGroupCollection.Item(System.Int32)">
+            <summary>
+            Indexer (Item property in VB). Gets or sets the item that is located at a specified index of the collection.
+            </summary>
+            <param name="index">The zero-based index of the item.</param>
+        </member>
+        <member name="T:C1.Web.Command.C1WebToolBar">
+            <summary>
+            Represents the ToolBar Web control.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebToolBar.Layout">
+            <summary>
+            Gets or sets the direction to render the toolbar control.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebToolBar.ItemSize">
+            <summary>
+            Gets or sets the C1WebToolbar item's size in units.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebToolBarGroup">
+            <summary>
+            Represents a toolbar group.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebToolBarItem">
+            <summary>
+            Represents a ToolBar's item.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebToolBarItem.#ctor">
+            <summary>
+             Initializes a new instance of the class without text or a value. 
+            </summary>
+            <remarks>Use this constructor to initialize a new instance of the class using the default values.</remarks>
+            <seealso cref="T:C1.Web.Command.C1WebToolBarItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebToolBar"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebToolBarItem.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <remarks>When this constructor is used, all properties in the object are set to their default values. Be sure to set the properties, as necessary, after creating the object. </remarks>
+            <seealso cref="T:C1.Web.Command.C1WebToolBarItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebToolBar"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebToolBarItem.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text and navigation URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <seealso cref="T:C1.Web.Command.C1WebToolBarItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebToolBar"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebToolBarItem.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text, navigation URL and image URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <param name="imageUrl">The URL to an image that is displayed next to the item in all states.</param>
+            <seealso cref="T:C1.Web.Command.C1WebToolBarItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebToolBar"/>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:C1.Web.Command.C1WebToolBarItem.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String)" -->
+        <member name="P:C1.Web.Command.C1WebToolBarItem.HasDropDownButton">
+            <summary>
+            Specifies whether or not the toolbar item has a drop-down button in the left side.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebToolBarItem.DropDownContextMenuId">
+            <summary>
+            Specifies ID of linked C1WebMenu in Custom context mode for the drop down button.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebToolBarGroupCollection">
+            <summary>
+            Represents a collection of C1WebToolBarGroup objects.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebToolBarGroupCollection.Item(System.Int32)">
+            <summary>
+            Indexer (Item property in VB). Gets or sets the item that is located at a specified index of the collection.
+            </summary>
+            <param name="index">The zero-based index of the item.</param>
+        </member>
+        <member name="T:C1.Web.Command.C1WebToolBarItemCollection">
+            <summary>
+            Represents collection of toolbar items.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTopicBar">
+            <summary>
+            Represents the TopicBar Web control.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.AutoCollapse">
+            <summary>
+            If enabled, contol will collapse all previously expanded groups except the one being expanded by user.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.CaptionImageHeight">
+            <summary>
+            Gets or sets the height of image set in the CaptionImageUrl property of the header styles.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.CaptionImageWidth">
+            <summary>
+            Gets or sets the width of image set in the CaptionImageUrl property of the header styles.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.EnableDragDrop">
+            <summary>
+            Determines whether user will be able to change group order by dragging its header to a desired position.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.ViewStyle">
+            <summary>
+            Determines the look and behavior settings of the control (standard or button).
+            </summary>
+            <remarks>
+            If property is set to "Button" then the look of the control will be much like the Outlook panel 
+            </remarks> 
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.ShowGroupHeaders">
+            <summary>
+            Determines whether or not the control will render its group headers.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.CollapsedHeaderStyle">
+            <summary>
+            Default style for the group headers in the collapsed state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.DisabledHeaderStyle">
+            <summary>
+            Default style for the group headers in the disabled state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.ExpandedHeaderStyle">
+            <summary>
+            Default style for the group headers in the expanded state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.MouseOverCollapsedHeaderStyle">
+            <summary>
+            Default style for the group headers in the collapsed state when mouse hovers over them.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.MouseOverExpandedHeaderStyle">
+            <summary>
+            Default style for the group headers in the expanded state when mouse hovers over them.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.CallbackWaitControlID">
+            <summary>
+            Identifies a control that should be shown during callback to provide visual feedback.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBar.CallbackWaitImageUrl">
+            <summary>
+            Url of an image that should be shown during callback to provide visual feedback.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTopicBar.GroupCollapsed">
+            <summary>
+            Fires after the group has been collapsed.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTopicBar.GroupExpanded">
+            <summary>
+            Fires after the group has been expanded.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTopicBar.GroupCollapsing">
+            <summary>
+            Fires before group collapsing.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTopicBar.GroupExpanding">
+            <summary>
+            Fires before group expanding.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTopicBar.GroupPopulate">
+            <summary>
+            Fires when an group is populating.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTopicBarGroup">
+            <summary>
+            Represents a toolbar group.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTopicBarGroup.#ctor(System.String)">
+            <summary>
+            Creates a topicbar group with specified text at the caption.
+            </summary>
+            <param name="text">Caption text.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBar"/>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBarGroup"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTopicBarGroup.#ctor(System.String,System.String)">
+            <summary>
+            Creates a topicbar group with specified text at the caption.
+            </summary>
+            <param name="text">Caption text.</param>
+            <param name="imageUrl">URL of a image to use in the group's header.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBar"/>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBarGroup"/>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBarGroup.CollapsedHeaderStyle">
+            <summary>
+            Style for the group headers in the collapsed state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBarGroup.ExpandedHeaderStyle">
+            <summary>
+            Style for the group headers in the expanded state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBarGroup.MouseOverCollapsedHeaderStyle">
+            <summary>
+            Style for the group headers in the collapsed state when mouse hover over them.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBarGroup.MouseOverExpandedHeaderStyle">
+            <summary>
+            Style for the group headers in the expanded state when mouse hovers over them.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBarGroup.Collapsed">
+            <summary>
+            Gets or sets a value indicating whether or not the group is collapsed.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTopicBarGroupCollection">
+            <summary>
+            Represents collection of C1WebTopicBarGroup objects.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTopicBarGroupCollection.Item(System.Int32)">
+            <summary>
+            Indexer (Item property in VB). Gets or sets the item that is located at a specified index of the collection.
+            </summary>
+            <param name="index">The zero-based index of the item.</param>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTopicBarHeader">
+            <summary>
+            Represents a header of a web topic bar group.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTopicBarItem">
+            <summary>
+            Represents Tab strip item.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTopicBarItem.#ctor">
+            <summary>
+             Initializes a new instance of the class without text or a value. 
+            </summary>
+            <remarks>Use this constructor to initialize a new instance of the class using the default values.</remarks>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBarItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBar"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTopicBarItem.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <remarks>When this constructor is used, all properties in the object are set to their default values. Be sure to set the properties, as necessary, after creating the object. </remarks>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBarItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBar"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTopicBarItem.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text and navigation URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBarItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBar"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTopicBarItem.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text, navigation URL and image URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <param name="imageUrl">The URL to an image that is displayed next to the item in all states.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBarItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTopicBar"/>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:C1.Web.Command.C1WebTopicBarItem.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String)" -->
+        <member name="P:C1.Web.Command.C1WebBinding.PopulateOnDemand">
+            <summary>
+            Gets or sets a value indicating whether the treeview item to which the C1WebBinding object is applied is populated dynamically.
+            </summary>
+            <remarks>This property has effect only with C1WebTreeView objects.</remarks>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTreeViewItemCollection">
+            <summary>
+            Represents collection of treeview control items.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTreeView">
+            <summary>
+            Represents the TreeView Web control.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeView.ExpandAll">
+            <summary>
+            Opens every node in the tree.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeView.CollapseAll">
+            <summary>
+            Closes every node in the tree.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeView.SpecialSymbolStyle">
+            <summary>
+            Default style for special symbols in the tree view.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeView.ShowLines">
+            <summary>
+            Gets or sets a value indicating whether lines connecting child nodes to parent nodes are displayed.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeView.ShowCheckBoxes">
+            <summary>
+            Gets or sets a value that indicates wheather items will display a check box in the TreeView control.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTreeView.GroupCollapsed">
+            <summary>
+            Fires after the group has been collapsed.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTreeView.GroupExpanded">
+            <summary>
+            Fires after the group has been expanded.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTreeView.GroupCollapsing">
+            <summary>
+            Fires before group collapsing.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTreeView.GroupExpanding">
+            <summary>
+            Fires before group expanding.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeView.CallbackWaitControlID">
+            <summary>
+            Identifies a control that should be shown during callback to provide visual feedback.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeView.CallbackWaitImageUrl">
+            <summary>
+            Url of an image that should be shown during callback to provide visual feedback.
+            </summary>
+        </member>
+        <member name="E:C1.Web.Command.C1WebTreeView.ItemPopulate">
+            <summary>
+            Fires when an item is clicked.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTreeViewGroup">
+            <summary>
+            Represents a treeview group.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewGroup.Expand">
+            <summary>
+            Opens the group.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewGroup.Collapse">
+            <summary>
+            Closes the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewGroup.SpecialSymbolStyle">
+            <summary>
+            Default style for special symbols in the tree view group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewGroup.ShowLines">
+            <summary>
+            Gets or sets a value indicating whether the lines connecting the child nodes to the parent nodes are displayed in the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewGroup.ShowCheckBoxes">
+            <summary>
+            Gets or sets a value that indicates wheather the items will display check boxes in the group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewGroup.Collapsed">
+            <summary>
+            Gets or sets a value indicating whether or not the group is collapsed.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTreeViewItem">
+            <summary>
+            Represents tree view item.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewItem.#ctor">
+            <summary>
+             Initializes a new instance of the class without text or a value. 
+            </summary>
+            <remarks>Use this constructor to initialize a new instance of the class using the default values.</remarks>
+            <seealso cref="T:C1.Web.Command.C1WebTreeViewItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTreeView"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewItem.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <remarks>When this constructor is used, all properties in the object are set to their default values. Be sure to set the properties, as necessary, after creating the object. </remarks>
+            <seealso cref="T:C1.Web.Command.C1WebTreeViewItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTreeView"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewItem.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text and navigation URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTreeViewItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTreeView"/>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewItem.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the class using the specified text, navigation URL and image URL. 
+            </summary>
+            <param name="text">The text that is displayed for the item.</param>
+            <param name="navigateUrl">The URL to link to when the item is clicked.</param>
+            <param name="imageUrl">The URL to an image that is displayed next to the item in all states.</param>
+            <seealso cref="T:C1.Web.Command.C1WebTreeViewItem"/>
+            <seealso cref="T:C1.Web.Command.C1WebTreeView"/>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:C1.Web.Command.C1WebTreeViewItem.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String)" -->
+        <member name="M:C1.Web.Command.C1WebTreeViewItem.Expand">
+            <summary>
+            Opens the child group.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewItem.Collapse">
+            <summary>
+            Closes the child group.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewItem.SaveViewState">
+            <summary>
+            This member overrides Control.SaveViewState.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewItem.TrackViewState">
+            <summary>
+            This member overrides Control.TrackViewState.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewItem.SpecialSymbolStyle">
+            <summary>
+            Style for special symbols in the tree view item.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewItem.ShowCheckBox">
+            <summary>
+            Gets or sets a value that indicates whether the item will display a check box.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewItem.NestedGroup">
+            <summary>
+            Nested group.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewItem.PopulateOnDemand">
+            <summary>
+            Gets or sets a value that indicates whether the item is populated dynamically.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.Design.C1WebCommandEventNameEditor.EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)">
+            <summary>
+            Overrides UITypeEditor.EditValue. 
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.Design.C1WebCommandEventNameEditor.GetEditStyle(System.ComponentModel.ITypeDescriptorContext)">
+            <summary>
+            Overrides UITypeEditor.GetEditStyle.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.Design.C1WebMenuEditorForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.Design.C1WebBindingsEditorForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.Design.C1WebBindingsEditorForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:C1.Web.Command.Design.C1WebBindingsEditorForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.SubMenuMarkEnum">
+            <summary>
+            Use the members of this enumeration to set the value of the SubMenuMark property.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.SubMenuMarkEnum.Yes">
+            <summary>
+            Space for SubMenu marks is always shown.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.SubMenuMarkEnum.No">
+            <summary>
+            SubMenu marks are never shown.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.SubMenuMarkEnum.Auto">
+            <summary>
+            Space for SubMenu marks is shown if at least one item has submenu.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.ContextMenuTypeEnum">
+            <summary>
+            Determines whether the context menu will be used and which type of context menu to use.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ContextMenuTypeEnum.None">
+            <summary>
+            Menu item is not a context menu.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ContextMenuTypeEnum.Default">
+            <summary>
+            Context menu appears then the user right-clicks on any area of the page.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ContextMenuTypeEnum.Control">
+            <summary>
+            Context menu appears then the user right-clicks on the specified in ContextControlId.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ContextMenuTypeEnum.Custom">
+            <summary>
+            To show context menu developer should call ShowContextMenu(id) client-side function.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.ItemImagePositionEnum">
+            <summary>
+            Specifies the position of an image relative to the item's text.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ItemImagePositionEnum.NotSet">
+            <summary>
+            Image postion is not set.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ItemImagePositionEnum.Near">
+            <summary>
+            Image placed near to the item text.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ItemImagePositionEnum.Far">
+            <summary>
+            Image placed far to the item text.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ItemImagePositionEnum.Bottom">
+            <summary>
+            Image placed under the item text.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ItemImagePositionEnum.Top">
+            <summary>
+            Image placed above the item text.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ItemImagePositionEnum.TextOnly">
+            <summary>
+            Item's text is shown, but its image is not shown.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.ItemImagePositionEnum.ImageOnly">
+            <summary>
+            Item's image is shown, but its text is not shown.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.PresentationEnum">
+            <summary>
+            Determines the look and behavior settings of the C1WebTopicBar control.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.PresentationEnum.Standard">
+            <summary>
+            Standard presentation.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.PresentationEnum.Button">
+            <summary>
+            C1WebTopicBar control looks and behaves like the Outlook panel.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.TabPositionEnum">
+            <summary>
+            Determines the position of the tabs relative to the control.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.TabPositionEnum.Top">
+            <summary>
+            Tabs in the top of the control.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.TabPositionEnum.Bottom">
+            <summary>
+            Tabs in the bottom of the control.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.TabPositionEnum.Left">
+            <summary>
+            Tabs in the left of the control.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.TabPositionEnum.Right">
+            <summary>
+            Tabs in the right of the control.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.LayoutTypeFlags">
+            <summary>
+            Layouts for serialization.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.LayoutTypeFlags.None">
+            <summary>
+            No properties save/load during serialization process.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.LayoutTypeFlags.Styles">
+            <summary>
+            Style properties save/load during serialization process.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.LayoutTypeFlags.Groups">
+            <summary>
+            Groups save/load during serialization process.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.LayoutTypeFlags.Appearance">
+            <summary>
+            Appearance properties save/load during serialization process.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.LayoutTypeFlags.Behavior">
+            <summary>
+            Behaviour properties save/load during serialization process.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.LayoutTypeFlags.Sizes">
+            <summary>
+            Sizes save/load during serialization process.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.LayoutTypeFlags.All">
+            <summary>
+            All groups of properties save/load during serialization process.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebGroupEventHandler">
+            <summary>
+            Delegate type for handling events that are related to the groups
+            </summary>
+            <param name="sender">The source of the event</param>
+            <param name="e">C1WebGroupEventArgs object that contains the event data</param>
+        </member>
+        <member name="T:C1.Web.Command.C1WebGroupEventArgs">
+            <summary>
+            C1WebGroupEventArgs is used by the following events:
+                C1WebTopicBar.GroupCollapsed    
+                C1WebTopicBar.GroupExpanded    
+                C1WebTabStrip.TabChanged    
+                C1WebTreeView.GroupCollapsed    
+                C1WebTreeView.GroupExpanded    
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebGroupEventArgs.Group">
+            <summary>
+             Group that raised an event.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebCommandEventHandler">
+            <summary>
+            Delegate type for handling events that are related to the items
+            </summary>
+            <param name="sender">The source of the event</param>
+            <param name="e">C1WebCommandEventArgs object that contains the event data</param>
+        </member>
+        <member name="T:C1.Web.Command.C1WebCommandEventArgs">
+            <summary>
+            C1WebCommandEventArgs is used by the following events:
+                C1WebCustomControl.ItemClick    
+                C1WebCustomControl.ItemSelected  
+                C1WebTreeView.ItemPopulate
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandEventArgs.Group">
+            <summary>
+             A Group in the control which raised an event.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCommandEventArgs.Item">
+            <summary>
+             An Item in the control which raised an event.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebGroupBeforeEventHandler">
+            <summary>
+            Delegate type for handling cancellable events that are related to the groups
+            </summary>
+            <param name="sender">The source of the event</param>
+            <param name="e">An C1WebGroupBeforeEventArgs object that contains the event data</param>
+        </member>
+        <member name="T:C1.Web.Command.C1WebGroupBeforeEventArgs">
+            <summary>
+            C1WebTopicBarGroupBeforeEventHandler use for the following events:
+                C1WebTopicBar.GroupCollapsing    
+                C1WebTopicBar.GroupExpanding
+                C1WebTreeView.GroupCollapsing    
+                C1WebTreeView.GroupExpanding
+                C1WebTabStrip.TabChanging
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebGroupBeforeEventArgs.Group">
+            <summary>
+             Group that raised an event.
+            </summary>
+        </member>
+        <member name="T:C1.Util.Localization.StringTables">
+            <summary>
+            StringTables
+            this class contains a single static method InitTables that populates the
+            tables used by the Localizer class.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.ScriptDefCollection">
+            <summary>
+            Allows the specification of a client-side script for any event.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebCustomItemStyle">
+            <summary>
+            Base class for the C1WebItemStyle.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomItemStyle.#ctor(System.Web.UI.WebControls.WebControl)">
+            <summary>
+            Constructor. Initializes a new instance of the C1WebScrollAreaStyle class.
+            </summary>
+            <param name="owner">The WebControl object to which the C1WebScrollAreaStyle object belongs</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomItemStyle.CopyFrom(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for CopyFrom.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomItemStyle.MergeWith(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for MergeWith.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomItemStyle.Reset">
+            <summary>
+            Override for Reset.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebCustomItemStyle.FillStyleAttributes(System.Web.UI.CssStyleCollection,System.Web.UI.IUrlResolutionService)">
+            <summary>
+            Override for FillStyleAttributes.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomItemStyle.ImageUrl">
+            <summary>
+            The URL of the image to use in an icon place.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomItemStyle.BackImageUrl">
+            <summary>
+            The URL of the background image.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomItemStyle.LeftBorderImageUrl">
+            <summary>
+            The URL of the left border image.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomItemStyle.RightBorderImageUrl">
+            <summary>
+            The URL of the right border image.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomItemStyle.ItemImagePosition">
+            <summary>
+            Specifies the position of an image relative to the item's text.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebCustomItemStyle.ImageTextSpacing">
+            <summary>
+            Specifies the spacing between the item's image and text.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebGroupStyle">
+            <summary>
+            The style for the groups.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebGroupStyle.#ctor">
+            <summary>
+            Constructor. Initializes a new instance of the C1WebGroupStyle class.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebGroupStyle.#ctor(System.Web.UI.WebControls.WebControl)">
+            <summary>
+            Constructor. Initializes a new instance of the C1WebGroupStyle class.
+            </summary>
+            <param name="owner">The WebControl object that belongs to the C1WebGroupStyle object.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebGroupStyle.CopyFrom(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for CopyFrom.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebGroupStyle.MergeWith(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for MergeWith.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebGroupStyle.Reset">
+            <summary>
+            Override for Reset.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebGroupStyle.BackImageUrl">
+            <summary>
+            Background image url.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebHeaderStyle">
+            <summary>
+            Style for the group headers.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebItemStyle">
+            <summary>
+            Style for the link items.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebItemStyle.CopyFrom(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for CopyFrom.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebItemStyle.MergeWith(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for MergeWith.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebItemStyle.Reset">
+            <summary>
+            Override for Reset.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebItemStyle.LabelPaddingBottom">
+            <summary>
+            Padding bottom for the item's text.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebItemStyle.LabelPaddingLeft">
+            <summary>
+            Left padding for the item's text.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebItemStyle.LabelPaddingRight">
+            <summary>
+            Right padding for the item's text.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebItemStyle.LabelPaddingTop">
+            <summary>
+            Top padding for the item's text.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebItemStyle.ItemAlign">
+            <summary>
+            Specifies the horizontal alignment of the content within an item.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebHeaderStyle.#ctor(System.Web.UI.WebControls.WebControl)">
+            <summary>
+            Constructor. Initializes a new instance of the C1WebHeaderStyle class.
+            </summary>
+            <param name="owner">The WebControl object that belongs to the C1WebHeaderStyle object.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebHeaderStyle.#ctor">
+            <summary>
+            Constructor. Initializes a new instance of the C1WebHeaderStyle class.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebHeaderStyle.CopyFrom(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for CopyFrom.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebHeaderStyle.MergeWith(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for MergeWith.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebHeaderStyle.Reset">
+            <summary>
+            Override for Reset.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebHeaderStyle.IndicatorUrl">
+            <summary>
+            Get or sets the indicator image displayed in the header.
+            </summary>
+            <remarks>
+            Indicator image is the image used for expanding\collapsing group by clicking on them
+            </remarks>
+        </member>
+        <member name="T:C1.Web.Command.C1WebMenuSpecialSymbolStyle">
+            <summary>
+            Style for the following special symbols in the menu: SubMenu mark, Check mark, and Radio mark.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenuSpecialSymbolStyle.AddAttributesToRender(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Adds HTML attributes and styles that need to be rendered to the specified System.Web.UI.HtmlTextWriter. 
+            </summary>
+            <param name="writer">A System.Web.UI.HtmlTextWriter that represents the output stream to render HTML content on the client. </param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenuSpecialSymbolStyle.AddAttributesToRender(System.Web.UI.HtmlTextWriter,System.Web.UI.WebControls.WebControl)">
+            <summary>
+            Adds HTML attributes and styles that need to be rendered to the specified System.Web.UI.HtmlTextWriter and Web server control.
+            </summary>
+            <param name="writer">A System.Web.UI.HtmlTextWriter that represents the output stream to render HTML content on the client.</param>
+            <param name="owner">A WebControl or WebControl derived object that represents the Web server control associated with the Style.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenuSpecialSymbolStyle.CopyFrom(C1.Web.Command.C1WebMenuSpecialSymbolStyle)">
+            <summary>
+            Copies non-blank elements from the specified style, overwriting existing style elements if necessary. 
+            </summary>
+            <param name="s">The style to copy.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebMenuSpecialSymbolStyle.Reset">
+            <summary>
+            Clears out any defined style elements from the state bag. 
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuSpecialSymbolStyle.SubMenuMarkImageUrl">
+            <summary>
+            Image url for the symbol of submenu mark.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuSpecialSymbolStyle.SubMenuMarkText">
+            <summary>
+            Text for the symbol of submenu mark.
+            </summary>
+            <remarks>for example > or &lt;span style=”font-family:webdings”&gt;4&lt;/span&gt;</remarks>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuSpecialSymbolStyle.CheckMarkImageUrl">
+            <summary>
+            Image url for the check mark symbol.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuSpecialSymbolStyle.CheckMarkText">
+            <summary>
+            Text for the check mark symbol.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuSpecialSymbolStyle.RadioMarkImageUrl">
+            <summary>
+            Image url for the radio mark symbol.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebMenuSpecialSymbolStyle.RadioMarkText">
+            <summary>
+            Text for the radio mark symbol.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebScrollAreaStyle">
+            <summary>
+            Style for the scrollers of the scrollable groups.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebScrollAreaStyle.ScrollImageDownUrl">
+            <summary>
+            Represents the image url for the scroll down in normal state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebScrollAreaStyle.ScrollImageDownHoverUrl">
+            <summary>
+            Represents the image url for the scroll down in hover state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebScrollAreaStyle.ScrollImageDownActiveUrl">
+            <summary>
+            Represents the image url for the scroll down in active state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebScrollAreaStyle.ScrollImageUpUrl">
+            <summary>
+            Represents the image url for the scroll up in normal state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebScrollAreaStyle.ScrollImageUpHoverUrl">
+            <summary>
+            Represents the image url for the scroll up in hover state.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebScrollAreaStyle.ScrollImageUpActiveUrl">
+            <summary>
+            Represents the image url for the scroll up in active state.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebSeparatorStyle">
+            <summary>
+            Style for the separators.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebSeparatorStyle.#ctor">
+            <summary>
+            Constructor. Initializes a new instance of the C1WebSeparatorStyle class.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebSeparatorStyle.#ctor(System.Object)">
+            <summary>
+            Constructor. Initializes a new instance of the C1WebSeparatorStyle class
+            </summary>
+            <param name="owner">The object to which the C1WebSeparatorStyle object belongs.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebSeparatorStyle.CopyFrom(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for CopyFrom.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebSeparatorStyle.MergeWith(System.Web.UI.WebControls.Style)">
+            <summary>
+            Override for MergeWith.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebSeparatorStyle.Reset">
+            <summary>
+            Override for Reset.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSeparatorStyle.BackImageSize">
+            <summary>
+            Height for horizontal or width for vertical separators.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSeparatorStyle.PaddingLeft">
+            <summary>
+            Left padding for the separator image.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSeparatorStyle.PaddingRight">
+            <summary>
+            Right padding for the separator image.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSeparatorStyle.PaddingTop">
+            <summary>
+            Top padding for the separator image.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSeparatorStyle.PaddingBottom">
+            <summary>
+            Bottom padding for the separator image.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebSeparatorStyle.BackImageUrl">
+            <summary>
+            Image url for the separator image.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle">
+            <summary>
+            Style for the special symbols in tree view.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle.AddAttributesToRender(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Adds HTML attributes and styles that need to be rendered to the specified System.Web.UI.HtmlTextWriter. 
+            </summary>
+            <param name="writer">A System.Web.UI.HtmlTextWriter that represents the output stream to render HTML content on the client. </param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle.AddAttributesToRender(System.Web.UI.HtmlTextWriter,System.Web.UI.WebControls.WebControl)">
+            <summary>
+            Adds HTML attributes and styles that need to be rendered to the specified System.Web.UI.HtmlTextWriter and Web server control.
+            </summary>
+            <param name="writer">A System.Web.UI.HtmlTextWriter that represents the output stream to render HTML content on the client.</param>
+            <param name="owner">A WebControl or WebControl derived object that represents the Web server control associated with the Style.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle.CopyFrom(C1.Web.Command.C1WebTreeViewSpecialSymbolStyle)">
+            <summary>
+            Copies non-blank elements from the specified style, overwriting existing style elements if necessary. 
+            </summary>
+            <param name="s">The style to copy.</param>
+        </member>
+        <member name="M:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle.Reset">
+            <summary>
+            Clears out any defined style elements from the state bag. 
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle.CollapsedNodeImageUrl">
+            <summary>
+            The URL to a custom image for the collapsible node indicator.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle.ExpandedNodeImageUrl">
+            <summary>
+            The URL to a custom image for the expandable node indicator.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle.NoExpandNodeImageUrl">
+            <summary>
+            The URL to a custom image for the non-expandable node indicator.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle.VerticalLineImageUrl">
+            <summary>
+            The URL to a custom image for the vertical line.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.C1WebTreeViewSpecialSymbolStyle.HorizontalLineImageUrl">
+            <summary>
+            The URL to a custom image for the horizontal line.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.Design.C1WebCommandLayoutDialog">
+            <summary>
+            Summary description for LayoutDialog.
+            </summary>
+        </member>
+        <member name="F:C1.Web.Command.Design.C1WebCommandLayoutDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.Design.C1WebCommandLayoutDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:C1.Web.Command.Design.C1WebCommandLayoutDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.C1HelpCaller">
+            <summary>
+            Summary description for C1HelpCaller.
+            </summary>
+        </member>
+        <member name="T:C1.Web.Command.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:C1.Web.Command.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+    </members>
+</doc>

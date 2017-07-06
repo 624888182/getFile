@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/MainMot/!svn/ver/1/App_Code/Control
+END
+vssver2.scc
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MainMot/!svn/ver/1/App_Code/Control/vssver2.scc
+END
+ClsDesktopSrcControl.cs
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/MainMot/!svn/ver/1/App_Code/Control/ClsDesktopSrcControl.cs
+END
+Localized.cs
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/MainMot/!svn/ver/1/App_Code/Control/Localized.cs
+END
+PageControl1.cs.exclude
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/MainMot/!svn/ver/1/App_Code/Control/PageControl1.cs.exclude
+END
+Security.cs
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MainMot/!svn/ver/1/App_Code/Control/Security.cs
+END

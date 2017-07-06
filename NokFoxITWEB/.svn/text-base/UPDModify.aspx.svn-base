@@ -1,0 +1,238 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="UPDModify.aspx.cs" Inherits="UPDModify" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Untitled Page</title>
+    <style type="text/css">
+        .style1
+        {
+            width: 100%;
+            height: 355px;
+        }
+        .style2
+        {
+            height: 62px;
+        }
+        .style4
+        {
+            width: 90px;
+        }
+        .style5
+        {
+            width: 268435424px;
+        }
+        .style6
+        {
+            width: 14%;
+            height: 60px;
+        }
+        .style7
+        {
+            height: 60px;
+        }
+        .style9
+        {
+            width: 90px;
+            height: 45px;
+        }
+        .style10
+        {
+            width: 268435424px;
+            height: 45px;
+        }
+        .style11
+        {
+            width: 14%;
+            height: 45px;
+        }
+        .style14
+        {
+            width: 268435392px;
+        }
+        .style15
+        {
+            width: 120px;
+            height: 62px;
+        }
+        .style16
+        {
+            width: 14%;
+        }
+        .style17
+        {
+            width: 13%;
+        }
+        .style19
+        {
+            width: 90px;
+            height: 53px;
+        }
+        .style20
+        {
+            width: 268435424px;
+            height: 53px;
+        }
+        .style21
+        {
+            width: 268435392px;
+            height: 53px;
+        }
+        .style22
+        {
+            height: 53px;
+            width: 13%;
+        }
+        .style23
+        {
+            width: 14%;
+            height: 53px;
+        }
+        .style28
+        {
+            width: 268435392px;
+            height: 21px;
+        }
+        .style29
+        {
+            height: 21px;
+            width: 13%;
+        }
+        .style30
+        {
+            width: 268435392px;
+            height: 19px;
+        }
+        .style31
+        {
+            height: 19px;
+            width: 13%;
+        }
+        .style33
+        {
+            width: 103px;
+            height: 62px;
+        }
+        .style34
+        {
+            width: 89px;
+            height: 62px;
+        }
+        .style35
+        {
+            width: 78px;
+            height: 62px;
+        }
+        .style36
+        {
+            height: 60px;
+            width: 135px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div style="height: 664px; width: 779px">
+    
+        <table class="style1" bgcolor="Silver">
+            <tr>
+                <td class="style6">
+                    DN</td>
+                <td class="style36" colspan="3">
+                    <asp:TextBox ID="TextBox1" runat="server" Width="165px"></asp:TextBox>
+                </td>
+                <td class="style7" colspan="3">
+                    <asp:Button ID="Button2" runat="server" onclick="Button2_Click" Text="查询" />
+                </td>
+                <td class="style7" colspan="4">
+                    &nbsp;</td>
+            </tr>
+            <tr>
+                <td class="style11" rowspan="2">
+                    旧的SHIP_TO</td>
+                <td class="style9" colspan="4" rowspan="2">
+                    <asp:TextBox ID="TextBox2" runat="server" Width="165px"></asp:TextBox>
+                </td>
+                <td class="style10" colspan="3" rowspan="2">
+                    新的SHIP_TO</td>
+                <td class="style28" colspan="2">
+                    <asp:TextBox ID="TextBox3" runat="server" Width="165px"></asp:TextBox>
+                </td>
+                <td class="style29">
+                    <asp:Button ID="Button3" runat="server" Height="18px" onclick="Button3_Click" 
+                        Text="城市查询" />
+                </td>
+            </tr>
+            <tr>
+                <td class="style30" colspan="2">
+                    <asp:DropDownList ID="DropDownList1" runat="server" AutoPostBack="True" onselectedindexchanged="DropDownList1_SelectedIndexChanged" 
+                        Width="165px">
+                    </asp:DropDownList>
+                </td>
+                <td class="style31">
+                    <asp:CheckBox ID="CheckBox1" runat="server" 
+                        oncheckedchanged="CheckBox1_CheckedChanged" AutoPostBack="True" />
+                </td>
+            </tr>
+            <tr>
+                <td class="style23">
+                    SHIP_TO_CITY</td>
+                <td class="style19" colspan="4">
+                    <asp:TextBox ID="TextBox5" runat="server" Width="165px"></asp:TextBox>
+                    </td>
+                <td class="style20" colspan="3">
+                    SHIP_TO_CITY&nbsp;
+                    </td>
+                <td class="style21" colspan="2">
+                    <asp:TextBox ID="TextBox6" runat="server" Width="165px"></asp:TextBox>
+                </td>
+                <td class="style22">
+                    </td>
+            </tr>
+            <tr>
+                <td class="style16">
+                    &nbsp;</td>
+                <td class="style4" colspan="4">
+                    &nbsp;</td>
+                <td class="style5" colspan="3">
+                    &nbsp;</td>
+                <td class="style14" colspan="2">
+                    &nbsp;</td>
+                <td class="style17">
+                    &nbsp;</td>
+            </tr>
+            <tr>
+                <td class="style16">
+                    &nbsp;</td>
+                <td class="style4" colspan="4">
+                    &nbsp;</td>
+                <td class="style5" colspan="3">
+                    &nbsp;</td>
+                <td class="style14" colspan="2">
+                    &nbsp;</td>
+                <td class="style17">
+                    &nbsp;</td>
+            </tr>
+            <tr>
+                <td class="style15" colspan="2">
+                    </td>
+                <td class="style35">
+                    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="修改" />
+                </td>
+                <td class="style34" colspan="2">
+                    <asp:TextBox ID="TextBox4" runat="server" Width="88px">N</asp:TextBox>
+                </td>
+                <td class="style33">
+                    </td>
+                <td class="style2" colspan="3">
+                    </td>
+                <td class="style2" colspan="2">
+                    </td>
+            </tr>
+        </table>
+    
+    </div>
+    </form>
+</body>
+</html>

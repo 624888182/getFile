@@ -1,0 +1,47 @@
+﻿body
+{
+}
+.igpb_BaseLabel
+{
+	text-align:left;
+	white-space:nowrap;
+	position:absolute;
+	padding:2px;
+}
+.igpb_BackgroundLabel
+{
+	color:Black;
+}
+.igpb_ForegroundLabel
+{
+	color:Orange;
+}
+.igpb_InnerDiv
+{
+	height:100%;
+	width:100%;
+	position:absolute;
+	overflow:hidden;
+}
+.igpb_Fill_Horiz
+{
+	background-image: url(./images/fill_horiz.gif);
+}
+.igpb_Fill_Vert
+{
+	background-image: url(./images/fill_vert.gif);
+}
+.igpb_Background_Horiz
+{
+	background-image: url(./images/back_horiz.gif);
+}
+.igpb_Background_Vert
+{
+	background-image: url(./images/back_vert.gif);
+}
+.igpb_Container
+{
+	height:100%;
+	width:100%;
+	position:relative;
+}

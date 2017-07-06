@@ -1,0 +1,556 @@
+﻿using System.Globalization;
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using Economy.BLL;
+using Economy.Publibrary;
+using SCM.GSCMDKen;
+// using Prilibrary.FsplitNew;
+using System.Data.SqlClient;
+using System.IO;
+using System.Windows.Forms;
+using System.Threading;
+using EconomyUser;
+
+
+public partial class Main : System.Web.UI.Page
+{
+    public static string NetDBPath = "Data Source=10.186.19.104;Initial Catalog=FMRPB1;User ID =sa;Password=Sa123456;Timeout=120;";// ConfigurationManager.AppSettings["DefaultConnectionString"];
+    public static string LocDBPath = "Data Source=127.0.0.1;Initial Catalog=FMRPB1;User ID =sa;Password=sa123456;Timeout=120;";// ConfigurationManager.AppSettings["DefaultConnectionString"];
+    public static string RunDBPath = ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; //ConnectionString"]; //LocDBPath;
+    public static string WebSrverDir = "http://localhost/WebExe/Main.aspx";
+    public static string NetDB1     = "Data Source=10.83.16.96;Initial Catalog=SCM;User ID =sa;Password=Sa123456;Timeout=120;";
+    public static string NetDB2     = "Data Source=10.83.16.74;Initial Catalog=SCM;User ID =sa;Password=Sa123456;Timeout=120;";
+    public static string NetDB3     = "Data Source=10.186.33.41;Initial Catalog=SCM;User ID =sa;Password=Sa123456;Timeout=120;";
+    public static string NetSqlDB4  = ConfigurationManager.AppSettings["Sql221String"]; 
+    public static string NetDB86 = ConfigurationManager.AppSettings["Sql86String"]; // "Data Source=10.186.171.86;Initial Catalog=MHReckon;User ID =sa;Password=Sa123456;Timeout=120;";    
+    
+    ClassLibrarySCM1.Class1 LibSCM1Pointer = new ClassLibrarySCM1.Class1();
+    ClassLibraryUSR1.Class1 LibUSR1Pointer = new ClassLibraryUSR1.Class1();
+    ShipPlanlib ShipPlanlibPointer = new ShipPlanlib();
+    UsrCtllib   UsrCtllibPointer   = new UsrCtllib();
+    Pictlib     PictlibPointer     = new Pictlib();
+    FPubLib     FPubLibPointer     = new FPubLib();
+    FSplitlib   FSplitlibPointer   = new FSplitlib();
+    FsplitNew   FsplitNewPointer   = new FsplitNew();
+    Jinvlib     JinvlibPointer     = new Jinvlib();
+    AutoUpload  AutoUploadPointer  = new AutoUpload();
+    TJLibZhu    TJLibZhuPointer    = new TJLibZhu();
+    TJSY        TJSYPointer        = new TJSY();
+    DataDN_3B2  DataDN_3B2Pointer  = new DataDN_3B2();
+    IntelSNTrax IntelSNTraxPointer = new IntelSNTrax();
+    UpdSendToCust UpdSendToCustPointer = new UpdSendToCust();
+   
+    
+    DbAccessing myAccessing = new DbAccessing();
+    protected string CurrDay = DateTime.Today.ToString("yyyyMMdd");  // 20100320
+    protected string Currtime = DateTime.Now.ToString("yyyyMMddHHmmssmm");
+    public string VUrl;       
+    protected string oraDba = "oracle";
+    // protected string ProgramParam = "N";
+    
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        string r1 = "";
+        int    in1 = 0;
+
+        if (!Page.IsPostBack)
+        {
+            string ParaAutoflag = Request["Autoflag"];  //   http://localhost:1328/IDMMot/MainSCM.aspx?Autoflag=1  1000=1Sec
+        }
+        
+        InitVar();
+        TextBox4.Text = " TJ IDM Web Server http://10.186.171.221/TJIDMMonitorAUto/MonitorAuto.aspx ";
+        r1 = FPubLibPointer.PubWri_MessLog("MonitorAuto", r1.ToString(), r1.ToString(), r1.ToString(), r1.ToString(), "FirstTime", "", "", "", NetSqlDB4, "sql");         // 10 Code
+        string DBReadString = ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString
+        // r1 = ReadParaTxt("WebReadParam.txt", "10001");      //// Auto Only                    
+        r1 = MainLoop();
+        Response.Write("<SCRIPT   LANGUAGE='JavaScript'>window.opener=null;window.close();</SCRIPT> "); // close system
+
+    }   // end Page_load;
+
+    
+
+    protected string MainLoop()
+    {
+        int i = 3, i1=0, i2=0, i3=0;
+        string s1 = "", s2 = "", s3 = "", s4 = "", s5="", s6="",tmpsql="";
+        TextBox4.Text = "系統自動檢查" + "IDMMainLoop";
+        DataSet tmpds = null;
+        string  tmpCurrtime = DateTime.Now.ToString("yyyyMMddHHmmssmm");
+
+     
+        string WebIP       = ReadParaTxt("WebReadParam.txt", "10103");
+        string Monifile    = ReadParaTxt("WebReadParam.txt", "10018");
+        string DBType      = "sql";
+        string t1 = ReadParaTxt("WebReadParam.txt", "10021"); // sql Server Sql221String
+        string ReadDb      = ConfigurationManager.AppSettings[t1];  
+        string MoniPara1   = ReadParaTxt("WebReadParam.txt", "10019");
+        string MoniPara2   = ReadParaTxt("WebReadParam.txt", "10020");
+
+        // string tmpsql = " Select max(F1) from " + Monifile + "  where  F2 = '" + MoniPara1 + "' order by F1 desc  ";
+
+        tmpsql = " Select max(F1) m1 from " + Monifile + "  where  F2 = '" + MoniPara1 + "' ";
+        tmpds = DataBaseOperation.SelectSQLDS(DBType.ToLower(), ReadDb, tmpsql);
+
+
+        if (tmpds.Tables[0].Rows.Count > 0)  // 檢查是否自動執行在一個小時內 MainAuto
+        {
+            i1 = tmpds.Tables[0].Rows.Count;
+            s2 = tmpds.Tables[0].Rows[0]["m1"].ToString();
+            s3 = s2.Substring(0, 10);
+            s4 = tmpCurrtime.Substring(0, 10);
+            i3 = Convert.ToInt32(s4) - Convert.ToInt32(s3);
+            if (i3 >= 2)  // Open Auto 
+            {
+                s5 = ReadParaTxt("WebReadParam.txt", "10022");
+                // s6 = ConCharfofweb(s5);
+                s5 = "http://10.186.171.221/TJIDMWeb/MainAuto.aspx";
+                Response.Redirect(s5); //  Response.Redirect("http://127.0.0.1/web/Main.aspx");
+            }
+        }
+
+         
+        
+        tmpsql = " Select max(F1) m1 from " + Monifile + "  where  F2 = '" + MoniPara2 + "' ";
+        tmpds = DataBaseOperation.SelectSQLDS(DBType.ToLower(), ReadDb, tmpsql);
+
+
+        if (tmpds.Tables[0].Rows.Count > 0)  // 檢查是否自動執行在一個小時內 L6TOL8
+        {
+            i1 = tmpds.Tables[0].Rows.Count;
+            s2 = tmpds.Tables[0].Rows[0]["m1"].ToString();
+            s3 = s2.Substring(0, 10);
+            s4 = tmpCurrtime.Substring(0, 10);
+            i3 = Convert.ToInt32(s4) - Convert.ToInt32(s3);
+          //  if (i3 >= 2)  // Open Auto 
+          //      Response.Write("<script>window.open( 'MainAuto.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+        } 
+
+
+               
+        return (""); 
+             
+    }
+  
+
+
+    private void InitVar()
+    {
+     
+    }  // initvar
+
+protected void  Button1_Click(object sender, EventArgs e)
+{
+   
+}
+
+
+
+protected void Button2_Click(object sender, EventArgs e)  // Modify 
+{
+  
+   
+}
+
+protected void Button3_Click(object sender, EventArgs e)
+{
+   
+}
+
+   
+
+protected void TextBox2_TextChanged(object sender, EventArgs e)
+{
+    
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Encl String Algorithm : 
+// 1. Input string  default for (v1 = 0; v1 < 20; v1++) trschar[v1] = Convert.ToChar((v1*v1+47) % 255 );
+//    Put Password in this array from start
+// 2. encchar string default  encchar[v1] = Convert.ToChar((v1*v1+4703) % 255 );
+// 3. OutPut string  rchar = trschar[v1] ^= encchar[v1]; 
+// 4. PSType : (Q) Query (U) Update (D) Delete (I) Insert (O) DueDate
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+public string tChkUsr(string tUsername, string tFPassword, string tSPassword, string tPSDB, string tPSPath, string tPSType)
+{
+
+    string rets = ""; 
+
+    return (rets);
+}  // end ChkUsr
+
+protected void Button4_Click(object sender, EventArgs e)
+{
+  
+   
+}
+
+protected void tvManuTree_SelectedNodeChanged(object sender, EventArgs e)
+{
+
+}
+protected void Button7_Click(object sender, EventArgs e)
+{
+    return;
+    Response.Redirect("~/InfoShare/Index.aspx");
+    // Response.Write("<script>window.open( '~/InfoShare/Index.aspx','one','width=800,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // ImageButton1.ImageUrl = "~/Picture/PictS1.jpg";
+    // ImageButton1.ImageUrl = "~/Picture/" + arrayPict[v3, 2]; 
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+//  1000  for 1 second,  //  60000 for 1 minute, 1800000 for 30 minute
+//  
+protected void Timer1_Tick(object sender, EventArgs e)
+{
+    
+}
+
+///////////////////////////////////////////////////////////////////////
+protected void Button8_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'ShowVideo.aspx','one','width=800,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // Response.Write("<script>window.open( 'TestVideo.aspx','one','width=800,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // VUrl = "Video/arrival_transit.wmv";
+}
+protected void Button5_Click(object sender, EventArgs e)
+{
+
+    //Response.Write("<script>window.open( 'ShowPict.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+  
+}
+protected void btnLogout_Click(object sender, EventArgs e)
+{
+    Response.Write("<SCRIPT   LANGUAGE='JavaScript'>window.opener=null;window.close();</SCRIPT> ");
+}
+protected void Button34_Click(object sender, EventArgs e)
+{
+    // Response.Write("<script>window.open( 'FMers1.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    //autorunflag=1;   // Automatic running
+    //runstatus=0;     // currstatus
+    //runstep=0;       // run step
+    //TextBox4.Text  = "Start Running Program from Generaete 4A3_Detail_PNOneSet" + SysCount.ToString();
+    //Timer1.Interval = 30000;
+    //Timer1.Enabled = true;
+    // string s1 = MainLoop();
+}
+protected void Button35_Click(object sender, EventArgs e)
+{
+}
+protected void Button37_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'FNspl1.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+protected void Button39_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'Fndvf1.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // Timer1.Enabled = true;
+}
+protected void Button20_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "Monitor_TJSFC", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'Monitor_TJSFC/Monitor_TJSFC.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+  
+}
+protected void Button19_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'Finvm1.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+protected void Button21_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'TestStandByInsert.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+
+protected void Button42_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'FNspl6.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+   
+}
+protected void Button41_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //
+    //string retstr = FPubLibPointer.PubWri_MessLog("CopyData", "1", "2", "3", "4", "5", "6", "7", "8", NetDB86, "sql");
+    //
+    //if (FPassword.ToLower() == "web") 
+    //Response.Write("<script>window.open( 'StandByInsert.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+protected void Button43_Click(object sender, EventArgs e)
+{
+
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "AllDBQuery", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'AllDBQuery.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+
+}
+
+
+protected void Button22_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "IpLoad_Check", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'UpLoad_Check.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+
+}
+protected void Button44_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'Foxconn_Receive_Module.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+
+}
+protected void Button23_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "Check_data", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'Check_Data.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+
+
+protected void Button24_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "Traceability", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'Traceability/TJTraceMenu.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+
+protected void Button45_Click(object sender, EventArgs e)
+{
+   // Timer1.Enabled = false;
+   // if (FPassword.ToLower() == "web")
+   //     Response.Write("<script>window.open( 'UPDModify.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+protected void Button25_Click(object sender, EventArgs e)
+{
+    // Timer1.Enabled = false;
+    // if (FPassword.ToLower() == "web")
+    //     Response.Write("<script>window.open( 'CreateMotoFile.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+
+}
+
+protected void Button26_Click(object sender, EventArgs e)  // Pass L6 to L8
+{
+
+   
+    Session["Param1"] = 1;
+    Session["Param2"] = "oracle";   // Type 1 
+    string r1 = ReadParaTxt("WebReadParam.txt", "10101");  // New L6 214
+    string r3 = ReadParaTxt("WebReadParam.txt", "10102");
+    string t1 = ConfigurationManager.AppSettings[r1];  // DBReadString
+    Session["Param3"] = t1; // DBReadString
+    t1 = ConfigurationManager.AppSettings[r3];  // DBWriteString
+    Session["Param4"] = t1; // DBWriteString
+    Session["Param5"] = "auto"; // DBWriteString
+    // Response.Write("<script>window.open( 'MainMotPrg/SMTDataTransfer.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // TransferL6ToL8Auto.aspx    
+   
+    
+}
+
+
+/////////////////////////////////////////////////////////////////////
+protected void  Button27_Click(object sender, EventArgs e)
+{
+//    Timer1.Enabled = false; // 檢查 Carton
+//    string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "Carton_Check", "", "", "", NetSqlDB4);         // 10 Code
+//    // if (FPassword.ToLower() == "web")
+//    Response.Write("<script>window.open( 'CartonCheck.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+//    
+    
+}
+
+protected void Button47_Click(object sender, EventArgs e)
+{
+
+//    Timer1.Enabled = false; // 檢查出貨印3S/4S
+//    string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "Chk_3s4sPrt", "", "", "", NetSqlDB4);         // 10 Code
+//    // if (FPassword.ToLower() == "web")
+//    Response.Write("<script>window.open( 'Chk_3S4SPrt.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+
+protected void Button48_Click(object sender, EventArgs e)
+{
+    
+}
+
+// Copy Data from L6 to L8 
+protected void Button49_Click(object sender, EventArgs e)
+{
+    
+ 
+}
+protected void Button17_Click(object sender, EventArgs e)
+{
+    
+    
+    // autoctlflag = 1; // auto only
+    Button17.Text = "系統自動啟動中";
+    TextBox4.Text = "系統自動啟動";
+    string tmpstr = MainLoop();    
+}
+
+protected void Button50_Click(object sender, EventArgs e)
+{
+    
+}
+
+public string Auto_CreDN()
+{
+        return("");
+}
+
+////////////////////////////////////////////////////////////
+// Auto Generate UPD
+// 1. Use Table UPD_PODN_List_T table
+// 2. Index Invoice(DN), 
+// 3. DN, PO, UPDflag, Sapflag, 
+// 4. Auto_CreDN() -- Generate DN, PO 
+// 5. Auto_CloseSap() -- Check and Write Sap
+// 6. Auto_GenUPDEMEI() -- Check Sapclag="C" , Close , write
+// Appendix :
+// 1. Need check double or already generate UPD/EMEI
+// 2. Sap.Cmcs_pack_line_all singe DN + Multi Carton
+// 3. Sap.Sap_DN_Info singe DN + Multi Item
+// 4. Sap.Cmcs_ship_date Singe Carton + Multi PSN,EMEI
+// 5. DN Count = Sap.Sap_Invoice_Info
+///////////////////////////////////////////////////////////
+public void AutoMotProc()
+{
+    
+}
+
+public void AutoIntelProc()
+{
+   
+}
+
+protected void Button51_Click(object sender, EventArgs e) // 查尋 UPD 
+{
+
+}
+protected void Button52_Click(object sender, EventArgs e) // 出貨明細
+{
+
+}
+
+///////////////////////////////////////////////////////
+// 0 - 5 為代號, 第 6 位開始為 Para   // 代表無效
+// 10001 : Raed DB6 String
+// 10002 : Write Moto  L10
+// 10003 : Wrute Intel L10
+private string ConCharfofweb(string ParaNum)
+{
+    string retPara = ParaNum;
+    int i1 = 0, i2 = 0, i3 = 0, i4 = 0, i5=0;
+    int ArrMax = 100;
+    string[] ReadTxtArray = new string[ArrMax];
+    ReadTxtArray[i5] = ParaNum;
+    string s1="", s2="", s3="", s4="/";
+    i3=ParaNum.Length;
+
+    for ( i1=0; i1 < i3; i3++)
+    {
+          s2 = ParaNum.Substring(i1,1);
+          // if ( s2.Substring(0,1)  == "\" )  rePara =  retPara.Substring(0, i1-1) + s4 + retPara.Substring( i1+1, i3-1);
+
+    }
+
+    return (retPara);
+}
+
+
+private string ReadParaTxt(string FilePara, string ParaNum)
+{
+    string retPara = "";
+    int ArrMax = 100;
+    string[] ReadTxtArray = new string[ArrMax];
+    string FileName = "SetReadParam.txt";
+    if (FilePara != "") FileName = FilePara;
+    string ServerPath = Server.MapPath("~\\" + FileName);
+    FileInfo fi = new FileInfo(ServerPath);
+    StreamReader sr = fi.OpenText();
+    string InString = "";
+    int i = 0, strlen = 0;
+
+    while (((InString = sr.ReadLine()) != null) && (i < ArrMax))
+    {
+        ReadTxtArray[i] = InString;
+        //             Response.Write(ReadTxtArray[i]);
+        //             Response.Write("<br>");
+        if ((InString != "") && (InString != " ") && (InString.Substring(0, 2) != "//"))
+        {
+            strlen = InString.Length - 1;
+            if ((InString.Substring(0, 5) == ParaNum) && (strlen >= 6))
+            {
+                retPara = InString.Substring(6, strlen - 5);
+                i = ArrMax;  // Break
+            }
+
+        }
+        i++;
+
+    }
+
+    sr.Close();
+    return (retPara);
+}
+   
+}  // end public partial class Main ////// End all SubRoutine ////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// r1 = ReadParaTxt("WebReadParam.txt", "10001");  WebReadParam.txt is Param Text
+// Document : Session 傳參數string Session["Param1"] = 1; tSUsername = Session["Param1"].ToString(); 
+// Session["Param1"] = 1;  代表第 1 類表傳  Session["Param2"] 為讀資料庫位置
+// Document : Session 傳參數string Session["Param1"] = 1; tSUsername = Session["Param1"].ToString(); 
+//  Session["Param1"] = 1;         // Data Process I/O
+//  Session["Param2"] = "oracle";  // 數據庫
+//  Session["Param3"] = str1;      // DBReadString
+//  Session["Param4"] = str2;      // DBWriString
+//  Session["Param5"] = "auto";    // 自動或手動執行
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Transfer L6 To L8 temp file in L8=6 in PUBLIB
+// 1. Write 3 sequence table when PSN generated
+//    1.1 L6ToL8T1 (  for Gen L8 table in L6  )
+//    1.2 L6ToL8T2 (  for L8 table in L6 write to L8 table in L8
+//    1.3 L6ToL8T3 (  record only )  Just Write Only
+//    1.4 Write 3 table by PSN, DocumentID, F1_FLAG by sequence  
+//    1.5 Generate L8 table program read and get L6ToL8T1 PSN then write 6 L8 tablle in L6 and kill  L6ToL8T1 by PSN
+//        Program never leave and running each 10 sec. It will better if can count time when running frequence. 
+//    1.6 Move     L8 table program read and get L6ToL8T2 PSN then write 6 L8 tablle in L8 and kill  L6ToL8T2 by PSN
+//        Progran running each 30 minute   
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        

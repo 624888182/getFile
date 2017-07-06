@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+public partial class PIDIMEI_Trace : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!Page.IsPostBack)
+        {
+            string sFileName = Server.MapPath(".") + "\\Monitor_TJSFC\\XMLDB.xml";
+            string[,] DBArray = new string[0, 0];
+            int iRet = Monitor.GetDBList(sFileName, "DataBaseL8", ref DBArray);
+            if (iRet != 0)
+            {
+                Response.Write(Monitor.getError());
+            }
+            else
+            {
+                ddl_DB.Items.Clear();
+                int i;
+                for (i = 0; i < DBArray.GetLength(0); i++)
+                {
+                    ListItem lt = new ListItem(DBArray[i, 0], DBArray[i, 1]);
+                    ddl_DB.Items.Add(lt);
+                }
+            }
+        }
+        
+
+    }
+    protected void ddl_DB_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void btn_Search_Click(object sender, EventArgs e)
+    {
+        if (ddl_DB.SelectedIndex < 0)
+        {
+            Response.Write("<script   language=javascript>window.alert( 'Choose Dtatabase ') </script>");
+            return;
+        }
+        string sType = "";
+        int itype = 0;
+        if (RadioButtonList1.SelectedIndex == 0)
+        {
+            itype = 0;
+            sType = "PID";
+        }
+        else
+        {
+            itype = 1;
+            sType = "IMEI";
+        }
+            
+
+        if (txt_PID.Text.Trim() == "")
+        {
+            Response.Write("<script   language=javascript>window.alert( '"+sType +" is empty ') </script>");
+            return;
+        }
+        string sconn = ddl_DB.SelectedItem.Value;
+        string sPID = txt_PID.Text.Trim();
+        DataTable dt_WO = new DataTable();
+        DataTable dt_Process = new DataTable();
+        DataTable dt_Relation = new DataTable();
+        GridView1.DataSource = null;
+        GridView1.DataBind();
+        GridView2.DataSource = null;
+        GridView2.DataBind();
+        GridView3.DataSource = null;
+        GridView3.DataBind();
+
+
+        int iRet = PIDIMEITrace.TracePID_IMEI(sconn, sPID, itype, ref dt_WO, ref dt_Process, ref dt_Relation);
+        if (iRet == 0)
+        {
+            Label2.Visible = true;
+            Label3.Visible = true;
+            Label4.Visible = true;
+            GridView1.DataSource = dt_WO;
+            GridView1.DataBind();
+            GridView2.DataSource = dt_Process;
+            GridView2.DataBind();
+            GridView3.DataSource = dt_Relation;
+            GridView3.DataBind();
+
+        }
+        else
+        {
+            string sError = PIDIMEITrace.GetError();
+            Response.Write("<script language=javascript>window.alert( '" + sError + "') </script>");
+        }
+    }
+}

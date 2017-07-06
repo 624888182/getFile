@@ -1,0 +1,242 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+using System.Data.OracleClient;
+using System.Windows.Forms;
+using SCM.GSCMDKen;
+
+public partial class UPDModify: System.Web.UI.Page
+{
+    public static string conn = ConfigurationManager.AppSettings["TybakConnectionString"];
+
+    public static string NetDB86 = ConfigurationManager.AppSettings["Sql86String"];
+
+    FSplitlib FSplitlibPointer = new FSplitlib();
+
+    FPubLib FPubLibPointer = new FPubLib();
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+    }
+
+    private bool UpData(string strsql, string dbconn)
+    {
+        bool iRet = false;    
+        using (OracleConnection connection = new OracleConnection(conn))
+        {
+            OracleCommand cmd = null;
+            try
+            {
+                connection.Open();
+              
+                cmd = new OracleCommand(strsql,connection);
+                int ii = cmd.ExecuteNonQuery();
+                iRet = true;
+            }
+            catch (System.Data.OracleClient.OracleException ex)
+            {
+                ex.ToString();
+                
+            }
+            finally
+            {
+                if (cmd != null) cmd.Dispose();
+            }
+        }
+
+        return iRet;
+    }
+
+    private string GetTime(string st,string dn)
+    {
+        string iRet;
+        string strsql = @"select to_char(LAST_UPDATE_DATE,'yyyyMMddhhmmssmm') from SAP.CMCS_SFC_PACKING_LINES_ALL where SHIP_TO_COUNTRY ='" + st + "' and RowNum=1 and INVOICE_NUMBER = '" + dn + "'";
+        DataSet ds = new DataSet();
+        using (OracleConnection connection = new OracleConnection(conn))
+        {
+            try
+            {
+                connection.Open();
+                OracleDataAdapter cmm = new OracleDataAdapter(strsql, connection);
+                cmm.Fill(ds, "ds");
+            }
+            catch (System.Data.OracleClient.OracleException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        iRet = ds.Tables[0].Rows[0][0].ToString();
+        return  iRet;
+    }
+
+    private DataSet GetData(string strsql, string dbconn)
+    {
+        string sql1 = strsql;
+        string conn1 = dbconn;
+        using (OracleConnection connection = new OracleConnection(conn1))
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                OracleDataAdapter command = new OracleDataAdapter(sql1, connection);
+                command.Fill(ds, "ds");
+            }
+            catch (System.Data.OracleClient.OracleException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return ds;
+        }
+    }
+
+    private bool CheckCountry( string st)
+    {
+        int i;
+        bool retst = false;
+        string shipto = st;
+        string str4 = @"select distinct DESCRIPTION from SAP.COUNTRY_ISO_LINK ";
+        DataSet dt = new DataSet();
+        dt = GetData(str4, conn);
+        for (i = 0; i < dt.Tables[0].Rows.Count; i++)
+        {
+            if (shipto == dt.Tables[0].Rows[i]["DESCRIPTION"].ToString())
+                retst = true;
+            if (retst) break;
+        }
+        return retst;
+    }
+
+    private void Getst(string st)
+    {
+        DataSet ds = new DataSet();
+        string strsql = @"select distinct DESCRIPTION from SAP.COUNTRY_ISO_LINK where upper(DESCRIPTION) like upper('"+ st +"%')";
+        using (OracleConnection connection = new OracleConnection(conn))
+        {
+            try
+            {
+                using ( ds = GetData(strsql, conn))
+                {
+                    DropDownList1.Items.Clear();
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            DropDownList1.Items.Add(dr[0].ToString());
+                        }
+                    }
+                 
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+            if (ds.Tables[0].Rows.Count == 1)
+            {
+                TextBox3.Text = DropDownList1.SelectedItem.Text;
+            }
+
+        }
+    }
+
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+        int i;
+        DataSet ds = new DataSet();
+        string dn = TextBox1.Text;
+        string str1 = @"select  distinct * from SAP.CMCS_SFC_PACKING_LINES_ALL where INVOICE_NUMBER = '" + dn + "'";
+        ds = GetData(str1, conn);
+        i = ds.Tables[0].Rows.Count;
+        if (i == 0)
+        {
+            Response.Write("<script>alert('PO输入错误')</script>");
+        }
+        else
+        {
+            TextBox2.Text = ds.Tables[0].Rows[0][14].ToString();
+            TextBox5.Text = ds.Tables[0].Rows[0][13].ToString();
+        }
+    }
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        if (TextBox4.Text.Equals("Y"))
+        {
+                bool retst;
+                string shipto = TextBox3.Text;
+                string dn = TextBox1.Text;
+                string oldst = TextBox2.Text;
+                string oldstcy = TextBox5.Text;
+                string shiptocity = TextBox6.Text;
+                string deltime;
+                deltime = DateTime.Now.ToString("yyyyMMddhhmmssmm");
+                string retstr = FPubLibPointer.Wri_MessLog("50", dn, oldst, oldstcy, "", "", "", "", "", NetDB86);
+                //string str3 = @"insert into SAP.CMCS_SFC_PLA_UPDATE(F1, F2, F3, F4,F5) values('50','" + dn + "','" + oldst + "','" + oldstcy + "','" + deltime + "')";
+                //UpData(str3, conn);
+                retst = CheckCountry(shipto);
+                if (retst && !TextBox6.Text.Equals(""))
+                {
+                    bool retbool;
+                    string str1 = @"update SAP.CMCS_SFC_PACKING_LINES_ALL set SHIP_TO_COUNTRY = '" + shipto + "', SHIP_TO_CITY = '" + shiptocity + "'where INVOICE_NUMBER = '" + dn + "'";
+                    retbool = UpData(str1, conn);
+                    if (retbool)
+                    { 
+                        deltime = DateTime.Now.ToString("yyyyMMddhhmmssmm");
+                        string retstr1 = FPubLibPointer.Wri_MessLog("51", dn, shipto, shiptocity, "", "", "", "", "", NetDB86);
+                        //string str2 = @"insert into SAP.CMCS_SFC_PLA_UPDATE(F1, F2, F3, F4,F5) values('51','" + dn + "','" + shipto + "','" + shiptocity + "','" + deltime + "')";
+                        //UpData(str2, conn);
+                        Response.Write("<script>alert('SHIP_TO修改成功')</script>");
+                        TextBox4.Text = "N";
+                        TextBox3.Text = "";
+                        TextBox6.Text = "";
+                        DropDownList1.Items.Clear();
+                        CheckBox1.Checked = false;
+                    }
+                    else
+                    {
+                        Response.Write("<script>alert('SHIP_TO修改失败')</script>");
+                    }
+                }
+                else
+                {
+                    Response.Write("<script>alert('SHIP_TO输入错误')</script>");
+                }
+        }
+        else
+        {
+            Response.Write("<script>alert('请输入Y来确认修改')</script>");
+        }
+    }
+
+    protected void CheckBox1_CheckedChanged(object sender, EventArgs e)
+    {
+        CheckBox1.Checked = true;
+        if (TextBox3.Text.Equals("") || TextBox6.Text.Equals(""))
+        {
+            Response.Write("<script>alert('请输入SHIP_TO')</script>");
+            CheckBox1.Checked = false;
+        }
+    }
+
+    protected void Button3_Click(object sender, EventArgs e)
+    {
+        string shipto = TextBox3.Text;
+        Getst(shipto);
+     
+    }
+
+    protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TextBox3.Text = DropDownList1.SelectedValue.Trim();
+    }
+}

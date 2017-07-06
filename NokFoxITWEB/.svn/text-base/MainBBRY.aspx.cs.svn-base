@@ -1,0 +1,1599 @@
+﻿using System.Globalization;
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using Economy.BLL;
+using Economy.Publibrary;
+using SCM.GSCMDKen;
+// using Prilibrary.FsplitNew;
+using System.Data.SqlClient;
+using System.IO;
+using System.Windows.Forms;
+using System.Threading;
+using EconomyUser;
+using SFC.TJWEB;
+using System.Data.OracleClient;
+using System.Collections.Generic;
+using System.Linq;
+
+
+public partial class Main_MainBBRY : System.Web.UI.Page
+{
+    static string NetSqlDB4 = ConfigurationManager.AppSettings["LocalHostSqlString"]; // Local104SqlString
+    static string RunORACLEDB = ""; // ConfigurationManager.AppSettings["NormalDbConnectionString"]; //  NormalDbConnectionString
+    static string OraL10DBAMain  = "";      // 76  Oracle Unix
+    static string OraL10DBAStandBy = "";    // 211 Oracle Unix
+    static string OraL6DBAMain = "";        // 214 Oracle Unix 
+    static string OraL6DBAStandBy = "";     // 
+    static string OraWebCTLDBA = "";        // 221 Oracle Window
+    static string SqlWebCTLDBA = "";        //      Control DBA 
+    static string SqlWebDBA = "";           // 108 Main DBA 
+    static string CallTiptoptype = ""; 
+    string SiteName = "BBLF";
+    public static string PPSite = "BBLF";
+
+    static string OraBBFUSEL10ReadDBA = "";       //   
+    static string OraBBFUSEL10WriDBA  = "";
+
+
+    ClassLibrarySCM1.Class1 LibSCM1Pointer = new ClassLibrarySCM1.Class1();
+    ClassLibraryUSR1.Class1 LibUSR1Pointer = new ClassLibraryUSR1.Class1();
+    ClassLibraryPDBA1.Class1 LibPDBA1Pointer = new ClassLibraryPDBA1.Class1();
+   
+    UsrCtllib   UsrCtllibPointer   = new UsrCtllib();
+    //FPubLib     FPubLibPointer     = new FPubLib();
+    AutoUpload  AutoUploadPointer  = new AutoUpload(); // CreateFile.cs
+    TJLibZhu    TJLibZhuPointer    = new TJLibZhu();
+    TJSY        TJSYPointer        = new TJSY();
+    Convertlib ConvertlibPointer = new Convertlib();
+    SFCLinkTiptop SFCLinkTiptopPointer = new SFCLinkTiptop();
+    BBSCMlib BBSCMlibPointer = new BBSCMlib();
+           
+    static string Username = "", FPassword = "", SPassword = "", PSDB = "", LoginEMPTYPE = "", LoginFlag = "";
+    static string PSFlag = "", Acttype = "", FoxconnSite = "";
+    DbAccessing myAccessing = new DbAccessing();
+    protected string CurrDay = DateTime.Today.ToString("yyyyMMdd");  // 20100320
+    protected string Currtime = DateTime.Now.ToString("yyyyMMddHHmmssmm");
+    static int swflag1 = 0, swflag2 = 0, swflag3 = 0;
+    static int arrayPicLong = 5000, DataPicLong = 0, DataNewLong, arrayPicPriLong=5000, DataPicPriLong=0;
+    static string[,] arrayPic = new string[arrayPicLong + 1, 20 + 1];
+    static string[,] arrayPicPri = new string[arrayPicPriLong + 1, 20 + 1];
+    string VUrl;
+    static string sw1 = "1", sw2 = "1", sw3 = "1", ParaAutoflag = "",tmpstr="";
+    static int autorunflag = 0, runstep = 0, errcnt = 0;
+    static int runstatus = 0, SysCount = 1;
+    static int cnt1=1, cnt2=1, firstcnt=0;
+    static int s1flag = 0;
+    static string msgdbstr = "sql";
+    protected string Dboracle = "oracle", DbSql = "sql";
+    protected string Autoprg = "auto", Menuprg = "menu", PITSystem="Mot";
+    static int ArrMax = 300;
+    static string[] ReadTxtArray = new string[ArrMax];
+    static string GPROLINE = "7A";
+    string BBSCMDIR = "BBSCM";
+    //string SFCFuncIP = "http://10.83.216.137/bbryreport/webservice/bbryservice.asmx";
+    string SFCFuncIP = "http://10.74.14.48:8080/BBRYService/BBRYWebService.asmx";
+
+ 
+    // public static int autoctlflag = 1; // Auto Control
+    // public static int autoCount = 1;   // Auto Control
+    
+    protected void Page_Load(object sender, EventArgs e) // 23524
+    {
+        
+        if (!Page.IsPostBack)
+        {
+
+                //int ArrMax = 200;
+                //string[] ReadTxtArray = new string[ArrMax];
+                string t1 = "", t2 = "", t3 = "", t4 = "", t5 = "", t6 = "", t7 = "", t8 = "", t9 = "";
+                ParaAutoflag = Request["Autoflag"];  // http://localhost:2422/ITWeb/MainBBRY.aspx?Autoflag=1  1000=1Sec
+                string t22 = Request["Smode"];       // http://localhost:1328/IDMIntelMot/MainSCM.aspx?Smode=supervisor   Request["Smode=Supervisor"]; 
+                OraBBFUSEL10ReadDBA = ReadParaTxt("WebReadParam.txt", "23535"); // SS FUSE Read  L10 44
+                OraBBFUSEL10WriDBA = ReadParaTxt("WebReadParam.txt", "23535"); // SS FUSE Write L10 TJ Test 215
+                // SqlWebDBA = ReadParaTxt("WebReadParam.txt", "23524"); // Sql DBA 
+                FoxconnSite = ReadParaTxt("WebReadParam.txt", "40030"); // BBRY FoxconnSite
+                t1 = ReadParaTxt("WebReadParam.txt", "40031");          // BBRY Server location number 主服務器位置編號
+                TextBox9.Text = FoxconnSite;
+                if ( t1 != "" )  SqlWebDBA =  ReadParaTxt("WebReadParam.txt", t1);  // Get Data 
+                
+
+                InitVar();
+                //DataPicLong = Convert.ToInt32(PictlibPointer.GetPictByUserName(Username, arrayPic, arrayPicLong, NetSqlDB4, ref DataPicLong, ref DataNewLong));
+                TextBox1.Focus();
+                if ( SiteName == "BBLF" ) 
+                     TextBox6.Text = " LF SFC Web Server http://10.186.19.20/BBITWEB/MainBBRY.aspx";
+                
+
+                Timer1.Enabled = false;
+                // s1flag = autoctlflag; //Auto Only
+                // string t11 = FPubLibPointer.PubWri_MessLog("MotTrace", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "FirstTime", "", "", "", NetSqlDB4, msgdbstr);         // 10 Code
+               
+                string Loc1 = "";
+                Loc1 = ReadParaTxt("WebReadParam.txt", "12701");
+                if (Loc1 != "") NetSqlDB4 = ConfigurationManager.AppSettings[Loc1]; //  NetSqlDB4 = ConfigurationManager.AppSettings["Sql221String"];  
+                ReaddDRAFromwebconfig( SiteName );
+                // ReaddDRAFromText( SiteName );
+                GetTextFile(ref ReadTxtArray, ArrMax, "2");  // "1" Org, "2" Decode by Pcode "23101" 
+                Loc1 = UsrCtllibPointer.GetTextByCode(ref ReadTxtArray, ArrMax, "10001", "1");  // "1" 不傳換
+                Loc1 = UsrCtllibPointer.GetTextBySite(ref ReadTxtArray, ArrMax, SiteName, "1", ref OraL10DBAMain, ref OraL10DBAStandBy, ref OraL6DBAMain, ref OraL6DBAStandBy, ref OraWebCTLDBA, ref SqlWebCTLDBA, ref t1, ref t2, ref t3, ref t4, ref t5, ref t6, ref t7, ref t8 );  // "1" 不傳換
+                RunORACLEDB = OraL10DBAMain; //  UsrCtllibPointer.GetTextByCode(ref ReadTxtArray, ArrMax, "23201", "1");  // TJ DB10 Server
+                // NetSqlDB4 = SqlWebCTLDBA;
+                TextBox5.Text = "";
+
+                if (Session["SysModeType"] == "TestMenu")  // Change Test Only
+                {
+                    FoxconnSite = "BJ"; // BBRY Test FoxconnSite
+                    TextBox9.Text = FoxconnSite;
+                    SqlWebDBA = ReadParaTxt("WebReadParam.txt", "23524");  // Get Test DBA Data 
+                }
+                
+        }
+        
+
+        tmpstr = firstcnt.ToString();
+        // Test ParaAutoflag = "1";
+        if (ParaAutoflag == "1")
+        {
+            string t3 = SysAutoExec();
+            ClientScript.RegisterStartupScript(Page.GetType(), "", "<script language=javascript>window.opener=null;window.open('','_self');window.close();</script>");
+        }
+
+       
+    }   // end Page_load;
+    
+
+    protected string MainLoop()
+    {
+        int i = 3;
+        string s1 = "";
+        Timer1.Enabled = false;
+        TextBox6.Text = "系統自動啟動" + "IDMZZMainLoop" + SysCount.ToString();
+        //string t1 = FPubLibPointer.PubWri_MessLog("IDMIntelAuto", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "MainLoop", "", "", "", NetSqlDB4, msgdbstr);         // 10 Code
+        AutoMotProc();
+        Timer1.Enabled = true;
+        return ("");         
+    }
+  
+
+
+    private void InitVar()
+    {
+       Username="";
+       FPassword="";
+       SPassword="";
+       PSDB="";
+       PSFlag="N";
+       Acttype = "C";
+       LoginFlag = "N";
+       Session["SUsername"] = "web";
+       Session["SReadFlag"] = "";
+       string p2 = ReadParaTxt("WebReadParam.txt", "23101");
+       string p1 = SiteName.ToLower();
+       // string t1 = PDataBaseOperation.init_var(p1, p2);
+       ClassLibraryPDBA1.Class1 LibPDBA1Pointer = new ClassLibraryPDBA1.Class1();
+       string t2 = LibPDBA1Pointer.Gooinit_var(p1, p2);
+       if ((ParaAutoflag != null) && (ParaAutoflag !=""))
+       {
+           if (ParaAutoflag.Substring(0, 1) == "1")
+           {
+               autorunflag = 1;
+               // autoctlflag = 1; // Auto only
+               // Timer1.Enabled = true; 
+           }   
+       }
+
+
+       int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0;
+
+           
+       string Wridir = "PUBLIB";
+       DataSet DNdt = null;
+
+       // Get LINE
+       string sqlr = " select *  from " + Wridir + ".TCWM01  where DATES = '" + CurrDay + "' ORDER by LINE, CLASS1 asc ";
+       DNdt = PDataBaseOperation.PSelectSQLDS(Dboracle, OraBBFUSEL10WriDBA, sqlr);
+       if (DNdt == null) return;
+       if (DNdt.Tables.Count <= 0) return;  // 20140813 Add
+       if (DNdt.Tables[0].Rows.Count <= 0) return;
+       int DNCnt = DNdt.Tables[0].Rows.Count;
+       GPROLINE = DNdt.Tables[0].Rows[0]["LINE"].ToString().Trim();
+     
+       // Response.Redirect("main.aspx");   
+    }  // initvar
+
+protected void  Button1_Click(object sender, EventArgs e)
+{
+        string pst1 = NetSqlDB4;
+    //  ChkUsrPS(pst1);
+    //ChkUsrPS();
+}
+
+protected void Button2_Click(object sender, EventArgs e)  // Modify 
+{
+  
+}
+
+protected void Button3_Click(object sender, EventArgs e)
+{
+    
+
+}
+    
+
+protected void TextBox2_TextChanged(object sender, EventArgs e)
+{
+    Username = TextBox1.Text; 
+    FPassword = TextBox2.Text;
+    // ChkUsrPS(); 
+}
+    
+protected void Button4_Click(object sender, EventArgs e)
+{
+}
+
+protected void tvManuTree_SelectedNodeChanged(object sender, EventArgs e)
+{
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+//  1000  for 1 second,  //  60000 for 1 minute, 1800000 for 30 minute
+//  
+protected void Timer1_Tick(object sender, EventArgs e)
+{
+    string s1 = "";
+    TextBox6.Text = "Timer Interrupt";
+    SysCount = SysCount + 2;
+    // s1flag = autoctlflag; //Auto only
+    // string t1 = FPubLibPointer.PubWri_MessLog("IDMIntelAuto", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "TimerINT", "", "", "", NetSqlDB4, "sql");         // 10 Code
+     
+    return; // not auto only
+
+    //s1flag = autoctlflag;
+    //AutoCount++;
+    //if (autoctlflag == 1)  // boot automatic runnning
+    //{
+    //    if (runstatus == 0) // go to running
+    //    {
+    //        t1 = FPubLibPointer.PubWri_MessLog("IDMIntelAuto", autoCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "TimeINTGOToMainloop", "", "", "", NetSqlDB4);  // 10 Code
+    //        s1 = MainLoop();
+    //    }
+    //    else
+    //        errcnt++;
+    //}
+     
+    if (errcnt > 2)
+    {
+        errcnt = 0;
+        runstatus = 0;
+    }
+
+}
+
+///////////////////////////////////////////////////////////////////////
+protected void Button8_Click(object sender, EventArgs e)
+{
+    
+}
+protected void Button5_Click(object sender, EventArgs e)
+{
+    
+}
+protected void btnLogout_Click(object sender, EventArgs e)
+{
+    Response.Write("<SCRIPT   LANGUAGE='JavaScript'>window.opener=null;window.close();</SCRIPT> ");
+}
+
+protected void Button35_Click(object sender, EventArgs e)
+{
+    autorunflag = 0;   // Automatic running
+    runstatus = 0;     // currstatus
+    runstep = 0;       // run step
+    Timer1.Enabled = false;
+    TextBox6.Text = "Clear Loop flag" + SysCount.ToString();
+}
+
+protected void Button21_Click(object sender, EventArgs e)
+{
+    
+}
+
+// Query SFC link Tiptop
+protected void Button44_Click(object sender, EventArgs e)
+{
+    return;
+    Timer1.Enabled = false;
+    string Dtype = "C", SysDate = DateTime.Today.ToString("yyyyMMdd"), DBType = "oracle";
+    string DBReadString = ReadParaTxt("WebReadParam.txt", "23301");  // L10
+    string DBWriString = ReadParaTxt("WebReadParam.txt", "23303");  // L10
+    string PCode = ReadParaTxt("WebReadParam.txt", "23101");
+    Session["ZZPCode"] = ReadParaTxt("WebReadParam.txt", "23101");
+    Session["ZZPSite"] = "tjsfc";
+    //DBReadString = ConfigurationManager.AppSettings["OraZZL10DBConnectionString"]; 
+    //DBWriString  = ConfigurationManager.AppSettings["OraZZL10DBConnectionString"];
+    //string Retstr1 = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P0_3("1", "oracle", DBReadString, DBWriString, "1");  
+
+    string tmp1 = OraWebCTLDBA;   // ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["OraWebConnectionStringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+    string tmp2 = OraL10DBAMain;  // ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["OraL10NormalConnStringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+    Session["Param1"] = 1;
+    Session["Param2"] = "oracle";     // oracle
+    Session["Param3"] = DBReadString; // L10
+    Session["Param4"] = DBWriString;  // L6
+    Response.Write("<script>window.open( 'MainGooPrg/SelectSFCTiptop.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+
+protected void Button24_Click(object sender, EventArgs e)
+{
+    return;
+    Timer1.Enabled = false;
+    if (FPassword.ToLower() == "web")
+        Response.Write("<script>window.open( 'Traceability/TJTraceMenu.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+
+protected void Button26_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraBBFUSEL10WriDBA; // 215
+    string tmp2 = OraBBFUSEL10WriDBA; // 215
+    string tmpdate = "";
+    string tmpLINE = "A1";
+
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    if (GPROLINE != "") tmpLINE = GPROLINE;
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/BBSCMPOHEADER.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+
+
+/////////////////////////////////////////////////////////////////////
+protected void  Button27_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraBBFUSEL10WriDBA; // 215
+    string tmp2 = OraBBFUSEL10WriDBA; // 215
+    string tmpdate = "";
+    string tmpLINE = "A1";
+
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    if (GPROLINE != "") tmpLINE = GPROLINE;
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/SCMPO_Change_HEADER.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+
+protected void Button47_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+  
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FDNQ01.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+    
+
+protected void Button49_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FPOMO1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+   
+}
+protected void Button6_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FPOCO1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+protected void Button89_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FPODL1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+protected void Button90_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FPOI01.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+protected void Button91_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FPORPT.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+protected void Button17_Click(object sender, EventArgs e)
+{
+    if (FPassword.ToLower() != "kenken") return;
+    Timer1.Enabled = true;
+    // autoctlflag = 1; // auto only
+    Button17.Text = "系統自動啟動中";
+    TextBox6.Text = "系統自動啟動";
+    string tmpstr = MainLoop();    
+}
+
+
+public string Auto_CreDN()
+{
+        return("");
+}
+
+////////////////////////////////////////////////////////////
+// Auto Generate UPD
+// 1. Use Table UPD_PODN_List_T table
+// 2. Index Invoice(DN), 
+// 3. DN, PO, UPDflag, Sapflag, 
+// 4. Auto_CreDN() -- Generate DN, PO 
+// 5. Auto_CloseSap() -- Check and Write Sap
+// 6. Auto_GenUPDEMEI() -- Check Sapclag="C" , Close , write
+// Appendix :
+// 1. Need check double or already generate UPD/EMEI
+// 2. Sap.Cmcs_pack_line_all singe DN + Multi Carton
+// 3. Sap.Sap_DN_Info singe DN + Multi Item
+// 4. Sap.Cmcs_ship_date Singe Carton + Multi PSN,EMEI
+// 5. DN Count = Sap.Sap_Invoice_Info
+///////////////////////////////////////////////////////////
+public void AutoMotProc()
+{
+    return;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMIntelAuto", SysCount.ToString(), autorunflag.ToString(), s1flag.ToString(), runstatus.ToString(), "AutoUPD", "", "", "", NetSqlDB4, msgdbstr);         // 10 Code
+    //TextBox6.Text = "系統自動 Execute" + firstcnt.ToString();
+    //string DBReadString = ConfigurationManager.AppSettings["L8StandByConnectionString"]; // bjl6testConnectionString
+    //string DBWriString = ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // bjl6testConnectionString
+    //int int1 = AutoUploadPointer.GetDnWithInsert(DBReadString, DBWriString);
+    //TJLibZhuPointer.CheckSAPClose(DBWriString, DBWriString);
+    //TJSYPointer.check3s4s(DBReadString, DBWriString);
+    //int int2 = AutoUploadPointer.GetCreateUpdFile(DBReadString, DBWriString);     
+}
+
+protected void Button51_Click(object sender, EventArgs e) // 查尋 UPD 
+{
+    return;
+    Timer1.Enabled = false;
+    string tmp1 = OraWebCTLDBA;   // ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["OraWebConnectionStringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+    string tmp2 = OraL10DBAMain;  // ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["OraL10NormalConnStringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+    Session["DBReadString"] = tmp1;
+    Session["Param1"] = 1;
+    Session["Param2"] = tmp1; // DBReadString
+    Session["Param3"] = tmp2; // DBReadString
+    Response.Write("<script>window.open( 'MainMotPrg/Query_UPDStates.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // Response.Write("<script>window.open( 'Finvm1.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+
+// Check and Get data automatic
+protected void Button52_Click(object sender, EventArgs e)
+{
+    if (TextBox5.Text != "Foxconn88")
+    {
+        Response.Write("<script>alert('You password is not correct Reentry password again !!')</script>");
+        return;
+
+    }
+    
+    string t3 = SysAutoExec();
+    
+}
+
+
+protected string SysAutoExec()
+{
+   
+    Timer1.Enabled = false;
+
+    string t2 = "", t3 = "";
+
+    string tmpdate = "", tmpdate1 = "", tmpdate2="";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+
+    string t11 = BBSCMlibPointer.AutoCheckPOCHANGE("1", DbSql, SqlWebDBA, SqlWebDBA, "menu", tmpdate, BBSCMDIR);
+
+    string t1 = BBSCMlibPointer.AutoCheckPOCRAETE("1", DbSql, SqlWebDBA, SqlWebDBA, "menu", tmpdate, BBSCMDIR);
+    t1 = BBSCMlibPointer.AutoCreDLABELINFO("1", DbSql, SqlWebDBA, SqlWebDBA, "menu", tmpdate, BBSCMDIR);
+    t1 = BBSCMlibPointer.AutoCreFDLABM1("1", DbSql, SqlWebDBA, SqlWebDBA, "menu", tmpdate, BBSCMDIR);
+
+    //t3 = BBSCMlibPointer.CallSapAndCreateSO("1", DbSql, SqlWebDBA, SqlWebDBA, "menu", tmpdate, "00", "", "");
+    // Check PO create and write CONFIRMFLAG = "Y" in Master if OK
+    //Response.Write("<script>window.open( 'MainBBRYPrg/FDNQ01.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    BBSCMlib ww = new BBSCMlib();
+    
+    // string dboReadS = "ASHOST=10.134.92.27; CLIENT=802;SYSNR=00;USER=RFCTJIDM;PASSWD=TJSAPRFC;LANG=zh";
+    string dboReadS = "ASHOST=10.134.140.157; CLIENT=502;SYSNR=00;USER=RFCLFSAP01;PASSWD=12345678;LANG=zh";
+
+    // string return_var = ww.GetSapDN("", dboReadS, SqlWebDBA, "20140321", "20140321");
+    // string return_var = ww.GetSapDN("82420682", dboReadS, SqlWebDBA, tmpdate, tmpdate );
+
+    tmpdate2 = DateTime.Today.ToString("yyyyMMdd");
+    tmpdate1 = DateTime.Today.AddDays(-15).ToString("yyyyMMdd");
+    //tmpdate1 = DateTime.Today.AddMonths(-2).ToString("yyyyMMdd");
+
+    string return_var = ww.GetSapDN("", dboReadS, SqlWebDBA, tmpdate1, tmpdate2);
+
+    //  string tmpDN = BBSCMlibPointer.AutoGetDNfromSap("1", DbSql, dboReadS, SqlWebDBA, "menu", tmpdate, BBSCMDIR);
+    string tmpIP = SFCFuncIP; //  ReadParaTxt("WebReadParam.txt", "40035"); // SS FUSE Write L10 TJ Test 215
+    t2 = BBSCMlibPointer.AutoGetPackingFromSFC("1", DbSql, SqlWebDBA, SqlWebDBA, "menu", tmpdate, tmpIP);
+
+    //pochange
+    //t3 = BBSCMlibPointer.AutoChk_POValue("1", DbSql, SqlWebDBA, SqlWebDBA, "menu", tmpdate, BBSCMDIR);
+                   
+    return ("");
+}
+
+
+
+protected void Button54_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+    string t2 = "", t3 = "";
+
+    string tmpdate = "", tmpdate1 = "", tmpdate2 = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+ 
+    BBSCMlib ww = new BBSCMlib();
+
+    tmpdate2 = DateTime.Today.ToString("yyyyMMdd");
+    tmpdate1 = DateTime.Today.AddDays(-7).ToString("yyyyMMdd");
+
+    string dboReadS = "ASHOST=10.134.140.157; CLIENT=502;SYSNR=00;USER=RFCLFSAP01;PASSWD=12345678;LANG=zh";
+    // string return_var = ww.GetSapDN("", dboReadS, SqlWebDBA, tmpdate1, tmpdate2);
+    //  string tmpDN = BBSCMlibPointer.AutoGetDNfromSap("1", DbSql, dboReadS, SqlWebDBA, "menu", tmpdate, BBSCMDIR);
+    string tmpIP = "http://10.74.14.48:8080/BBRYService/BBRYWebService.asmx"; //  ReadParaTxt("WebReadParam.txt", "40035"); // SS FUSE Write L10 TJ Test 215
+    //string tmpIP = "http://10.83.216.137/bbryreport/webservice/bbryservice.asmx";
+    string tmpDN = TextBox10.Text.ToString().Trim();
+
+    string sqlr = "  SELECT  * from  [BBSCM].[dbo].Delivery_Notification_MT where (  SFCFlag = '' or  SFCFlag = 'N' or SFCFlag is null ) and DNID  = '" + tmpDN + "' ";
+    DataSet DNdt = PDataBaseOperation.PSelectSQLDS(DbSql, SqlWebDBA, sqlr);
+    if (DNdt == null) return;     // Syn Error
+    int DNCnt1 = DNdt.Tables[0].Rows.Count;
+    if (DNCnt1 == 0)
+    {
+        Response.Write("<script>alert('This DN already get data from SFC !!')</script>");
+        TextBox6.Text = "No this DN ";
+        return;     // Not Data
+
+    }
+
+    int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, v6= 0, v7= 0;
+    string[,] arrayPO_CREATE_MT = new string[DNCnt1 + 1, 15 + 1];
+    for (v1 = 0; v1 <= DNCnt1; v1++)
+        for (v2 = 0; v2 <= 10; v2++)
+            arrayPO_CREATE_MT[v1, v2] = "";
+
+    // Put im tmp array
+    for (v1 = 0; v1 < DNCnt1; v1++)
+    {
+        arrayPO_CREATE_MT[v1 + 1, 0] = (v1 + 1).ToString();
+        arrayPO_CREATE_MT[v1 + 1, 1] = DNdt.Tables[0].Rows[v1]["ID"].ToString().Trim();
+        arrayPO_CREATE_MT[v1 + 1, 2] = DNdt.Tables[0].Rows[v1]["CreationDT"].ToString().Trim();
+        arrayPO_CREATE_MT[v1 + 1, 3] = DNdt.Tables[0].Rows[v1]["DNID"].ToString().Trim();
+        // arrayPO_CREATE_MT[v1 + 1, 3] = "80168556"; //  "80168537";  // Test Only
+        arrayPO_CREATE_MT[v1 + 1, 4] = "0";
+        arrayPO_CREATE_MT[v1 + 1, 5] = "0";
+        arrayPO_CREATE_MT[v1 + 1, 6] = "0";
+        arrayPO_CREATE_MT[v1 + 1, 7] = "0";
+        arrayPO_CREATE_MT[v1 + 1, 8] = "N";
+        tmpDN = arrayPO_CREATE_MT[v1 + 1, 3];
+    }
+
+
+    string DBType = DbSql;
+    string DBReadString = SqlWebDBA;
+    string tmp1 = "", tmp2 = "", tmp3 = "", tmp4 = ""; ;
+    // Check in  FROM [BBSCM].[dbo].[Delivery_Notification_HU], where DNID = '80168556' if not exist then call 
+    for (v1 = 0; v1 < DNCnt1; v1++)
+    {
+        tmpDN = arrayPO_CREATE_MT[v1 + 1, 3];
+        tmp1 = "N";
+        v2 = 1;
+        v3 = 1;
+        sqlr = "  SELECT  COUNT(*) as HUQTY from  [BBSCM].[dbo].Delivery_Notification_HU where DNID = '" + arrayPO_CREATE_MT[v1 + 1, 3] + "' ";
+        DNdt = PDataBaseOperation.PSelectSQLDS(DBType, DBReadString, sqlr);
+        if (DNdt == null) return;
+        if (DNdt.Tables.Count > 0) v2 = Convert.ToInt32(DNdt.Tables[0].Rows[0]["HUQTY"].ToString()); // tmpds.Tables[0].Rows.Count;
+
+        sqlr = "  SELECT  COUNT(*) as DTQTY from  [BBSCM].[dbo].Delivery_Notification_DT where DNID = '" + arrayPO_CREATE_MT[v1 + 1, 3] + "' ";
+        DNdt = PDataBaseOperation.PSelectSQLDS(DBType, DBReadString, sqlr);
+        if (DNdt == null) return;
+        if (DNdt.Tables.Count > 0) v3 = Convert.ToInt32(DNdt.Tables[0].Rows[0]["DTQTY"].ToString()); // tmpds.Tables[0].Rows.Count;
+
+        if ((v2 == 0) && (v3 == 0))  // No SFC Coming Data you can running
+        {
+            // Clear Data in temp
+            sqlr = "  Delete   [BBSCM].[dbo].Delivery_Notification_HU_TEMP where DNID = '" + arrayPO_CREATE_MT[v1 + 1, 3] + "' ";
+            v4 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr);
+            sqlr = "  Delete   [BBSCM].[dbo].Delivery_Notification_DT_TEMP where DNID = '" + arrayPO_CREATE_MT[v1 + 1, 3] + "' ";
+            v5 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr);
+            sqlr = "  Delete   [BBSCM].[dbo].Delivery_Map_DN          where DNID = '" + arrayPO_CREATE_MT[v1 + 1, 3] + "' ";
+            v6 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr);
+            sqlr = "  truncate table  [BBSCM].[dbo].Delivery_Map_DN   ";
+            v7 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr); 
+
+            // tmpDN = arrayPO_CREATE_MT[v1 + 1, 3];
+            tmp2 = BBSCMlibPointer.GetPackingFromSFCTOBUFByDN_V01("DN", DbSql, DBReadString, SqlWebDBA, tmpDN, tmpdate, tmpIP, tmpDN);
+            TextBox6.Text = tmp2;
+            
+            if ( tmp2 == "" )
+                tmp3 = BBSCMlibPointer.CheckDNQTYAndInsert("1", DbSql, DBReadString, DBReadString, tmpDN, tmpdate, tmpIP, tmpDN); // 20140422
+           
+        }  // endif
+        // endif
+    }
+
+       
+
+
+
+}
+
+private string ReadParaTxt(string FilePara, string ParaNum)
+{
+    string retPara = "";
+    int ArrMax = 300;
+    string[] ReadTxtArray = new string[ArrMax];
+    string FileName = "SetReadParam.txt";
+    if (FilePara != "") FileName = FilePara;
+    string ServerPath = Server.MapPath("~\\" + FileName);
+    FileInfo fi = new FileInfo(ServerPath);
+    StreamReader sr = fi.OpenText();
+    string InString = "";
+    int i = 0, strlen = 0;
+
+    while (((InString = sr.ReadLine()) != null) && (i < ArrMax))
+    {
+        ReadTxtArray[i] = InString;
+        //             Response.Write(ReadTxtArray[i]);
+        //             Response.Write("<br>");
+        if ((InString != "") && (InString != " ") && (InString.Substring(0, 2) != "//"))
+        {
+            strlen = InString.Length - 1;
+            if ((InString.Substring(0, 5) == ParaNum) && (strlen >= 6))
+            {
+                retPara = InString.Substring(6, strlen - 5);
+                i = ArrMax;  // Break
+            }
+
+        }
+        i++;
+
+    }
+
+    sr.Close();
+    return (retPara);
+}
+
+
+// select distinct INVOICE from CMCS_SFC_PACKING_LINES_ALL order by INVOICE desc
+// DeliMotchk.aspx  
+// 1.1 Check E2P      DelchkUPD.cs
+// 1.2 Check Simlock  DelchkSimLock.cs
+// 1.3 Check Qty      DelchkProductQty.cs
+// 1.4 Check PO       DelchkPO.cs
+// 1.5 Check SAP      DelchkSap.cs
+// 1.6 Write Del-time to DELITIME
+protected void Button57_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FDNQ02.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+   
+    return;
+    // DeliMotchk.aspx
+    Timer1.Enabled = false;
+   
+    // if (FPassword.ToLower() != "web") return;
+
+    string tmp1 = OraL10DBAStandBy; // ConfigurationManager.AppSettings["L8StandByConnectionString"];  // 211 string tSUsername = Session["DBReadString"].ToString();
+    Session["Param1"] = 1;
+    Session["Param2"] = Dboracle;  // oracle
+    Session["Param3"] = tmp1;      // DBReadString
+    tmp1 = OraL10DBAMain; // ConfigurationManager.AppSettings["NormalDbConnectionString"];  // 76 string tSUsername = Session["DBReadString"].ToString();
+    Session["Param4"] = tmp1;      // DBWriteString
+    Session["Param5"] = "menu";    // Menu input
+    tmp1 = OraWebCTLDBA; // ConfigurationManager.AppSettings["L8TestandWebConnectionString"];  // 221 string tSUsername = Session["DBReadString"].ToString();
+    Session["Param6"] = tmp1;   
+    Response.Write("<script>window.open( 'MainMotPrg/DeliMotChk.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    //Response.Write("<script>window.open( 'Carton.Check.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+
+protected void Button62_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/SCMPOShipToAddress.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+   
+
+}
+
+protected void Button36_Click(object sender, EventArgs e)
+{
+    string tmp1 = SqlWebCTLDBA; // ConfigurationManager.AppSettings["Sql221String"];  // string tSUsername = Session["DBReadString"].ToString();
+    string tmp2 = SqlWebCTLDBA; // ConfigurationManager.AppSettings["Sql221String"];  // 20120331
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql;    // oracle
+    Session["Param3"] = tmp1;     // DBReadString
+    Session["Param4"] = tmp2;     // DBWriteString
+    Session["Param5"] = "menu";   // Menu input
+    Timer1.Enabled = false;
+    Response.Write("<script>window.open( 'Pub/MessLogq.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+
+protected void Button63_Click(object sender, EventArgs e)
+{
+
+    return;
+    Timer1.Enabled = false;
+    TextBox6.Text = "MainPIDModifyProc";
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraL10DBAMain; //ConfigurationManager.AppSettings["NormalDbConnectionString"];  // 76
+    string tmp2 = OraWebCTLDBA; //ConfigurationManager.AppSettings["L8TestandWebConnectionString"];  // 221
+
+    Session["Param1"] = 1;
+    Session["Param2"] = Dboracle; // DBReadString
+    Session["Param3"] = tmp1; // DBReadString  76
+    Session["Param4"] = tmp2; // DBReadString  76
+    Session["Param5"] = "menu";   // Menu input
+    Response.Write("<script>window.open( 'MainMotPrg/MainPIDModify.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+   
+}
+
+protected void Button64_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/SCMPOSoldToAddress.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+   
+}
+protected void Button65_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FLABU1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+protected void Button66_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FLABU1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+
+protected void Button67_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    string t1 = BBSCMlibPointer.Pass_Upfile("1", DbSql, SqlWebDBA, SqlWebDBA, "menu", tmpdate, "1", "SCM-LABEL-M1", "");
+   
+}
+
+
+protected void Button71_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FDLABM1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+protected void Button72_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/jbomm1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+
+public void ReaddDRAFromText( string SiteName )
+{
+     //static string OraL10DBAMain  = "";
+     // static string OraL10DBAStandBy = "";
+    //static string OraL6DBAMain = "";
+    //static string OraL6DBAStandBy = "";
+    //static string OraWebCTLDBA = "";
+    //static string SqlWebCTLDBA = "";
+
+    string t1 = "", t2 = "", t3 = "", t4 = "", t5 = "", t6 = "", t7 = "";
+    
+
+       if (SiteName== "TJSFC")
+       {
+           t1 = ReadParaTxt("WebReadParam.txt", "23101");  // procode
+           t2 = ReadParaTxt("WebReadParam.txt", "23201");
+           t3 = ReadParaTxt("WebReadParam.txt", "23202");
+           t4 = ReadParaTxt("WebReadParam.txt", "23203");
+           t5 = ReadParaTxt("WebReadParam.txt", "23204");
+           t6 = ReadParaTxt("WebReadParam.txt", "23205");
+           t7 = ReadParaTxt("WebReadParam.txt", "23206");
+
+           if (t1 == "") return;
+           
+           if (t2 != "") OraL10DBAMain    = ConvertlibPointer.DeEncCodeWithoutEclcode(t2, t1, ",", "2DBA");
+           if (t3 != "") OraL10DBAStandBy = ConvertlibPointer.DeEncCodeWithoutEclcode(t3, t1, ",", "2DBA");
+           if (t4 != "") OraL6DBAMain = ConvertlibPointer.DeEncCodeWithoutEclcode(t4, t1, ",", "2DBA");
+           if (t5 != "") OraL6DBAStandBy = ConvertlibPointer.DeEncCodeWithoutEclcode(t5, t1, ",", "2DBA");
+           if (t6 != "") OraWebCTLDBA = ConvertlibPointer.DeEncCodeWithoutEclcode(t6, t1, ",", "2DBA");
+           if (t7 != "") SqlWebCTLDBA = ConvertlibPointer.DeEncCodeWithoutEclcode(t7, t1, ",", "2DBA");
+   
+       }
+}
+
+public void ReaddDRAFromwebconfig(string SiteName)
+{
+
+    if ( SiteName== "TJSFC")
+       {
+           OraL10DBAMain = ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["OraL10NormalConnStringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+           OraL10DBAStandBy = ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["OraL8StandByConnStringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+          // OraL6DBAMain = ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["OraL10NormalConnStringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+           OraWebCTLDBA = ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["OraWebConnectionStringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+           SqlWebCTLDBA = ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["Sql221StringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+     
+       }
+
+}  // end ReaddDRAFromwebconfig(string SiteName)
+
+
+public void GetTextFile( ref string[] ReadTxtArray, int ArrMax, string dtype  )
+    {
+    string retPara = "";
+  //  int ArrMax = 200;
+  //  string[] ReadTxtArray = new string[ArrMax];
+  //  string[] ProtTxtArray = new string[ArrMax];
+  //  string[] CProtTxtArray = new string[ArrMax];
+
+  //  string DBString = "", ProDBSTring = "", PCode = "", ConString = "", PStrSpilt = "",
+
+    string InString = "", PCode = "", PStrSpilt = ","; 
+    string t1 = "";
+    int v1 = 0;
+    string FileName = "WebReadParam.txt";
+    string FilePara = "", ParaNum = "License Document By IT Team 20120131 Donot Copy and Delete this file";
+    if (FilePara != "") FileName = FilePara;
+    string ServerPath = Server.MapPath("~\\" + FileName);
+    FileInfo fi = new FileInfo(ServerPath);
+    StreamReader sr = fi.OpenText();
+    string EnCodeStr = "", DnCodeStr = "";
+    int i = 0, strlen = 0, Chead = 5;
+    PCode = ReadParaTxt("WebReadParam.txt", "23101"); // "License Document By IT Team 20120131 Donot Copy and Delete this file";
+   
+
+    while (((InString = sr.ReadLine()) != null) && (i < ArrMax))
+    {
+        if ((InString != "") && (InString != " ") && (InString.Substring(0, 2) != "//"))
+        {
+            strlen = InString.Length - 1;
+            t1 = InString.Substring(0, 5); // Pre 5 code 
+            v1 = Convert.ToInt32( t1 ); 
+            if (( v1 >= 23201 )  && ( v1 <= 23999 )  && ( dtype == "2")  )
+            {
+                retPara = InString.Substring(6, strlen - 5);
+                EnCodeStr = InString.Substring(Chead + 1, strlen - Chead);
+                // DnCodeStr = ConvertlibPointer.DeEncCode(EnCodeStr, PCode, PStrSpilt, "");
+                DnCodeStr = LibUSR1Pointer.DBDeEncCode(EnCodeStr, PCode, ",", "2DBA");
+                ReadTxtArray[i] = InString.Substring(0, 6) + DnCodeStr;
+
+                //  i = ArrMax;  // Break
+            }
+            else
+                ReadTxtArray[i] = InString;
+
+        }
+        i++;
+
+    }
+
+    sr.Close();
+
+
+
+    }  // end GetTextFile
+
+protected void Button73_Click(object sender, EventArgs e)
+{
+    return;
+    string rps = TextBox5.Text;
+    string st1 = "";
+    if (((TextBox1.Text.ToLower() == "web") && (TextBox2.Text.ToLower() == "web")) ||
+         ((TextBox1.Text.ToLower() == "zzsfc") && (TextBox2.Text.ToLower() == "zzsfc"))) st1 = "Y"; 
+    if (st1 == "")
+    {
+        Response.Write("<script>alert('You need entry Uersname and Password ! ')</script>");
+        return;
+    }
+
+    Timer1.Enabled = false;
+    TextBox6.Text = "OrgDeLink Proc";
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraL10DBAStandBy; //  RunORACLEDB; // ConfigurationManager.AppSettings["L8StandByConnectionString"];  // string tSUsername = Session["DBReadString"].ToString();
+    string tmp2 = OraL10DBAStandBy; //  RunORACLEDB; // ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // NormalDbConnectionString"];  // 76 string tSUsername = Session["DBReadString"].ToString();
+
+    Session["Param1"] = 1;
+    Session["Param2"] = Dboracle; // DBReadString
+    Session["Param3"] = tmp2; // DBReadString  197
+    Session["Param4"] = tmp2; // DBReadString  197
+    Session["Param5"] = "menu";   // Menu input
+    Response.Write("<script>window.open( 'MainMotPrg/R15R16Rework.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+      
+
+}
+
+// SFC call Tiptop
+// ReqType : "1": Day 20130626, "2" DN :/EM1-D60002 "3" WO_NO WM1-D60002, L6 "4" WO_NO L10, "5"; ReqData : 20130626/WM1-D60002/EM1-D60002 
+// Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_ALL("tjsfc", Dtype, SysDate, DBType, DBReadString, DBWriString, PCode, ReqType, ReqData); 
+protected void Button74_Click(object sender, EventArgs e)
+{
+    return;
+    string st1 = "";
+    if (((TextBox1.Text.ToLower() == "web") && (TextBox2.Text.ToLower() == "web")) ||
+         ((TextBox1.Text.ToLower() == "zzsfc") && (TextBox2.Text.ToLower() == "zzsfc"))) st1 = "Y";
+    if (st1 == "")
+    {
+        Response.Write("<script>alert('You need entry Uersname and Password ! ')</script>");
+        return;
+    }
+
+    if ( ( TextBox7.Text == "" ) || ( TextBox8.Text == "" ) )
+    {
+        Response.Write("<script>alert('You need entry Number ITEM 2 ! ')</script>");
+        return;
+    }
+
+    // "1": Day 20130626, "2" DN :  "3" WO_NO WM1-D60002  "4" , "5";
+    // if ((TextBox7.Text != "1") && (TextBox7.Text != "2") && (TextBox7.Text != "3") && (TextBox7.Text != "4") && (TextBox7.Text != "5"))
+    if ( (TextBox7.Text != "2") && (TextBox7.Text != "3") && (TextBox7.Text != "4") ) 
+    {
+        Response.Write("<script>alert('You need entry Number ITEM 4 ! ')</script>");
+        return;
+    }
+
+    // 20130726 改不刪除 Sap 原有 data CallTiptoptype = "C"  改  CallTiptoptype = "I";
+    CallTiptoptype = "I"; // one way toacket
+    string Dtype = "I", SysDate = DateTime.Today.ToString("yyyyMMdd"), DBType = "oracle";
+    string DBReadString = ReadParaTxt("WebReadParam.txt", "23301");    // L10
+    string DBWriString = ReadParaTxt("WebReadParam.txt", "23301");     // L10
+    string DBWriStringL6 = ReadParaTxt("WebReadParam.txt", "23303");   // L6
+    string PCode = ReadParaTxt("WebReadParam.txt", "23101");
+    Session["ZZPCode"] = ReadParaTxt("WebReadParam.txt", "23101");
+    Session["ZZPSite"] = "tjsfc";
+    //DBReadString = ConfigurationManager.AppSettings["OraZZL10DBConnectionString"]; 
+    //DBWriString  = ConfigurationManager.AppSettings["OraZZL10DBConnectionString"];
+    //string Retstr1 = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P0_3("1", "oracle", DBReadString, DBWriString, "1");  
+    if (CallTiptoptype != "") Dtype = CallTiptoptype;
+    string Retstr = "";
+    string BSite = PPSite;
+
+    // Test C 
+    //Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P0_2("tjsfc", Dtype, SysDate, DBType, DBReadString, DBWriString, PCode);
+    //Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P02_2(BSite, Dtype, SysDate, DBType, DBReadString, DBWriStringL6, PCode);  // Move MOCTAfrom Buffer to L6 SFC  
+    //return (""); 
+    // end Test
+
+    // ReqType  : "1": Day 20130626, "2" DN :/EM1-D60002   "3" WO_NO WM1-D60002, L6  "4" WO_NO  L10, "5";  ReqData  : 20130626/WM1-D60002/EM1-D60002 
+    string  ReqType = TextBox7.Text;
+    string  ReqData = TextBox8.Text;
+    Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_ALL("tjsfc", Dtype, SysDate, DBType, DBReadString, DBWriString, PCode, ReqType, ReqData);
+    
+    switch (ReqType)
+    {
+        //    case "1":    // Day
+        //       Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P02_2(BSite, Dtype, SysDate, DBType, DBReadString, DBWriStringL6, PCode);  // Move MOCTAfrom Buffer to L6 SFC  
+        //       Retstr = SFCLinkTiptopPointer.T_ZQM_HEADE_STRU_2(BSite, Dtype, SysDate, DBType, DBReadString, DBWriString, PCode);     // WO_LIST Move from Buffer to SFC  
+        //       Retstr = SFCLinkTiptopPointer.T_ZQM_COMPONENT_STRU_2(BSite, Dtype, SysDate, DBType, DBReadString, DBWriString, PCode); // WO_COMP Move from Buffer to SFC
+        //       Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P0_2("tjsfc", Dtype, SysDate, DBType, DBReadString, DBWriString, PCode);   // PACK Move from Buffer to SFC
+        //       break;
+            case "2":    // DN
+               Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P0_2("tjsfc", Dtype, SysDate, DBType, DBReadString, DBWriString, PCode);   // PACK Move from Buffer to SFC             
+               break;
+
+            case "3":    // L6 WO
+               Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P02_2(BSite, Dtype, SysDate, DBType, DBReadString, DBWriStringL6, PCode);  // Move MOCTAfrom Buffer to L6 SFC  
+               break;
+
+            case "4":    // L10 WO
+               Retstr = SFCLinkTiptopPointer.T_ZQM_HEADE_STRU_2(BSite, Dtype, SysDate, DBType, DBReadString, DBWriString, PCode);     // WO_LIST Move from Buffer to SFC  
+               Retstr = SFCLinkTiptopPointer.T_ZQM_COMPONENT_STRU_2(BSite, Dtype, SysDate, DBType, DBReadString, DBWriString, PCode); // WO_COMP Move from Buffer to SFC
+               Retstr = SFCLinkTiptopPointer.ZRFC_WLBG_KIT_P0_2( BSite, Dtype, SysDate, DBType, DBReadString, DBWriString, PCode);   // PACK Move from Buffer to SFC
+               break;
+
+            default:
+                 break;
+    }
+       
+    CallTiptoptype = "";     
+
+}
+
+// Test Only
+protected void Button75_Click(object sender, EventArgs e)
+{
+    if (TextBox5.Text != "Foxconn88")
+    {
+        Response.Write("<script>alert('You password is not correct Reentry password again !!')</script>");
+        return;
+
+    }
+
+
+    Timer1.Enabled = false;
+    string t2 = "", t3 = "";
+
+    int v1=0, v2=0, v3=0, v4=0, v5=0;
+    string tmpdate = "", tmpdate1 = "", tmpdate2 = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+
+    string tmpDN = TextBox10.Text.ToString().Trim();
+
+    if (tmpDN == "") return;
+
+    string sqlr = "  SELECT  * from  [BBSCM].[dbo].Delivery_Notification_MT where  DNID  = '" + tmpDN + "' ";
+    DataSet DNdt = PDataBaseOperation.PSelectSQLDS(DbSql, SqlWebDBA, sqlr);
+    if (DNdt == null) return;     // Syn Error
+    int DNCnt1 = DNdt.Tables[0].Rows.Count;
+    if (DNCnt1 == 0)
+    {
+        TextBox6.Text = "No this DN ";
+        Response.Write("<script>alert('DN can not been CONFIRM or SEND to Customer !!')</script>");
+        return;     // Not Data
+    }
+    else
+    {
+        t2 = DNdt.Tables[0].Rows[v1]["CONFIRMFLAG"].ToString().Trim();
+        t3 = DNdt.Tables[0].Rows[v1]["SENDFLAG"].ToString().Trim();
+    }
+
+    if (t2 == "Y")
+    {
+        Response.Write("<script>alert('DN can not been clear because already CONFIRM !!')</script>");
+        return;     // Not Data
+    }
+    else
+    if (t3 == "Y")
+    {
+        Response.Write("<script>alert('DN can not been clear because already SEND !!')</script>");
+        return;     // Not Data
+    }
+
+
+    string DBType = DbSql;
+    string DBReadString = SqlWebDBA;
+    string tmp1 = "", tmp2 = "", tmp3 = "", tmp4 = ""; ;
+ 
+    sqlr = "  Delete   [BBSCM].[dbo].Delivery_Notification_HU where DNID = '" + tmpDN + "' ";
+    v1 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr);
+    sqlr = "  Delete   [BBSCM].[dbo].Delivery_Notification_DT where DNID = '" + tmpDN + "' ";
+    v2 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr);
+    sqlr = "  Delete   [BBSCM].[dbo].Delivery_Map_DN          where DNID = '" + tmpDN + "' ";
+    v3 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr);
+    sqlr = "  Update   [BBSCM].[dbo].Delivery_Notification_MT set SFCFLAG = ''  where DNID = '" + tmpDN + "' ";
+    v4 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr);
+
+    Response.Write("<script>alert('DN been clear Data !!')</script>");
+
+}
+
+protected void Button76_Click(object sender, EventArgs e)
+{
+    return;
+    Timer1.Enabled = false;
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraBBFUSEL10ReadDBA;     //  44
+    string tmp2 = OraBBFUSEL10WriDBA;      //  215
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    string tmpLINE = "A1";
+    if (GPROLINE != "") tmpLINE = GPROLINE;
+
+    Session["Param1"] = 1;
+    Session["Param2"] = Dboracle; // DBReadString
+    Session["Param3"] = tmp1; // DBReadString   
+    Session["Param4"] = tmp2; // DBWriteString  
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = tmpLINE;  // PROLINE 
+    Response.Write("<script>window.open( 'MainGooPrg/JGECC1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+
+protected void Button77_Click(object sender, EventArgs e)
+{
+    return;
+    Timer1.Enabled = false;
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraBBFUSEL10WriDBA; // 215
+    string tmp2 = OraBBFUSEL10WriDBA; // 215
+    string tmpdate = "";
+    string tmpLINE = "A1";
+
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    if (GPROLINE != "") tmpLINE = GPROLINE;
+
+    Session["Param1"] = 1;
+    Session["Param2"] = Dboracle; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = tmpLINE;  // PROLINE 
+    Response.Write("<script>window.open( 'MainGooPrg/JGECQ1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+
+
+protected void Button78_Click(object sender, EventArgs e)
+{
+    return;
+    Timer1.Enabled = false;
+    string tmpLINE = "A1";
+    if (GPROLINE != "") tmpLINE = GPROLINE; 
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraBBFUSEL10WriDBA;  // 215
+    string tmp2 = OraBBFUSEL10WriDBA;  // 215
+    Session["Param1"] = 1;
+    Session["Param2"] = Dboracle; // DBReadString
+    Session["Param3"] = tmp1; // DBReadString   44
+    Session["Param4"] = tmp2; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = DateTime.Today.ToString("yyyyMMdd");
+    Session["Param7"] = tmpLINE;  // PROLINE 
+    Response.Write("<script>window.open( 'MainGooPrg/JGECQ2.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+protected void Button79_Click(object sender, EventArgs e)
+{
+    return;
+    Timer1.Enabled = false;
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraBBFUSEL10WriDBA; // 215
+    string tmp2 = OraBBFUSEL10WriDBA; // 215
+    string tmpdate = "";
+    string tmpLINE = "A1";
+
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    if (GPROLINE != "") tmpLINE = GPROLINE;
+
+    Session["Param1"] = 1;
+    Session["Param2"] = Dboracle; // DBReadString
+    Session["Param3"] = tmp1; // DBReadString   44
+    Session["Param4"] = tmp2; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = tmpLINE;  // PROLINE 
+    Response.Write("<script>window.open( 'MainGooPrg/TCWM01Query.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+
+}
+protected void Button80_Click(object sender, EventArgs e)
+{
+    return;
+    Timer1.Enabled = false;
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraBBFUSEL10WriDBA; // 215
+    string tmp2 = OraBBFUSEL10WriDBA; // 215
+    string tmpdate = "";
+    string tmpLINE = "A1";
+
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    if (GPROLINE != "") tmpLINE = GPROLINE;
+
+    Session["Param1"] = 1;
+    Session["Param2"] = Dboracle; // DBReadString
+    Session["Param3"] = tmp1; // DBReadString   44
+    Session["Param4"] = tmp2; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = tmpLINE;  // PROLINE 
+    Response.Write("<script>window.open( 'MainGooPrg/TCWD01Query.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+protected void Button81_Click(object sender, EventArgs e)
+{
+    return;
+    Timer1.Enabled = false;
+    // if (FPassword.ToLower() == "web")
+    string tmp1 = OraBBFUSEL10WriDBA; // 215
+    string tmp2 = OraBBFUSEL10WriDBA; // 215
+    string tmpdate = "";
+    string tmpLINE = "A1";
+
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    if (GPROLINE != "") tmpLINE = GPROLINE;
+
+    Session["Param1"] = 1;
+    Session["Param2"] = Dboracle; // DBReadString
+    Session["Param3"] = tmp1; // DBReadString   44
+    Session["Param4"] = tmp2; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = tmpLINE;  // PROLINE 
+    Response.Write("<script>window.open( 'MainGooPrg/TCWD02Query.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+protected void TextBox8_TextChanged(object sender, EventArgs e)
+{
+    string tdate = TextBox8.Text;
+    string Wridir = "PUBLIB";
+    string sqlr = " select *  from " + Wridir + ".TCWM01  where DATES = '" + tdate + "' ORDER by LINE, CLASS1 asc ";
+    DataSet DNdt = PDataBaseOperation.PSelectSQLDS(Dboracle, OraBBFUSEL10WriDBA, sqlr);
+    if (DNdt == null) return;
+    if (DNdt.Tables.Count <= 0) return;
+    if (DNdt.Tables[0].Rows.Count <= 0) return;
+    GPROLINE = DNdt.Tables[0].Rows[0]["LINE"].ToString().Trim();
+
+}
+
+//  Clear one day data
+protected void Button82_Click(object sender, EventArgs e)
+{
+    return;
+    if (TextBox2.Text.ToLower() != "foxconn88")
+    {
+        Response.Write("<script>alert('You need entry password ! ')</script>");
+        return;
+    }
+
+    string tmp1 = CurrDay, tWridir = "PUBLIB", tmpsqlW = "";
+    int v5 = 0, v6 = 0;
+
+    if (TextBox8.Text != "") tmp1 = TextBox8.Text;
+    
+    tmpsqlW = " delete " + tWridir + ".TCWM01  where DATES = '" + tmp1 + "' ";
+    v5 = PDataBaseOperation.PExecSQL(Dboracle, OraBBFUSEL10WriDBA, tmpsqlW);
+    tmpsqlW = " delete " + tWridir + ".TCWD01  where DATES = '" + tmp1 + "' ";
+    v6 = PDataBaseOperation.PExecSQL(Dboracle, OraBBFUSEL10WriDBA, tmpsqlW);
+                        
+    if ( ( v5 > 0 ) && (  v6 > 0 ) )
+    {
+        Response.Write("<script>alert('You clear k-ban data finish ! ')</script>");
+        return;
+    }
+
+}
+protected void Button83_Click(object sender, EventArgs e)
+{
+    if (TextBox9.Text == "") return;
+
+
+    string tmpSite = TextBox9.Text.ToUpper().ToString().Trim();
+
+    if (tmpSite == "BJ")
+    {
+        FoxconnSite = "BJ"; // BBRY FoxconnSite
+        SqlWebDBA   = ReadParaTxt("WebReadParam.txt", "23524");  // Get Data 
+        Response.Write("<script>alert('You currency directory is BJ !!')</script>");
+    }
+
+    if ( tmpSite == "LF" )
+    {
+        FoxconnSite = "LF"; // BBRY FoxconnSite
+        SqlWebDBA = ReadParaTxt("WebReadParam.txt", "23525");  // Get Data 
+        Response.Write("<script>alert('You currency directory is LF !!')</script>");
+    }
+
+              
+}
+
+protected void Button84_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FPOMO2.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+   
+}
+
+protected void Button85_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FDNL01.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+}
+
+
+protected void Button86_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FDNI01.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+
+}
+
+protected void Button88_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+
+    string tmpdate = "";
+    if (TextBox8.Text != "") tmpdate = TextBox8.Text;
+    else tmpdate = DateTime.Today.ToString("yyyyMMdd");
+
+    Session["Param1"] = 1;
+    Session["Param2"] = DbSql; // DBReadString
+    Session["Param3"] = SqlWebDBA; // DBReadString   44
+    Session["Param4"] = SqlWebDBA; // DBWriteString  215
+    Session["Param5"] = "menu";   // Menu input
+    Session["Param6"] = tmpdate;
+    Session["Param7"] = BBSCMDIR;  // PROLINE 
+    Response.Write("<script>window.open( 'MainBBRYPrg/FDLABI1.aspx','','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+}  // end public partial class Main ////// End all SubRoutine ////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Document : Session 傳參數string Session["Param1"] = 1; tSUsername = Session["Param1"].ToString(); 
+//  Session["Param1"] = 1;         // Data Process I/O
+//  Session["Param2"] = "oracle";  // 數據庫
+//  Session["Param3"] = str1;      // DBReadString
+//  Session["Param4"] = str2;      // DBWriString Dboracle, Dbsql 
+//  Session["Param5"] = "auto";    // 自動或手動執行 Autoprg, Menuprg
+// Session["Param1"]  = 1;  代表第 1 類表傳  Session["Param2"] 為讀資料庫位置
+// Session["Param1"] = 1;  代表第 1 類表傳  Session["Param2"] 為讀資料庫位置   Session["Param3"] 為寫資料庫位置
+// Session["Param1"] = 2;  代表第 2 類表傳  Session["Param2"] ? 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Remaek
+// There are two way to proect dba password and you can get by 2 way,
+// 1.1 Put pass in web.config 
+// passDBA = passDBA + ConfigurationManager.AppSettings["LicenseString"] =  ConfigurationManager.AppSettings["Sql221StringEC"]
+// Convert program is ConvertlibPointer.DeEncCodeWithoutEclcode
+// sample :string t3 = SqlWebCTLDBA; // ConvertlibPointer.DeEncCodeWithoutEclcode(ConfigurationManager.AppSettings["Sql221StringEC"], ConfigurationManager.AppSettings["LicenseString"], ",", "2DBA");
+// 1.2 Put passDBA in WebReadParam.txt  with protparamater =  "23101"
+// protect way like item 1 and you can get by function call  ReaddDRAFromwebconfig( SiteName ) return all DBA param 
+// GetTextFile( ref string[] ReadTxtArray, int ArrMax, string dtype  ) Read WebReadParam.txt and put in memory ReadTxtArray
+// and convter code from  ( code >= 23201 )  && ( code <= 23999 ) by DnCodeStr = LibUSR1Pointer.DBDeEncCode(EnCodeStr, PCode, ",", "2DBA");
+//
+//
+//

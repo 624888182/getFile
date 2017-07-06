@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebGrids>
+  <WebGrid UserID="Any" PageName="ASP.WFrmForecast_ascx" GridID="dgForecast" GroupID="" ColSetting="1111111111111111110000" PageSize="10">
+  </WebGrid>
+  <WebGrid UserID="Any" PageName="ASP.WFrmMaterialCheckingList_ascx" GridID="dgMain" GroupID="" ColSetting="11111011111111" PageSize="10">
+  </WebGrid>
+  <WebGrid UserID="Any" PageName="ASP.WFrmBrandAuthorization_ascx" GridID="dgMain" GroupID="" ColSetting="1111" PageSize="10">
+  </WebGrid>
+</WebGrids>

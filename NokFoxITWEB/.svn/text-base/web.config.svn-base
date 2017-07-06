@@ -1,0 +1,189 @@
+﻿<?xml version="1.0"?>
+<!-- 
+    注意: 除了手动编辑此文件以外，您还可以使用 
+    Web 管理工具来配置应用程序的设置。可以使用 Visual Studio 中的
+     “网站”->“Asp.Net 配置”选项。
+SCMSqlServer
+
+    设置和注释的完整列表在 
+    machine.config.comments 中，该文件通常位于 
+    \Windows\Microsoft.Net\Framework\v2.x\Config 中
+	
+	
+-->
+<configuration>
+	<configSections>
+		<section name="dataConfiguration" type="Microsoft.Practices.EnterpriseLibrary.Data.Configuration.DatabaseSettings, Microsoft.Practices.EnterpriseLibrary.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null"/>
+		<sectionGroup name="system.web.extensions" type="System.Web.Configuration.SystemWebExtensionsSectionGroup, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35">
+			<sectionGroup name="scripting" type="System.Web.Configuration.ScriptingSectionGroup, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35">
+				<section name="scriptResourceHandler" type="System.Web.Configuration.ScriptingScriptResourceHandlerSection, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" requirePermission="false" allowDefinition="MachineToApplication"/>
+				<sectionGroup name="webServices" type="System.Web.Configuration.ScriptingWebServicesSectionGroup, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35">
+					<section name="jsonSerialization" type="System.Web.Configuration.ScriptingJsonSerializationSection, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" requirePermission="false" allowDefinition="Everywhere"/>
+					<section name="profileService" type="System.Web.Configuration.ScriptingProfileServiceSection, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" requirePermission="false" allowDefinition="MachineToApplication"/>
+					<section name="authenticationService" type="System.Web.Configuration.ScriptingAuthenticationServiceSection, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" requirePermission="false" allowDefinition="MachineToApplication"/>
+					<section name="roleService" type="System.Web.Configuration.ScriptingRoleServiceSection, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" requirePermission="false" allowDefinition="MachineToApplication"/></sectionGroup></sectionGroup></sectionGroup></configSections>
+	<dataConfiguration defaultDatabase="SCM"/>
+	<appSettings>
+		<!-- <add key="L8StandByConnectionString" value="Data Source=tjstandby;Persist Security Info=True;User ID=sfc;Password=sfc;Unicode=True"/> -->
+		<!-- <add key="tjmaxstoreConnectionString" value="Data Source=tjmaxstore;Persist Security Info=True;User ID=sfc;Password=sfc;Unicode=True"/> -->
+		<!-- <add key="TybakConnectionString" value="Data Source=tjsfctest;Persist Security Info=True;User ID=sfc;Password=Foxconn88;Unicode=True"/> -->
+
+		<add key="L8StandByConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.211)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=sfc"/>
+		<add key="L8TestandWebConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.221)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=sfc"/>
+		<add key="bjl6testConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.19.20)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfis1;pwd=sfis1"/>
+    <add key="tjl6SMTConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.79)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=smtsfc)));uid=sfis1;pwd=sfis1"/>
+    <add key="tjl8SMTConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.214)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=sfc"/>
+		<add key="tjmaxstoreConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.166.108)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tysfc)));uid=sfc;pwd=sfc"/>
+		<add key="TybakConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.83.16.111)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=Foxconn88"/>
+    <add key="NormalDbConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.76)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=sfc"/>
+    <add key="NormalBakupConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.215)(PORT=7931))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=sfc"/>
+		<add key="LFTestL6" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.83.16.74)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=lfrsfc)));uid=sfis1;pwd=sfis1"/>
+		<add key="DB86" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.221)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=testsfc)));uid=sfc;pwd=sfc"/>
+		<add key="TJL6SMTSFC" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.79)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=smtsfc)));uid=sfis1;pwd=sfis1"/>
+		<add key="L10IntelConnectingString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.214)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=sfc"/>
+		<add key="TJL6SMT2012ConnectingString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.214)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=sfc"/>
+    <add key="BJTVStandConnectingString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.74.15.11)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=bjsfcdb)));uid=SFIS1;pwd=SFIS1000"/>
+    <add key="OraBJTVL10NormalConnString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.74.15.220)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=bjsfcdb)));uid=SFIS1;pwd=SFIS1000"/>
+    <add key="OraBJTVStandConnectingString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.74.15.221)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=bjsfcdb)));uid=SFIS1;pwd=SFIS1000"/>
+    <add key="OraBJTVWebDBConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.74.15.222)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=zzsfc)));uid=sfc;pwd=sfc"/>
+    <add key="SqlBJTVWebString" value="Server=10.74.15.222;User id=sa;Pwd=Sa123456;Database=ERPDBF"/>
+
+    <add key="JJTVStandConnectingString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.74.15.11)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=bjsfcdb)));uid=SFIS1;pwd=SFIS1000"/>
+
+    <add key="ConnectionSqlServer" value="Server=10.83.16.74 ;User id=sa;Pwd=Sa123456;Database=SCM"/>
+    <add key="DefaultConnectionString" value="Data Source=10.83.16.74;Initial Catalog=SCM;User ID=sa;Password=Sa123456" />
+		<add key="MGT" value="Data Source=tjsfc;Persist Security Info=True;User ID=sfc;Password=sfc;Unicode=True"/>
+		<add key="Sql86String" value="Server=10.186.171.86 ;User id=sa;Pwd=Sa123456;Database=MHReckon"/>
+		<add key="Sql221String" value="Server=10.186.171.221;User id=sa;Pwd=Sa123456;Database=ERPDBF"/>
+		<add key="Sql207String" value="Server=10.186.19.207;User id=sa;Pwd=Sa123456;Database=ERPDBF"/>
+		<add key="LocalHostSqlString" value="Server=127.0.0.1;User id=sa;Pwd=Sa123456;Database=ERPDBF"/>
+		<add key="CEMConnectionSqlServer" value="Server=10.186.19.202;User id=sa;Pwd=danny;Database=SyncroCem"/>
+    <add key="SyncroConnectionSqlServer" value="Server=10.186.19.208;User id=nokia_syncro_web;Pwd=syncro_web;Database=FIH_NOKIA_SYNCRO_DV"/>
+    <add key="Sql207Syncro" value="Server=10.186.19.207;User id=sa;Pwd=Sa123456;Database=FIH_NOKIA_SYNCRO_DV"/>
+    <add key="NokConnSqlServer" value="Server=10.134.140.104,7621 ;User id=Nokia_view;Pwd=viewsi101;Database=NOKIA_IOF"/>
+    <add key="SqlMRCS108String" value="Server=10.186.19.108;User id=sa;Pwd=Sa123456;Database=MRCS"/>
+    <add key="Local104SqlString" value="Server=10.186.19.104;User id=sa;Pwd=Sa123456;Database=ERPDBF"/>
+
+    <add key="OraL10NormalConnStringEC" value="31,44,49,51,43,33,88,108,6,4,115,7,61,42,37,57,44,33,58,29,106,56,100,13,6,101,7,54,92,69,112,96,127,101,125,115,126,127,12,116,7,63,71,71,60,111,16,59,77,72,16,79,95,92,22,106,84,91,84,90,82,22,93,64,57,60,114,50,84,93,80,50,49,41,41,40,67,79,78,78,69,67,84,95,68,65,84,65,61,40,83,69,82,86,73,67,69,95,78,65,77,69,61,116,106,115,102,99,41,41,41,59,117,105,100,61,115,102,99,59,112,119,100,61,115,102,99,"/>
+    <add key="OraL8StandByConnStringEC" value="31,44,49,51,43,33,88,108,6,4,115,7,61,42,37,57,44,33,58,29,106,56,100,13,6,101,7,54,92,69,112,96,127,101,125,115,126,127,12,116,7,63,71,71,60,111,16,59,77,72,16,79,95,92,22,106,84,91,84,90,87,17,69,65,65,35,111,52,61,81,84,53,50,49,41,41,40,67,79,78,78,69,67,84,95,68,65,84,65,61,40,83,69,82,86,73,67,69,95,78,65,77,69,61,116,106,115,102,99,41,41,41,59,117,105,100,61,115,102,99,59,112,119,100,61,115,102,99,"/>
+    <add key="OraWebConnectionStringEC" value="31,44,49,51,43,33,88,108,6,4,115,7,61,42,37,57,44,33,58,29,106,56,100,13,6,101,7,54,92,69,112,96,127,101,125,115,126,127,12,116,7,63,71,71,60,111,16,59,77,72,16,79,95,92,22,106,84,91,84,90,87,18,69,65,65,35,111,52,61,81,84,53,50,49,41,41,40,67,79,78,78,69,67,84,95,68,65,84,65,61,40,83,69,82,86,73,67,69,95,78,65,77,69,61,116,106,115,102,99,41,41,41,59,117,105,100,61,115,102,99,59,112,119,100,61,115,102,99,"/>
+    <add key="Sql221StringEC" value="31,12,17,19,11,1,88,117,114,111,17,124,89,77,68,90,84,64,70,18,115,66,117,58,49,82,116,12,5,80,83,83,11,97,69,84,12,96,80,17,118,92,90,90,66,27,7,14,4,24,66,0,29,1,29,1,55,60,33,54,35,"/>
+    <add key="LicenseString" value="License Document By IT Team 20120131 Donot Copy and Delete this file"/>
+
+    <add key="OraZZL6DBConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.195.226.99)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=sfc"/>
+    <add key="OraZZL10DBConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.195.226.97)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfc;pwd=sfc"/>
+    <add key="OraZZWebDBConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.195.226.98)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=zzsfc)));uid=sfc;pwd=sfc"/>
+    <add key="SqlZZWebString" value="Server=10.195.226.98;User id=sa;Pwd=Sa123456;Database=ERPDBF"/>
+    <add key="OraGLTESTDBConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.162.80.83)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=alxsfc)));uid=publib;pwd=publib"/>
+    <add key="OraGLTESTDBConnectionStringEC" value="31,44,49,51,43,33,88,108,6,4,115,7,61,42,37,57,44,33,58,29,106,56,100,13,6,101,7,54,92,69,112,96,127,101,125,115,126,127,12,116,7,63,71,71,60,111,16,59,77,72,16,79,95,82,18,106,93,92,75,76,86,9,92,56,38,33,116,91,88,89,87,49,41,41,40,67,79,78,78,69,67,84,95,68,65,84,65,61,40,83,69,82,86,73,67,69,95,78,65,77,69,61,97,108,120,115,102,99,41,41,41,59,117,105,100,61,112,117,98,108,105,98,59,112,119,100,61,112,117,98,108,105,98,"/>
+    <add key="OraZZFUSEL10DBConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.195.229.44)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=zzfuse)));uid=FUSEGUEST;pwd=FUSEGUEST"/>
+    <add key="OraBJFUSEL10DBConnectionString" value="SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.19.109)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=fusebjdb)));uid=MASTER_USER;pwd=master_user"/>
+    <add key="SqlBJMODDBString" value="Server=10.186.19.108;User id=sa;Pwd=Sa123456;Database=ERPDBF"/>
+    <add key="SqlLFQISDBString" value="Server=10.186.19.49;User id=TotalQis;Pwd=_P5$ylzKih;Database=TotalQis"/>
+    <add key="BBSCM"  value="Server=10.186.19.108 ;User id=sa;Pwd=Sa123456;Database=BBSCM"/>
+   
+    
+    <!--  <add key="Prgtype" value="keyin"/>  -->
+		<add key="Prgtype" value="keyin"/>
+    <!-- 20130203 <add key ="SAPConnect" value ="ASHOST=10.134.28.82; CLIENT=802;SYSNR=01;USER=fihbjkfc;PASSWD=foxconn8;LANG=EN"/> -->
+    <add key ="SAPConnect" value ="ASHOST=10.134.28.181; CLIENT=802;SYSNR=03;USER=fihbjkfc;PASSWD=foxconn8;LANG=EN"/>
+</appSettings>
+	<connectionStrings>
+		<add name="ConnectionSqlServer" connectionString="Data Source=10.83.16.74;Initial Catalog=SCM;Persist Security Info=True;User ID=sa;Password=Sa123456" providerName="System.Data.SqlClient"/>
+	  <add name="SCMConnectionString" connectionString="Data Source=10.83.16.74;Initial Catalog=SCM;User ID=sa;Password=Sa123456" providerName="System.Data.SqlClient"/>
+	</connectionStrings>
+	<system.web>
+    <httpRuntime maxRequestLength="1500000" executionTimeout="60"/>   <!-- 1.5GB, 60 Second   -->
+		<customErrors mode="Off"/>
+		<!-- 
+            设置 compilation debug="true" 将调试符号插入
+            已编译的页面中。但由于这会 
+            影响性能，因此只在开发过程中将此值 
+            设置为 true。
+    -->
+		<compilation debug="true">
+			<assemblies>
+       <add assembly="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+				<add assembly="System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+				<add assembly="System.Configuration.Install, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+				<add assembly="System.Data.OracleClient, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+				<add assembly="System.Management, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+				<add assembly="Microsoft.Vsa, Version=8.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+				<add assembly="System.DirectoryServices, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+				<add assembly="System.Messaging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+				<add assembly="ADODB, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+				<add assembly="Microsoft.VisualBasic.Vsa, Version=8.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+				<add assembly="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+				<add assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+				<add assembly="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+				<add assembly="System.Data.DataSetExtensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+				<add assembly="System.Data.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+				<add assembly="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/></assemblies></compilation>
+    <!--
+            通过 <authentication> 节可以配置 ASP.NET 使用的 
+            安全身份验证模式，
+
+
+            以标识传入的用户。 
+        -->
+		<!--<sessionState mode="StateServer" cookieless="false" timeout="240" stateConnectionString="tcpip=10.83.16.74:42424" stateNetworkTimeout="14400"/>-->
+    <authentication mode="Windows"/>
+		<!--
+            如果在执行请求的过程中出现未处理的错误，
+            则通过 <customErrors> 节可以配置相应的处理步骤。具体说来，
+            开发人员通过该节可以配置
+            要显示的 html 错误页
+
+
+            以代替错误堆栈跟踪。
+
+
+
+        <customErrors mode="RemoteOnly" defaultRedirect="GenericErrorPage.htm">
+            <error statusCode="403" redirect="NoAccess.htm" />
+            <error statusCode="404" redirect="FileNotFound.htm" />
+        </customErrors>
+        -->
+		<httpHandlers>
+			<!--<add verb="*" path="*_AppService.axd" validate="false" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"/>-->
+			<add verb="GET,HEAD" path="ScriptResource.axd" type="System.Web.Handlers.ScriptResourceHandler, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/>
+			<add verb="POST,GET" path="ajaxpro/*.ashx" type="AjaxPro.AjaxHandlerFactory,AjaxPro"></add>
+			<remove verb="*" path="*.asmx"/>
+			<add verb="*" path="*.asmx" validate="false" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+			<add verb="*" path="*_AppService.axd" validate="false" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/></httpHandlers>
+		<pages>
+			<controls>
+				<add tagPrefix="asp" namespace="System.Web.UI" assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+				<add tagPrefix="asp" namespace="System.Web.UI.WebControls" assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/></controls></pages>
+		<httpModules>
+			<add name="ScriptModule" type="System.Web.Handlers.ScriptModule, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/></httpModules></system.web>
+	<system.codedom>
+		<compilers>
+			<compiler language="c#;cs;csharp" extension=".cs" type="Microsoft.CSharp.CSharpCodeProvider,System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" warningLevel="4">
+				<providerOption name="CompilerVersion" value="v3.5"/>
+				<providerOption name="WarnAsError" value="false"/></compiler>
+			<compiler language="vb;vbs;visualbasic;vbscript" extension=".vb" type="Microsoft.VisualBasic.VBCodeProvider, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" warningLevel="4">
+				<providerOption name="CompilerVersion" value="v3.5"/>
+				<providerOption name="OptionInfer" value="true"/>
+				<providerOption name="WarnAsError" value="false"/></compiler></compilers></system.codedom>
+	<system.webServer>
+		<validation validateIntegratedModeConfiguration="false"/>
+		<modules>
+			<remove name="ScriptModule"/>
+			<add name="ScriptModule" preCondition="managedHandler" type="System.Web.Handlers.ScriptModule, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/></modules>
+		<handlers>
+			<remove name="WebServiceHandlerFactory-Integrated"/>
+			<remove name="ScriptHandlerFactory"/>
+			<remove name="ScriptHandlerFactoryAppServices"/>
+			<remove name="ScriptResource"/>
+			<add name="ScriptHandlerFactory" verb="*" path="*.asmx" preCondition="integratedMode" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+			<add name="ScriptHandlerFactoryAppServices" verb="*" path="*_AppService.axd" preCondition="integratedMode" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+			<add name="ScriptResource" verb="GET,HEAD" path="ScriptResource.axd" preCondition="integratedMode" type="System.Web.Handlers.ScriptResourceHandler, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/></handlers></system.webServer>
+	<runtime>
+		<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+			<dependentAssembly>
+				<assemblyIdentity name="System.Web.Extensions" publicKeyToken="31bf3856ad364e35"/>
+				<bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="3.5.0.0"/></dependentAssembly>
+			<dependentAssembly>
+				<assemblyIdentity name="System.Web.Extensions.Design" publicKeyToken="31bf3856ad364e35"/>
+				<bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="3.5.0.0"/></dependentAssembly></assemblyBinding></runtime></configuration>

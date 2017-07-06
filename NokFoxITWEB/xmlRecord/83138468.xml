@@ -1,0 +1,127 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:glob="http://sap.com/xi/SAPGlobal20/Global">
+  <soap:Header />
+  <soap:Body>
+    <glob:DeliveryDespatchAdviceNotification>
+      <MessageHeader>
+        <CreationDateTime>2017-04-07T00:00:00.000Z</CreationDateTime>
+        <SenderParty>
+          <InternalID schemeID="CommunicationPartyID" schemeAgencyID="_LOCAL_SYSTEM_ALIAS_SAP_INTERNAL_CONSTANT_VALUE_">100055</InternalID>
+          <!-- Communication Partner Id:-->
+        </SenderParty>
+        <RecipientParty>
+          <InternalID schemeID="CommunicationPartyID" schemeAgencyID="_LOCAL_SYSTEM_ALIAS_SAP_INTERNAL_CONSTANT_VALUE_">HMDOGB</InternalID>
+          <!-- Company ID :-->
+        </RecipientParty>
+      </MessageHeader>
+      <DeliveryDespatchAdvice reconciliationPeriodCounterValue="1" actionCode="01">
+        <ID>83138468</ID>
+        <TypeCode>TPDI</TypeCode>
+        <CancellationDocumentIndicator>false</CancellationDocumentIndicator>
+        <VendorParty>
+          <InternalID>1000081</InternalID>
+          <!-- Supplier Id :-->
+        </VendorParty>
+        <ProductRecipientParty>
+          <InternalID>1000219S99</InternalID>
+          <!-- Ship-To Party :-->
+        </ProductRecipientParty>
+        <Item>
+          <CancellationDocumentIndicator>false</CancellationDocumentIndicator>
+          <ID>10</ID>
+          <TypeCode>14</TypeCode>
+          <DeliveryQuantity unitCode="EA">20</DeliveryQuantity>
+          <DeliveryQuantityTypeCode>EA</DeliveryQuantityTypeCode>
+          <Product>
+            <BuyerID>MEA1M49010A</BuyerID>
+            <TypeCode>1</TypeCode>
+          </Product>
+          <OriginPurchaseOrderReference>
+            <ID>315</ID>
+            <TypeCode>001</TypeCode>
+            <ItemID>1</ItemID>
+          </OriginPurchaseOrderReference>
+        </Item>
+        <Item>
+          <CancellationDocumentIndicator>false</CancellationDocumentIndicator>
+          <ID>20</ID>
+          <TypeCode>14</TypeCode>
+          <DeliveryQuantity unitCode="EA">25</DeliveryQuantity>
+          <DeliveryQuantityTypeCode>EA</DeliveryQuantityTypeCode>
+          <Product>
+            <BuyerID>MEA1M49010A</BuyerID>
+            <TypeCode>1</TypeCode>
+          </Product>
+          <OriginPurchaseOrderReference>
+            <ID>315</ID>
+            <TypeCode>001</TypeCode>
+            <ItemID>2</ItemID>
+          </OriginPurchaseOrderReference>
+        </Item>
+        <Item>
+          <CancellationDocumentIndicator>false</CancellationDocumentIndicator>
+          <ID>30</ID>
+          <TypeCode>14</TypeCode>
+          <DeliveryQuantity unitCode="EA">25</DeliveryQuantity>
+          <DeliveryQuantityTypeCode>EA</DeliveryQuantityTypeCode>
+          <Product>
+            <BuyerID>MENE102501A</BuyerID>
+            <TypeCode>1</TypeCode>
+          </Product>
+          <OriginPurchaseOrderReference>
+            <ID>315</ID>
+            <TypeCode>001</TypeCode>
+            <ItemID>3</ItemID>
+          </OriginPurchaseOrderReference>
+        </Item>
+        <Item>
+          <CancellationDocumentIndicator>false</CancellationDocumentIndicator>
+          <ID>40</ID>
+          <TypeCode>14</TypeCode>
+          <DeliveryQuantity unitCode="EA">25</DeliveryQuantity>
+          <DeliveryQuantityTypeCode>EA</DeliveryQuantityTypeCode>
+          <Product>
+            <BuyerID>MENE102502A</BuyerID>
+            <TypeCode>1</TypeCode>
+          </Product>
+          <OriginPurchaseOrderReference>
+            <ID>315</ID>
+            <TypeCode>001</TypeCode>
+            <ItemID>4</ItemID>
+          </OriginPurchaseOrderReference>
+        </Item>
+        <Item>
+          <CancellationDocumentIndicator>false</CancellationDocumentIndicator>
+          <ID>50</ID>
+          <TypeCode>14</TypeCode>
+          <DeliveryQuantity unitCode="EA">25</DeliveryQuantity>
+          <DeliveryQuantityTypeCode>EA</DeliveryQuantityTypeCode>
+          <Product>
+            <BuyerID>MENE102505A</BuyerID>
+            <TypeCode>1</TypeCode>
+          </Product>
+          <OriginPurchaseOrderReference>
+            <ID>315</ID>
+            <TypeCode>001</TypeCode>
+            <ItemID>5</ItemID>
+          </OriginPurchaseOrderReference>
+        </Item>
+        <Item>
+          <CancellationDocumentIndicator>false</CancellationDocumentIndicator>
+          <ID>60</ID>
+          <TypeCode>14</TypeCode>
+          <DeliveryQuantity unitCode="EA">25</DeliveryQuantity>
+          <DeliveryQuantityTypeCode>EA</DeliveryQuantityTypeCode>
+          <Product>
+            <BuyerID>MENE102506A</BuyerID>
+            <TypeCode>1</TypeCode>
+          </Product>
+          <OriginPurchaseOrderReference>
+            <ID>315</ID>
+            <TypeCode>001</TypeCode>
+            <ItemID>6</ItemID>
+          </OriginPurchaseOrderReference>
+        </Item>
+      </DeliveryDespatchAdvice>
+    </glob:DeliveryDespatchAdviceNotification>
+  </soap:Body>
+</soap:Envelope>

@@ -1,0 +1,256 @@
+﻿.titleImg
+{
+	background: url(images/titleBg.jpg) repeat-x;
+	font-family:標楷體;
+	font-weight:normal;
+	height:22px; 
+}
+ .PageHeaderLeft
+{
+	background: url(images/titleBg.jpg) repeat-x;
+	height:27px; 
+}
+.titleIcon
+{
+    background: url(images/arrow.gif) no-repeat 10px center;
+    padding-left: 35px;
+    width:150px;
+    font-size:14px;
+    font-weight:bolder;
+}
+.inputContent
+{
+    background-color: #F8F8F8;
+    padding: 10px 20px;
+}
+.txtGray
+{
+    color: #ACA899;
+    font-size: 12px;
+    background-color: #F8F7F0; 
+    border: 1px solid #ACA899;
+}
+.lblMain
+{
+    text-align:right;
+    width:100%;
+}
+.buttonArea
+{
+    padding-left: 30px;
+    height: 30px;
+    border-bottom: 2px solid #0198FF;
+    border-top: 2px solid #0198FF;
+    background-color: #EBEBE1;
+    vertical-align: middle;
+}
+.mainButton
+{
+    border-style: none;
+	border-color: inherit;
+	border-width: 0px;
+	width:77px;
+    	background:url(images/btnBg.jpg) no-repeat;    
+    	text-align:center;
+    	vertical-align: middle;
+}
+.mainButton1
+{
+    width:77px;
+    height:21px;
+    background:url(images/btnSBg.JPG) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+ 
+.mainButton3
+{
+    width:77px;
+    height:21px;
+    background:url(images/query.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+.yellow1
+{
+    width:77px;
+    height:21px;
+    background:url(images/yellow1.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+.yellow2
+{
+    width:77px;
+    height:21px;
+    background:url(images/yellow2.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+.yellow3
+{
+    width:77px;
+    height:21px;
+    background:url(images/yellow3.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+.yellow_s
+{
+    width:77px;
+    height:21px;
+    background:url(images/yellow_s.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+.blue1
+{
+    width:77px;
+    height:21px;
+    background:url(images/blue1.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+
+.blue2
+{
+    width:77px;
+    height:21px;
+    background:url(images/blue2.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+
+.blue11
+{
+    width:77px;
+    height:21px;
+    background:url(images/blue11.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+.blue_s
+{
+    width:77px;
+    height:21px;
+    background:url(images/blue_s.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+.blue2_s
+{
+    width:77px;
+    height:21px;
+    background:url(images/blue2_s.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+.blue11_s
+{
+    width:77px;
+    height:21px;
+    background:url(images/blue11_s.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+.green1_s
+{
+    width:77px;
+    height:21px;
+    background:url(images/green1_s.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+
+
+
+
+
+.note
+{
+    color: #FF0000;
+    font-weight: bolder;
+    border-bottom: 0px solid #ACA899;
+    padding-top: 3px;
+    margin-top: 3px;
+}
+.mainButton3
+{
+    width:77px;
+    height:21px;
+    background:url(images/query.gif) no-repeat;    
+    border:0px;
+    text-align:center;
+    vertical-align: middle;
+}
+
+.note
+{
+    color: #FF0000;
+    font-weight: bolder;
+    border-bottom: 0px solid #ACA899;
+    padding-top: 3px;
+    margin-top: 3px;
+}
+.msgDataRead
+{
+    background: url(images/ms_progcircle.gif) no-repeat;
+    width: 150px;
+    padding-left: 20px;
+}
+.gvMain
+{
+    border: 1px solid #000000;
+    width: 100%;
+}
+.gvMain td
+{
+    border: 1px solid #000000;
+    padding-left: 2px;
+}
+.gvHeaderStyel
+{
+    background:url(images/gvMainBg.jpg) repeat-x;
+}
+/*---Fuction Page Start---  background:url(images/gvMainBg.jpg) repeat-x;*/
+.titleImgAdd
+{
+    background: #c5d4e2 url(images/titlImgAdd.gif) no-repeat right center;
+    border-bottom: 1px solid #305A7E;
+    padding-left: 15px;
+}
+.titleIconAdd
+{
+    background: url(images/modify.gif) no-repeat left center;
+    padding-left: 20px;
+    width:150px;
+}
+.inputContentAdd
+{
+    background-color: #F8F8F8;
+    padding: 0px 5px 10px 5px;
+    text-align:left;
+}
+/*---Fuction Page End---*/
+
+.TdFindLeft
+{
+
+}
+.TdFindRight
+{
+
+}

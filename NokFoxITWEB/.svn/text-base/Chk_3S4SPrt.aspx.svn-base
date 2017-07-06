@@ -1,0 +1,120 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Chk_3S4SPrt.aspx.cs" Inherits="Chk_3S4SPrt" %>
+
+<%@ Register Src="WebControler/Controls/Calendar1.ascx" TagName="Calendar1" TagPrefix="uc2" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Check 3S/4S Print After Delivery</title>
+    <style type="text/css">
+        .style1
+        {
+            width: 68%;
+        }
+    </style>
+
+    <script language="javascript" type="text/jscript" src="Jscript/Calendar.js">
+    
+    </script>
+
+</head>
+<body bgcolor="#7ECED5">
+    <form id="form1" runat="server">
+    <div>
+        <table class="style1" style="text-align: left" align="center">
+            <tr>
+                <td colspan="4" align="center">
+                    <asp:Label ID="lblCheckDN" runat="server" Text="Check 3S/4S Print After Delivery"
+                        ForeColor="Red" Font-Size="Larger"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <asp:Label ID="lblQueryCondition" runat="server" Text="請選擇查詢條件：" ForeColor="Red"></asp:Label>
+                </td>
+                <td colspan="2">
+                    <asp:RadioButtonList ID="rboSelect" runat="server" RepeatDirection="Horizontal" AutoPostBack="True"
+                        OnSelectedIndexChanged="rboSelect_SelectedIndexChanged">
+                        <asp:ListItem Selected="True" Value="0">Query By Date</asp:ListItem>
+                        <asp:ListItem Value="1">Query By DN</asp:ListItem>
+                    </asp:RadioButtonList>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblStartDate" runat="server" Text="Begin Date："></asp:Label>
+                </td>
+                <td>
+                    <asp:TextBox ID="txtStartDate" runat="server" onkeypress="javascript:event.returnValue=false;"
+                        onclick="showCalendar();" ForeColor="#0081AC"></asp:TextBox>
+                </td>
+                <td>
+                    <asp:Label ID="lblEndDate" runat="server" Text="End Date："></asp:Label>
+                </td>
+                <td>
+                    <asp:TextBox ID="txtEndDate" runat="server" onkeypress="javascript:event.returnValue=false;"
+                        onclick="showCalendar();" ForeColor="#0081AC"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblDN" runat="server" Text="DN:"></asp:Label>
+                </td>
+                <td>
+                    <asp:TextBox ID="txtDN" runat="server" Enabled="False"></asp:TextBox>
+                </td>
+                <td>
+                    <asp:Button ID="btnQuery" runat="server" Text="Query" OnClick="btnQuery_Click" />
+                </td>
+                <td>
+                    <asp:Label ID="lblDemo" runat="server" Text="以下DN已銷單，但未打印3S/4S" ForeColor="Red"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <asp:GridView ID="gvDNCheck" runat="server" AllowPaging="True" AutoGenerateColumns="False"
+                        PageSize="20" OnPageIndexChanging="gvDNCheck_PageIndexChanging" OnRowDataBound="gvDNCheck_RowDataBound">
+                        <RowStyle BackColor="#EFF3FC" BorderColor="#000000" BorderStyle="Solid" ForeColor="#000000"
+                            HorizontalAlign="Center" />
+                        <Columns>
+                            <asp:TemplateField HeaderText="NO">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblNo" runat="server" Text="<%# Container.DataItemIndex+1%>"></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle Width="7%" />
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Shipped_DN">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblShippedDN" runat="server" Text='<%# DataBinder.Eval(Container.DataItem,"INVOICE")%>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle Width="11%" />
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="ITEM_NUMBER">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblItemNumber" runat="server" Text='<%# DataBinder.Eval(Container.DataItem,"ORDER_ITEM") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle Width="14%" />
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="SHIP_DATE">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblShipDate" runat="server" Text='<%#DataBinder.Eval(Container.DataItem,"LAST_UPDATE_DATE") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle Width="18%" />
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="PRINT_3S/4S_STATUS">
+                                <ItemTemplate>
+                                    <asp:Label ID="lbl3S4SStaus" runat="server" Text='<%#DataBinder.Eval(Container.DataItem,"PrintStaus") %>'></asp:Label>
+                                </ItemTemplate>
+                                <HeaderStyle Width="18%" />
+                            </asp:TemplateField>
+                        </Columns>
+                        <AlternatingRowStyle BackColor="#FFFFFF" ForeColor="#000000" />
+                        <PagerStyle BackColor="#EBE8E1" Font-Bold="true" ForeColor="#000000" />
+                        <HeaderStyle BackColor="#3399FF" HorizontalAlign="Center" />
+                    </asp:GridView>
+                </td>
+            </tr>
+        </table>
+    </div>
+    </form>
+</body>
+</html>

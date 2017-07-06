@@ -1,0 +1,255 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Web.Master" AutoEventWireup="true" CodeFile="UpLoad_Check.aspx.cs" Inherits="UpLoad_Check" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<div style="border: solid 1px #6A84BF; ">
+   <div style="border: solid 1px #6A84BF; ">
+    <div>
+             <table>
+        <tr>
+            <td>
+                <div style="background-color: #B1C7FF; text-align: center; padding: 5px 0px 5px 0px;
+                                                            border-bottom: 1px solid #6A84BF; font-size:larger; font-weight:bold">
+                                                            數據上傳及校驗
+                                                            </div>
+            </td>
+        </tr>
+        </table>
+
+</div>
+    
+</div>
+    <div id="divtop">
+           <table cellspacing="1" cellpadding="1" border="0" >
+             <tr align="center">
+                   <td>系統說明</td>
+                  <td rowspan="4"></td>
+                  <td bgcolor="red">數據表名必須為規定表名,否則報錯</td>
+
+             </tr>
+        </table>
+    </div>
+   <div id="divshow" > 
+           <table id="tableUpLoad" style="border: solid 1px #6A84BF; text-align: center;" runat="server" >
+             
+                            <tr>
+                            <td>
+                            <asp:Button ID="btnCheck" runat="server" 
+            Text="數量校驗" Height="26px" onclick="btnCheck_Click"></asp:Button>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                             <td>
+                            <asp:Button ID="btnSave" runat="server"  Text="內容校驗" onclick="btnSave_Click" 
+                                     Enabled="False" ></asp:Button>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>  
+                                <asp:Button ID="BtnOpertion" runat="server"  Text="數據修改"
+                                     Enabled="true" onclick="BtnOpertion_Click" ></asp:Button></td>
+                             </tr>
+             </table>
+             <table  id="tableSwitch" style="border: solid 1px #6A84BF; text-align: center;" runat="server">
+                <tr>
+                    <td> 
+                        <asp:RadioButtonList ID="RadioWitch" runat="server" 
+                            RepeatDirection="Horizontal" AutoPostBack="True" 
+                             Font-Bold="True" 
+                            ForeColor="#3366FF">
+                            <asp:ListItem Value="A">TJCellon</asp:ListItem>
+                            <asp:ListItem Value="B">TJNLX</asp:ListItem>
+                        </asp:RadioButtonList>       
+                   </td>
+                   <td>
+                        <asp:Button ID="BtnApllication" runat="server"  Text="確定"
+                                     Enabled="true" onclick="BtnApllication_Click" 
+                            OnClientClick="return confirm('確定要執行嗎?')" style="height: 26px"  ></asp:Button>
+                   </td>
+                </tr>
+             </table>
+             <table id="tableUploadFile" style="border: solid 1px #6A84BF; text-align: center;" runat="server">
+                  <tr>
+                    <td>
+                        <asp:FileUpload ID="FileUpload1" runat="server" />  
+                   </td>
+                   <td>
+                       <asp:Button ID="BtnUpload" runat="server" Text="上傳" onclick="BtnUpload_Click" 
+                           style="height: 26px" />
+                   </td>
+                   </tr>             
+             </table>
+             <table id="tabDbOpertion" style="border: solid 1px #6A84BF; text-align: center;" runat="server">
+                    <tr>
+                      <td> <asp:DropDownList ID="DropDownSwitch" runat="server" 
+                                EnableViewState="False" Height="21px">
+                                <asp:ListItem>DOCUMENTID</asp:ListItem>
+                                <asp:ListItem>PSN</asp:ListItem>
+                                <asp:ListItem>CARTON</asp:ListItem>
+                            </asp:DropDownList></td>
+                      <td><asp:TextBox ID="TextInput" runat="server"></asp:TextBox></td>
+                      <td><asp:Button ID="ButDel" runat="server"  Text="刪除"
+                                     Enabled="true" onclick="ButDel_Click" OnClientClick="return confirm('確定要執行嗎?')" ></asp:Button></td>
+                      <td></td>
+                      <td></td>
+                      <td><asp:Button ID="ButFail" runat="server"  Text="作廢"
+                                     Enabled="true" onclick="ButFail_Click" OnClientClick="return confirm('確定要執行嗎?')"></asp:Button></td>
+                    </tr>
+             </table>                  
+</div>
+   <div id="divMessage">
+           <table id="tberrorMessage" style="border: solid 1px #6A84BF; text-align: center;" runat="server">
+                <tr>
+                    <td>
+                        <asp:Label ID="Labtop" runat="server" Text="錯誤提示" ></asp:Label>
+                    </td>
+                    <td>
+                        <asp:Label ID="LabMessage" runat="server" Text="Label" BackColor="Red"></asp:Label>
+                    </td>
+                </tr>
+           </table>
+           <table id="tbMessage" style="border: solid 1px #6A84BF; text-align: center;" border="1" runat="server">
+                <tr>
+                            <td colspan=2 bgcolor="#99CCFF">驗證結果</td>
+                </tr>
+                <tr>
+                    <td> <asp:Label ID="LabtableCount" runat="server" Text="驗證表數" ></asp:Label>7</td>
+                    <td><asp:Label ID="Labetablestus" runat="server" Text="Label" BackColor="Red"></asp:Label></td>
+                </tr>
+                <tr>
+                    <td> <asp:Label ID="labDocumentID" runat="server" Text="DocumentID" ></asp:Label></td>
+                    <td><asp:Label ID="labDocumentIDStatus" runat="server" Text="Label" BackColor="Red"></asp:Label></td>
+                </tr>
+                <tr>
+                    <td> <asp:Label ID="labInsertSucess" runat="server" Text="插入成功行" ></asp:Label></td>
+                    <td><asp:Label ID="labInsertSucessStatus" runat="server" Text="Label" BackColor="Red"></asp:Label></td>
+                </tr>
+                <tr>
+                    <td> <asp:Label ID="labInsertError" runat="server" Text="插入失敗行" ></asp:Label></td><td><asp:Label ID="labInsertErrorStatus" runat="server" Text="Label" BackColor="Red"></asp:Label></td>
+                </tr>
+                <tr>
+                    <td> <asp:Label ID="LabUpdateSucess" runat="server" Text="更新成功行" ></asp:Label></td><td><asp:Label ID="LabUpdateSucessStatus" runat="server" Text="Label" BackColor="Red"></asp:Label></td>
+                </tr>
+                <tr>
+                    <td> <asp:Label ID="LabUpdateError" runat="server" Text="更新失敗行" ></asp:Label></td><td><asp:Label ID="LabUpdateErrorStatus" runat="server" Text="Label" BackColor="Red"></asp:Label></td>
+                </tr>
+              </table>
+           <table id="tbCountMessage" style="border: solid 1px #6A84BF; text-align: center;" border="1" runat="server">
+                <tr>
+                    <td><asp:Label ID="LabCount" runat="server" Text="數據總數" ></asp:Label></td><td><asp:Label ID="LabCountResult" runat="server" Text="Lable1" BackColor="Red" ></asp:Label></td>
+                </tr>
+                <tr>
+                    <td><asp:Label ID="LabCountSucess" runat="server" Text="條件符合行" ></asp:Label></td><td><asp:Label ID="LabCountSucessResult" runat="server" Text="Lable1" BackColor="Red" ></asp:Label></td>
+                </tr>
+            </table> 
+           <table id="tbCartonMesage" style="border: solid 1px #6A84BF; text-align: center;" border="1" runat="server">
+           <thead>
+                <tr>
+                <th>CARTON</th>
+                <th>STATUS</th>
+                </tr>
+            </thead>
+                    <tr><td><asp:Label ID="Label2" runat="server" Text="CARTON符合總數" ></asp:Label></td><td><asp:Label ID="LabelCountScess" runat="server" Text="Lable1" BackColor="Red" ></asp:Label></td></tr>
+                    <tr><td><asp:Label ID="Label4" runat="server" Text="CARTON失敗總數" ></asp:Label></td><td><asp:Label ID="LabelCountFail" runat="server" Text="Lable1" BackColor="Red" ></asp:Label></td></tr>
+                    <tr><td><asp:Label ID="Label3" runat="server" Text="CARTON錯誤總數" ></asp:Label></td><td><asp:Label ID="LabelCountError" runat="server" Text="Lable1" BackColor="Red" ></asp:Label></td></tr>
+            </table>
+      </div>
+      <div id="GriewDisay">    
+                <table id="tableGrivwDisay" runat="server"  style="border: solid 1px #6A84BF; text-align: center;">
+        <tr>
+            <td>
+                <asp:Label ID="lbldiasyGriew" runat="server" Text="Label">Detail List</asp:Label></td>
+               
+            <td>
+
+     <asp:GridView ID="GridViewftram1" runat="server" Font-Size="10px"
+               BackColor="#CC3300" UserID="Any"  BorderWidth="1px" Font-Names="Verdana" 
+               BorderStyle="none" AutoGenerateColumns="False" GridLines="Both"
+               AllowPaging="True" onpageindexchanging="GridViewftram1_PageIndexChanging" 
+                    onrowcreated="GridViewftram1_RowCreated" 
+               >
+                <Columns>   
+                    <asp:BoundField DataField="DOCUMENTID" HeaderText="DOCUMENTID"></asp:BoundField>
+                    <asp:BoundField DataField="PSN" HeaderText="PSN"></asp:BoundField>
+                    <asp:BoundField DataField="F0" HeaderText="F0"></asp:BoundField> 
+                    <asp:BoundField DataField="F1" HeaderText="F1"></asp:BoundField>
+                    <asp:BoundField DataField="F2" HeaderText="F2"></asp:BoundField>
+                    <asp:BoundField DataField="F3" HeaderText="F3"></asp:BoundField>
+                    <asp:BoundField DataField="F4" HeaderText="F4"></asp:BoundField>
+                    <asp:BoundField DataField="F5" HeaderText="F5"></asp:BoundField>
+                    <asp:BoundField DataField="F6" HeaderText="F6"></asp:BoundField>
+               </Columns>
+                <RowStyle BackColor="#f1f8f1"/>
+                <HeaderStyle  HorizontalAlign="Center"/>
+                <AlternatingRowStyle BackColor="White" />        
+            </asp:GridView>
+
+            </td>
+        </tr>
+    </table>
+</div>
+   <div id="divCheckvaluedisay">
+        <table id="taCheackvalue" style="border: solid 1px #6A84BF; text-align: center;" border="1" runat="server">
+            <thead>
+                <tr>
+                <th>表名</th>
+                <th>錯誤次數</th>
+                <th>下載</th>
+                </tr>
+            </thead>
+            <tr>
+                <td><asp:Label ID="LabeTableone" runat="server" Text="SFC. R_WIP_TRACKING_T" ></asp:Label></td><td> 
+                <asp:Label ID="lbltracking_t" runat="server" BackColor="Red"></asp:Label></td><td id="Download" runat="server">
+                <asp:LinkButton ID="LinkTracking_t"  runat="server" 
+                    onclick="LinkTracking_t_Click">錯誤提示</asp:LinkButton>
+                </td>
+            </tr>  
+            <tr>
+                <td><asp:Label ID="Label1" runat="server" Text="SFC. R_WIP_TRACKING_T_PID" ></asp:Label></td><td> <asp:Label ID="lbltracking_t_pid" runat="server" Text="" BackColor="Red"></asp:Label></td><td id="Td1" runat="server">
+                <asp:LinkButton ID="LinkTracking_t_pid" runat="server" 
+                    onclick="LinkTracking_t_pid_Click">錯誤提示</asp:LinkButton>
+                </td>
+            </tr>
+            <tr>
+                <td><asp:Label ID="LabeTabltwo" runat="server" Text="SFC.MES_ASSY_HISTORY" ></asp:Label></td><td> <asp:Label ID="lblhistory" runat="server" Text="Label" BackColor="Red"></asp:Label></td><td id="Td2" runat="server">
+                <asp:LinkButton ID="LinkAssyHistory" runat="server" 
+                    onclick="LinkAssyHistory_Click">錯誤提示</asp:LinkButton>
+                </td>
+            </tr>
+            <tr>
+                <td><asp:Label ID="LabeTabthree" runat="server" Text="SFC.MES_ASSY_PID_JOIN" ></asp:Label></td><td> <asp:Label ID="lblassypidjoin" runat="server" Text="" BackColor="Red"></asp:Label></td><td id="Td3" runat="server">
+                <asp:LinkButton ID="LinkAssyPidJoin" runat="server" 
+                    onclick="LinkAssyPidJoin_Click">錯誤提示</asp:LinkButton>
+                </td>
+            </tr>
+            <tr>
+                <td><asp:Label ID="LabeTabfour" runat="server" Text="SFC.MES_ASSY_WIP" ></asp:Label></td><td> <asp:Label ID="lblassywip" runat="server" Text="" BackColor="Red"></asp:Label></td><td id="Td4" runat="server">
+                <asp:LinkButton ID="LinkAssyWip" runat="server" onclick="LinkAssyWip_Click">錯誤提示</asp:LinkButton>
+                </td>
+            </tr>
+            <tr>
+               <td><asp:Label ID="LabeTabfive" runat="server" Text="SFC.MES_PCBA_HISTORY" ></asp:Label></td><td> <asp:Label ID="lblpcbahistory" runat="server" Text="" BackColor="Red"></asp:Label></td><td id="Td5" runat="server">
+                <asp:LinkButton ID="LinkPcbaHistory" runat="server" 
+                    onclick="LinkPcbaHistory_Click">錯誤提示</asp:LinkButton>
+                </td>
+
+            </tr>
+            <tr>
+               <td><asp:Label ID="LabeTabsix" runat="server" Text="TESTINFO.TESTINFO_HEAD" ></asp:Label></td><td> <asp:Label ID="lbltestinfohead" runat="server" Text="" BackColor="Red"></asp:Label></td><td id="Td6" runat="server">
+                <asp:LinkButton ID="LinkTestinfoHead" runat="server" 
+                    onclick="LinkTestinfoHead_Click">錯誤提示</asp:LinkButton>
+                </td>
+            </tr>     
+        </table>
+   </div>
+
+</div>
+ 
+     
+</asp:Content>

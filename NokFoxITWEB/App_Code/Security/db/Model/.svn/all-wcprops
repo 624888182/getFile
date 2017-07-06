@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model
+END
+OperateInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model/OperateInfo.cs
+END
+UsersInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model/UsersInfo.cs
+END
+vssver2.scc
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model/vssver2.scc
+END
+DepartmentInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model/DepartmentInfo.cs
+END
+SysConfigInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model/SysConfigInfo.cs
+END
+SysModuleInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model/SysModuleInfo.cs
+END
+DeptRoleGpInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model/DeptRoleGpInfo.cs
+END
+OperRoleDetailInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model/OperRoleDetailInfo.cs
+END
+OperRoleGpInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/MainMot/!svn/ver/1/App_Code/Security/db/Model/OperRoleGpInfo.cs
+END

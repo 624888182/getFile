@@ -1,0 +1,416 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+
+public partial class FindDNByPOSO : System.Web.UI.Page
+{
+    static string dataBaseType = "";
+    static string readConnection = "";
+    static string writeConnection = "";
+    static string prgType = "";
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        #region 初始化頁面
+        if (!IsPostBack)
+        {
+            if (Session["Param1"] != null)                  // 1 表示數據庫 I/O
+            {
+                dataBaseType = Session["Param2"].ToString();  // Oracle
+                readConnection = Session["Param3"].ToString();  // 讀資料庫
+                writeConnection = Session["Param4"].ToString();   // 寫資料庫
+                prgType = Session["Param5"].ToString(); // menu or auto 
+            }
+            else
+            {
+                dataBaseType = "oracle";  // Oracle
+                readConnection = ConfigurationManager.AppSettings["L8StandByConnectionString"].ToString();// 讀資料庫
+                writeConnection = ConfigurationManager.AppSettings["bjl6testConnectionString"].ToString();// 寫資料庫
+                prgType = "menu "; // menu or auto 
+            }
+            panelPO.Visible = false;
+            panelManualSO.Visible = false;
+            panelSapSO.Visible = false;
+            panelCarton.Visible = false;
+            txtStartDate.Text = DateTime.Now.AddDays(-5).ToString("yyyy/MM/dd");
+            txtEndDate.Text = DateTime.Now.ToString("yyyy/MM/dd");
+            string ddlPOSql = "SELECT DISTINCT CUSTOMER_PO FROM SAP.CMCS_SFC_PACKING_LINES_ALL WHERE CUSTOMER_PO IS NOT NULL" +
+                             " UNION" +
+                             " SELECT DISTINCT PO_NUMBER FROM SHP.UPD_ORDER_INFORMATION WHERE PO_NUMBER IS NOT NULL" +
+                             " ORDER BY CUSTOMER_PO DESC";
+            string ddlSapSOSql = "SELECT DISTINCT SO_NO FROM SAP.CMCS_SFC_PACKING_LINES_ALL WHERE SO_NO IS NOT NULL" +
+                               " ORDER BY SO_NO DESC";
+            string ddlManualSOSql = "SELECT DISTINCT SO_NUMBER FROM SHP.UPD_ORDER_INFORMATION WHERE SO_NUMBER IS NOT NULL" +
+                                   " ORDER BY SO_NUMBER DESC";
+            DDLBindData(ddlPO, ddlPOSql);
+            DDLBindData(ddlSapSO, ddlSapSOSql);
+            DDLBindData(ddlManualSO, ddlManualSOSql);
+        }
+        #endregion
+    }
+    /// <summary>
+    ///數據綁定到DropDownList控件
+    /// </summary>
+    /// <param name="ddlBind"></param>
+    /// <param name="ddlSql"></param>
+    protected void DDLBindData(DropDownList ddlBind, string ddlSql)
+    {
+        try
+        {
+            DataTable dtBind = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, ddlSql);
+            if (dtBind.Rows.Count > 0)
+            {
+                ddlBind.Items.Clear();
+                ddlBind.DataSource = dtBind;
+                ddlBind.DataValueField = dtBind.Columns[0].Caption;
+                ddlBind.DataTextField = dtBind.Columns[0].Caption;
+                ddlBind.DataBind();
+                ListItem li = new ListItem();
+                li.Text = "";
+                ddlBind.Items.Insert(0, li);
+            }
+        }
+        catch (Exception ex)
+        {
+            Response.Write(ex.ToString());
+        }
+    }
+    /// <summary>
+    /// 檢查日期格式
+    /// </summary>
+    /// <param name="checkBeginDate"></param>
+    /// <param name="checkEndDate"></param>
+    /// <returns></returns>
+    public string CheckDateFomat(ref string checkBeginDate, ref string checkEndDate)
+    {
+        DateTime dateTime1;
+        DateTime dateTime2;
+        if (DateTime.TryParse(checkBeginDate, out dateTime1) && DateTime.TryParse(checkEndDate, out dateTime2))
+        {
+            checkBeginDate = dateTime1.ToString("yyyy/MM/dd");
+            checkEndDate = dateTime2.ToString("yyyy/MM/dd");
+        }
+        else
+        {
+            return "DateIsWrong!";
+        }
+        int beginDateValue = 0;
+        int endDateValue = 0;
+        if (int.TryParse(checkBeginDate.Replace("/", ""), out beginDateValue)
+            && int.TryParse(checkEndDate.Replace("/", ""), out endDateValue))
+        {
+            if (beginDateValue > endDateValue)
+            {
+                string middleDate = string.Empty;
+                middleDate = checkEndDate;
+                checkEndDate = checkBeginDate;
+                checkBeginDate = middleDate;
+            }
+        }
+        return "DateFomartIsRight!";
+    }
+    /// <summary>
+    ///根據查詢條件，在頁面控件顯示符合條件的數據
+    /// </summary>
+    /// <param name="addSql"></param>
+    protected void BindGridView(string addSql)
+    {
+        try
+        {
+            string querySql = string.Empty;
+            querySql = "SELECT a.*,b.SO_NUMBER FROM (SELECT CUSTOMER_PO,SO_NO,INVOICE_NUMBER,SUM(QUANTITY) AS QUANTITY," +
+                      " TO_CHAR(MAX(SHIP_DATE),'yyyy/MM/dd') AS SHIP_DATE, SHIP_TO_CUSTOMERNAME, SHIP_TO_COUNTRY,SHIP_TO_CITY" +
+                      " FROM (SELECT DISTINCT * FROM SAP.CMCS_SFC_PACKING_LINES_ALL)" +
+                      " GROUP BY CUSTOMER_PO,SO_NO,INVOICE_NUMBER,SHIP_TO_CUSTOMERNAME, SHIP_TO_COUNTRY,SHIP_TO_CITY) a" +
+                      " LEFT JOIN SHP. UPD_ORDER_INFORMATION b ON a.CUSTOMER_PO=b.PO_NUMBER WHERE 1=1" + addSql +
+                      " ORDER BY a.CUSTOMER_PO DESC,a.SO_NO,a.INVOICE_NUMBER";
+            DataTable findDN = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, querySql);
+            if (findDN.Rows.Count == 0)
+            {
+                lblTotalQuantity.Text = "";
+                gvList.DataSource = null;
+                gvList.DataBind();
+                Page.RegisterStartupScript("aa", "<script language=javascript>alert('沒有找到符合條件的DN!!');</script>");
+                return;
+            }
+            int totalQuantity = 0;
+            foreach (DataRow dr in findDN.Rows)
+            {
+                try
+                {
+                    totalQuantity += Convert.ToInt32(dr["QUANTITY"].ToString());
+                }
+                catch (Exception ex)
+                {
+                    Response.Write(ex.ToString());
+                    lblTotalQuantity.Text = "";
+                }
+            }
+            lblTotalQuantity.Text = totalQuantity.ToString();
+            gvList.PageIndex = 0;
+            Session["DN"] = findDN;
+            gvList.DataSource = Session["DN"];
+            gvList.DataBind();
+        }
+        catch (Exception ex)
+        {
+            Response.Write(ex.ToString());
+        }
+    }
+    /// <summary>
+    /// 通過PO,SO,Carton查找DN
+    /// </summary>
+    /// <param name="findDNSql"></param>
+    /// <returns></returns>
+    protected string QueryByPOSOCarton(string findDNSql)
+    {
+        DataTable dsPOSO = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, findDNSql);
+        string s = string.Empty;
+        if (dsPOSO.Rows.Count > 0)
+        {
+            for (int i = 0; i < dsPOSO.Rows.Count; i++)
+            {
+                s += "'" + dsPOSO.Rows[i][0].ToString() + "',";
+            }
+            s = s.TrimEnd((','));
+            return s;
+        }
+        else
+        {
+            gvList.DataSource = null;
+            gvList.DataBind();
+            return "NoData";
+        }
+    }
+    /// <summary>
+    /// 根據不同的查詢條件，顯示相應的數據
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void BtnQuery_Click(object sender, EventArgs e)
+    {
+        lblTotalQuantity.Text = "";
+        switch (rboConditions.SelectedValue.Trim())
+        {
+            case "1":
+                QueryByDate();//按日期查詢
+                break;
+            case "2":
+                if (string.IsNullOrEmpty(txtPO.Text.Trim()))
+                {
+                    Page.RegisterStartupScript("aa", "<script language=javascript>alert('請輸入或選擇PO后再查詢!');</script>");
+                    return;
+                }
+                QueryByPO();//按PO查詢
+                break;
+            case "3":
+                if (string.IsNullOrEmpty(txtManualSO.Text.Trim()))
+                {
+                    Page.RegisterStartupScript("aa", "<script language=javascript>alert('請輸入或選擇Manual SO后再查詢!');</script>");
+                    return;
+                }
+                QueryByManualSO();//按Manual SO查詢
+                break;
+            case "4":
+                if (string.IsNullOrEmpty(txtSapSO.Text.Trim()))
+                {
+                    Page.RegisterStartupScript("aa", "<script language=javascript>alert('請輸入或選擇SAP SO后再查詢!');</script>");
+                    return;
+                }
+                QueryBySapSO();//按SAP SO查詢
+                break;
+            case "5":
+                if (string.IsNullOrEmpty(txtCartonID.Text.Trim()))
+                {
+                    Page.RegisterStartupScript("aa", "<script language=javascript>alert('請輸入Carton后再查詢!');</script>");
+                    return;
+                }
+                QueryByCarton();//按Carton查詢
+                break;
+        }
+    }
+    /// <summary>
+    /// 按日期查詢的計算邏輯
+    /// </summary>
+    protected void QueryByDate()
+    {
+        string beginDate = string.Empty;
+        string endDate = string.Empty;
+        string DateStatus = string.Empty;
+        beginDate = txtStartDate.Text.Trim();
+        endDate = txtEndDate.Text.Trim();
+        DateStatus = CheckDateFomat(ref beginDate, ref endDate);
+        if (DateStatus == "DateIsWrong!")
+        {
+            gvList.DataSource = null;
+            gvList.DataBind();
+            Page.RegisterStartupScript("aa", "<script>alert('日期不正確!');</script>");
+            return;
+        }
+        txtStartDate.Text = beginDate;
+        txtEndDate.Text = endDate;
+        string queryAddDateSql = string.Empty;
+        queryAddDateSql = " AND SHIP_DATE>='" + beginDate + "' AND SHIP_DATE<='" + endDate + "'";
+        BindGridView(queryAddDateSql);
+    }
+    /// <summary>
+    /// 按PO,SAP SO,Manual SO,Carton條件查詢的計算邏輯
+    /// </summary>
+    /// <param name="findDNSql"></param>
+    protected void QueryByType(string findDNSql)
+    {
+        string dtReturnValue = string.Empty;
+        dtReturnValue = QueryByPOSOCarton(findDNSql);
+        if (dtReturnValue == "NoData")
+        {
+            Page.RegisterStartupScript("aa", "<script language=javascript>alert('沒有找到符合條件的DN!');</script>");
+            return;
+        }
+        string queryAddPOSql = string.Empty;
+        queryAddPOSql = "AND INVOICE_NUMBER IN (" + dtReturnValue + ")";
+        BindGridView(queryAddPOSql);
+    }
+    /// <summary>
+    /// 按PO查詢的計算邏輯
+    /// </summary>
+    protected void QueryByPO()
+    {
+        string findDNByPOSql = string.Empty;
+        findDNByPOSql = "SELECT DISTINCT INVOICE_NUMBER FROM SAP.CMCS_SFC_PACKING_LINES_ALL WHERE CUSTOMER_PO IS NOT NULL AND CUSTOMER_PO='" + txtPO.Text.Trim() + "'";
+        QueryByType(findDNByPOSql);
+    }
+    /// <summary>
+    /// 按SAP SO查詢的計算邏輯
+    /// </summary>
+    protected void QueryBySapSO()
+    {
+        string findDNBySapSOSql = string.Empty;
+        findDNBySapSOSql = "SELECT DISTINCT INVOICE_NUMBER FROM SAP.CMCS_SFC_PACKING_LINES_ALL WHERE SO_NO IS NOT NULL AND SO_NO='" + txtSapSO.Text.Trim() + "'";
+        QueryByType(findDNBySapSOSql);
+    }
+    /// <summary>
+    ///按Manual SO條件查詢的計算邏輯
+    /// </summary>
+    protected void QueryByManualSO()
+    {
+        string findDNByManualSOSql = string.Empty;
+        findDNByManualSOSql = "SELECT DISTINCT INVOICE_NUMBER FROM SAP.CMCS_SFC_PACKING_LINES_ALL,SHP.UPD_ORDER_INFORMATION" +
+                    " WHERE CUSTOMER_PO=PO_NUMBER AND SO_NUMBER IS NOT NULL AND SO_NUMBER='" + txtManualSO.Text.Trim() + "'";
+        QueryByType(findDNByManualSOSql);
+    }
+    /// <summary>
+    ///按Carton條件查詢的計算邏輯
+    /// </summary>
+    protected void QueryByCarton()
+    {
+        string findDNByCartonSql = string.Empty;
+        findDNByCartonSql = "SELECT DISTINCT INVOICE_NUMBER FROM SAP.CMCS_SFC_PACKING_LINES_ALL" +
+                            " WHERE INTERNAL_CARTON IS NOT NULL AND INTERNAL_CARTON='" + txtCartonID.Text.Trim() + "'";
+        QueryByType(findDNByCartonSql);
+    }
+    /// <summary>
+    /// 單機不同的按鈕，進行相應的操作
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void rboConditions_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        lblTotalQuantity.Text = "";
+        gvList.DataSource = null;
+        gvList.DataBind();
+        switch (rboConditions.SelectedValue.Trim())
+        {
+            case "1":
+                panelDate.Visible = true;
+                panelPO.Visible = false;
+                panelSapSO.Visible = false;
+                panelManualSO.Visible = false;
+                panelCarton.Visible = false;
+                txtStartDate.Text = DateTime.Now.AddDays(-5).ToString("yyyy/MM/dd");
+                txtEndDate.Text = DateTime.Now.ToString("yyyy/MM/dd");
+                break;
+            case "2":
+                panelPO.Visible = true;
+                panelDate.Visible = false;
+                panelSapSO.Visible = false;
+                panelManualSO.Visible = false;
+                panelCarton.Visible = false;
+                txtPO.Text = "";
+                ddlPO.SelectedIndex = 0;
+                break;
+            case "3":
+                panelManualSO.Visible = true;
+                panelDate.Visible = false;
+                panelPO.Visible = false;
+                panelSapSO.Visible = false;
+                panelCarton.Visible = false;
+                txtManualSO.Text = "";
+                ddlManualSO.SelectedIndex = 0;
+                break;
+            case "4":
+                panelSapSO.Visible = true;
+                panelDate.Visible = false;
+                panelPO.Visible = false;
+                panelManualSO.Visible = false;
+                panelCarton.Visible = false;
+                txtSapSO.Text = "";
+                ddlSapSO.SelectedIndex = 0;
+                break;
+            case "5":
+                panelCarton.Visible = true;
+                panelSapSO.Visible = false;
+                panelDate.Visible = false;
+                panelPO.Visible = false;
+                panelManualSO.Visible = false;
+                txtCartonID.Text = "";
+                break;
+        }
+    }
+
+    protected void ddlPO_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        txtPO.Text = ddlPO.SelectedValue.Trim();
+    }
+
+    protected void ddlManualSO_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        txtManualSO.Text = ddlManualSO.SelectedValue.Trim();
+    }
+
+    protected void ddlSapSO_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        txtSapSO.Text = ddlSapSO.SelectedValue.Trim();
+    }
+
+    protected void gvList_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            for (int i = 0; i < e.Row.Cells.Count; i++)
+            {
+                e.Row.Cells[i].Attributes.Add("nowrap", "true");
+                if (e.Row.Cells[i].Text == "&nbsp;")
+                {
+                    e.Row.Cells[i].Text = "";
+                }
+            }
+            e.Row.Attributes.Add("onMouseOver", "Color=this.style.backgroundColor;this.style.backgroundColor='#EEFFCC'");
+            e.Row.Attributes.Add("onMouseOut", "this.style.backgroundColor=Color;");
+        }
+    }
+
+    protected void gvList_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        gvList.PageIndex = e.NewPageIndex;
+        gvList.DataSource = Session["DN"];
+        gvList.DataBind();
+    }
+}

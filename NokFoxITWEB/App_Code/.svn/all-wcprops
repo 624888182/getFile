@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/MainMot/!svn/ver/1399/App_Code
+END
+AssemblyInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/MainMot/!svn/ver/1/App_Code/AssemblyInfo.cs
+END
+Global.asax.cs
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/MainMot/!svn/ver/1/App_Code/Global.asax.cs
+END
+Class_ODBC.cs
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/MainMot/!svn/ver/865/App_Code/Class_ODBC.cs
+END
+AppPubLib.cs
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/MainMot/!svn/ver/486/App_Code/AppPubLib.cs
+END
+IniFile.cs
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/MainMot/!svn/ver/1/App_Code/IniFile.cs
+END
+DataBaseOperation.cs
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/MainMot/!svn/ver/846/App_Code/DataBaseOperation.cs
+END
+OracleHelper.cs
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/MainMot/!svn/ver/5/App_Code/OracleHelper.cs
+END
+PDataBaseOperation.cs
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/MainMot/!svn/ver/861/App_Code/PDataBaseOperation.cs
+END
+Routing.cs
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/MainMot/!svn/ver/1/App_Code/Routing.cs
+END
+DataBaseOracle.cs
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MainMot/!svn/ver/106/App_Code/DataBaseOracle.cs
+END

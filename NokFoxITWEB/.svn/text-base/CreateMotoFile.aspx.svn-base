@@ -1,0 +1,382 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="CreateMotoFile.aspx.cs" Inherits="CreateMotoFile" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+<form id="form1" runat="server">
+<div id="divTotal" >
+<table id="tableTotal" style="border: solid 1px #6A84BF; text-align: center;" align="center" border="1" width="100%" runat="server">
+    <tr>
+        <td>
+            <div style="background-color: #B1C7FF; text-align: center; padding: 5px 0px 5px 0px;
+                                                                    border-bottom: 1px solid #6A84BF; font-size:larger; font-weight:bold">
+                                                                    客戶文件產生程序
+                                                                    </div>
+            <div id="divtop">
+                <table id="showTable" style="text-align:center" align="center">
+                         <tr>
+                            <td>
+                                <asp:Label ID="LabSwitch" runat="server" Text="選擇生成方式"></asp:Label>  
+                            </td>
+                            <td>                    
+                                <asp:RadioButtonList ID="RadioWitch" runat="server" 
+                                    RepeatDirection="Horizontal" AutoPostBack="True" 
+                                     Font-Bold="True" 
+                                    ForeColor="#3366FF" 
+                                    onselectedindexchanged="RadioWitch_SelectedIndexChanged">
+                                    <asp:ListItem Value="PO">PO</asp:ListItem>
+                                    <asp:ListItem Value="DN">DN</asp:ListItem>
+                                </asp:RadioButtonList>                  
+                            </td>
+                         </tr>
+                    </table>
+                <table id="tablePo" style="text-align:center" align="center" runat="server">
+                        <tr>
+                            <td>
+                                <asp:Label ID="LabPoListName" runat="server" Text="選擇PO:"></asp:Label>
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="DropDownListPO" runat="server" 
+                                        EnableViewState="True" Height="19px">
+                                    </asp:DropDownList>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">       
+                                <asp:Button ID="ButPoCreate" runat="server" Text="生成文件" 
+                                      style="height: 26px" onclick="ButPoCreate_Click" />
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td colspan="2">  
+                                <asp:Button ID="ButPOTest" runat="server" Text="測試" 
+                                      style="height: 26px" onclick="ButPOTest_Click" />
+                            </td>
+                        </tr>
+                   </table>
+                <table id="tableDN" style="text-align:center" align="center" runat="server">
+                        <tr>
+                            <td>
+                                <asp:Label ID="LabDnListName" runat="server" Text="輸入DN:"></asp:Label>
+                            </td>
+                            <td>
+                                <asp:TextBox ID="TextInput" runat="server"></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">       
+                                <asp:Button ID="ButDnCreate" runat="server" Text="生成文件" 
+                                      style="height: 26px" onclick="ButDnCreate_Click" />
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td colspan="2">  
+                                <asp:Button ID="ButDNTest" runat="server" Text="測試" 
+                                      style="height: 26px" onclick="ButDNTest_Click" />
+                            </td>
+                        </tr>
+                   </table>
+                <table id="tberrorMessage" style="border: solid 1px #6A84BF; text-align: center;" align="center" runat="server">
+                        <tr>
+                            <td>
+                                <asp:Label ID="Labtop" runat="server" Text="信息提示" ></asp:Label>
+                            </td>
+                            <td>
+                                <asp:Label ID="LabMessage" runat="server" Text="Label"></asp:Label>
+                            </td>
+                        </tr>
+                   </table>
+                <table id="tabDisaby" style="border: solid 1px #6A84BF; text-align: center;" align="center" width="100%" runat="server">
+                    <tr>
+                        <td>成功記錄</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:GridView ID="GridwCount" runat="server" Font-Size="10px"
+                       BackColor="#B1C7FF" UserID="Any"  BorderWidth="1px" Font-Names="Verdana" 
+                       BorderStyle="none" AutoGenerateColumns="False" GridLines="Both"
+                       AllowPaging="True" onpageindexchanging="GridwCount_PageIndexChanging"        
+                       >
+                        <Columns>   
+                            <asp:BoundField DataField="INVOICE" HeaderText="DN"></asp:BoundField>
+                            <asp:BoundField DataField="SHIP_QTY" HeaderText="數量"></asp:BoundField>
+                            <asp:BoundField DataField="MODEL" HeaderText="幾種"></asp:BoundField> 
+                            <asp:BoundField DataField="SHIP_TO" HeaderText="收貨地"></asp:BoundField>
+                            <asp:BoundField DataField="CUSTOMER" HeaderText="客戶"></asp:BoundField>
+                            <asp:BoundField DataField="SHIP_DATE" HeaderText="出貨日期"></asp:BoundField>
+                            <asp:BoundField DataField="FILENAME" HeaderText="文件名"></asp:BoundField>
+                            <asp:BoundField DataField="CREATE_DATE" HeaderText="生產日期"></asp:BoundField>
+                            <asp:BoundField DataField="ASN_FTP_TIME" HeaderText="ASN"></asp:BoundField>
+                            <asp:BoundField DataField="IMEI_FILE_TIME" HeaderText="IMEI"></asp:BoundField>
+                            <asp:BoundField DataField="COUNTRE" HeaderText="產生次數"></asp:BoundField>
+                       </Columns>
+                        <RowStyle BackColor="#f1f8f1"/>
+                        <HeaderStyle  HorizontalAlign="Center"/>
+                        <AlternatingRowStyle BackColor="White" />        
+                    </asp:GridView>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>成功記錄</td>
+                    </tr>
+                    <tr>
+                        <td>
+                             <asp:GridView ID="GridView" runat="server" Font-Size="10px"
+                               BackColor="#B1C7FF" UserID="Any"  BorderWidth="1px" Font-Names="Verdana" 
+                               BorderStyle="none" AutoGenerateColumns="False" GridLines="Both"
+                               AllowPaging="True" onpageindexchanging="GridView_PageIndexChanging" 
+                               >
+                                <Columns>   
+                                    <asp:BoundField DataField="INVOICE" HeaderText="DN"></asp:BoundField>
+                                    <asp:BoundField DataField="PO" HeaderText="PO"></asp:BoundField>
+                                    <asp:BoundField DataField="SHIP_QTY" HeaderText="數量"></asp:BoundField> 
+                                    <asp:BoundField DataField="UPDFILENAME" HeaderText="UPD文件名"></asp:BoundField>
+                                    <asp:BoundField DataField="IMEIFILENAME" HeaderText="IMEI文件名"></asp:BoundField>
+                                    <asp:BoundField DataField="GFSFILENAME" HeaderText="GFS文件名"></asp:BoundField>
+                                    <asp:BoundField DataField="UPDFLAG" HeaderText="是否產生"></asp:BoundField>
+                                    <asp:BoundField DataField="SAPFLAG" HeaderText="是否過帳"></asp:BoundField>
+                                    <asp:BoundField DataField="CREATE_DATE" HeaderText="生產日期"></asp:BoundField>
+                                    <asp:BoundField DataField="TRY_TIMES" HeaderText="產生次數"></asp:BoundField>
+                                    <asp:BoundField DataField="SENDFLAG" HeaderText="是否發送"></asp:BoundField>
+                               </Columns>
+                                <RowStyle BackColor="#f1f8f1"/>
+                                <HeaderStyle  HorizontalAlign="Center"/>
+                                <AlternatingRowStyle BackColor="White" />        
+                            </asp:GridView> 
+                       </td>
+                    </tr>
+                    
+                </table>
+                <table id="tabValueList"  align="center" runat="server">
+                <tr>
+                    <td id="tdGSMTop" runat="server">GSM</td>
+                    <td id="tdCDMATop" runat="server">CDMA</td>
+                </tr>
+                    <tr>
+                        <td id="tdGsmList" runat="server">
+                            <table id="taCheackvalue" style="border: solid 1px #6A84BF; text-align: center;" align="center"  runat="server">
+                                <thead>
+                                    <tr>
+                                    <th>文件類型</th>
+                                    <th>下載</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td><asp:Label ID="LabUPD" runat="server" Text="UPD文件" ></asp:Label></td>
+                                      <td id="Td2" runat="server">
+                                          <asp:LinkButton ID="LinkUpdDown" runat="server" onclick="LinkUpdDown_Click" 
+                                        >文件下載</asp:LinkButton>
+                                    </td>
+                                </tr>  
+                                <tr>
+                                    <td><asp:Label ID="LabIMEI" runat="server" Text="IMEI文件" ></asp:Label></td>
+                                    <td id="Td1" runat="server">
+                                        <asp:LinkButton ID="LinkImeiDown" runat="server" onclick="LinkImeiDown_Click" 
+                                        >文件下載</asp:LinkButton>
+                                    </td>
+                                </tr>    
+                            </table>  
+                        </td>
+                        <td id="tdCdmaList" runat="server">
+                                  <table id="Table2" style="border: solid 1px #6A84BF; text-align: center;" align="center" runat="server">
+                                        <thead>
+                                            <tr>
+                                            <th>文件類型</th>
+                                            <th>下載</th>
+                                            </tr>
+                                        </thead>
+                                        <tr>
+                                            <td><asp:Label ID="LabCdmaUPD" runat="server" Text="UPD文件" ></asp:Label></td>
+                                              <td id="Td3" runat="server">
+                                                  <asp:LinkButton ID="LinkCdmaUpdDown" runat="server" onclick="LinkCdmaUpdDown_Click" 
+                                                >文件下載</asp:LinkButton>
+                                            </td>
+                                        </tr>  
+                                        <tr>
+                                            <td><asp:Label ID="LabGFS" runat="server" Text="GFS文件" ></asp:Label></td>
+                                            <td id="Td4" runat="server">
+                                                <asp:LinkButton ID="LinkGFSUpdDown" runat="server" onclick="LinkGFSUpdDown_Click"
+                                                >文件下載</asp:LinkButton>
+                                            </td>
+                                        </tr>    
+                            </table> 
+                        </td>
+                    </tr>
+                </table>
+                     
+            </div>
+            <div style="background-color: #B1C7FF; text-align: center; padding: 5px 0px 5px 0px;
+                                                                    border-bottom: 1px solid #6A84BF; font-size:larger; font-weight:bold">
+                                                                    歷史記錄
+                                                                 </div>
+            <div id="divHistory">
+                <table id="tabHistorytop" style="text-align:center" align="center">
+                       <tr>
+                            <td>
+                                <asp:Label ID="LabHistory" runat="server" Text="輸入PO或DN:"></asp:Label>
+                            </td>
+                            <td>
+                                <asp:TextBox ID="TxtInputHistory" runat="server"></asp:TextBox>
+                            </td>
+                            <td>
+                                <asp:Button ID="BtnHistoryDisapy" runat="server" Text="提交" 
+                                      style="height: 26px" onclick="BtnHistoryDisapy_Click" />
+                            </td>
+                            <td>
+                                <asp:Label ID="LabHistoryErroMessage" runat="server" Text="Label"></asp:Label> 
+                            </td>
+                         </tr>
+                </table>
+                <table id="tabHistoryList" style="text-align:center" align="center" runat="server">
+                    <tr id="trGSMList" runat="server">
+                        <td>
+                         <table id="tabUpdDownLIst" style="border: solid 1px #6A84BF; text-align: center;" align="center" runat="server">
+                               <tr>
+                                    <td>
+                                    <asp:GridView ID="GVDownList" runat="server" SkinID="GridViewSkin"
+                                        AutoGenerateColumns="False" onrowdatabound="GVDownList_RowDataBound" 
+                                        onselectedindexchanging="GVDownList_SelectedIndexChanging" >
+                                         <Columns>
+                                          <asp:TemplateField HeaderText="Index" >
+                                         <ItemTemplate> 
+                                            <%# (Container.DataItemIndex+1).ToString()%> 
+                                       </ItemTemplate>
+                                        </asp:TemplateField> 
+                                        <asp:BoundField DataField="FileName" HeaderText="文件名" >
+                                            <HeaderStyle Width="50%" />
+                                        </asp:BoundField>
+                                         <asp:BoundField DataField="CreateTime" HeaderText="產生時間" >
+                                            <HeaderStyle Width="50%" />
+                                        </asp:BoundField>
+                                        <asp:CommandField  HeaderText="下載" SelectText="Download" 
+                                            ShowSelectButton="True" >
+                                            <ItemStyle HorizontalAlign="Center" />
+                                        </asp:CommandField>
+                                    </Columns>
+                                    </asp:GridView>
+                                </td>
+                            </tr>
+                               
+                        </table>
+                        </td>
+                        <td>
+                          <table id="tabImeiDownList" style="border: solid 1px #6A84BF; text-align: center;" align="center" runat="server">
+                             <tr>
+                                 <td>
+                                    <asp:GridView ID="GVImeiDownList" runat="server" SkinID="GridViewSkin"
+                                        AutoGenerateColumns="False" onrowdatabound="GVImeiDownList_RowDataBound" 
+                                         onselectedindexchanging="GVImeiDownList_SelectedIndexChanging" >
+                                         <Columns>
+                                            <asp:TemplateField HeaderText="Index" >
+                                             <ItemTemplate> 
+                                                <%# (Container.DataItemIndex+1).ToString()%> 
+                                           </ItemTemplate>
+                                            </asp:TemplateField> 
+                                        <asp:BoundField DataField="FileName" HeaderText="文件名" >
+                                            <HeaderStyle Width="50%" />
+                                        </asp:BoundField>
+                                         <asp:BoundField DataField="CreateTime" HeaderText="產生時間" >
+                                            <HeaderStyle Width="50%" />
+                                        </asp:BoundField>
+                                        <asp:CommandField  HeaderText="下載" SelectText="Download" 
+                                            ShowSelectButton="True" >
+                                            <ItemStyle HorizontalAlign="Center" />
+                                        </asp:CommandField>
+                                    </Columns>
+                                    </asp:GridView>
+                        </td>
+                             </tr>
+                        </table>
+                        </td>
+                    </tr>
+                </table>
+                <table id="tabHistoryCdmaList" style="text-align:center" align="center" runat="server">
+                      <tr id="trCdmaList" runat="server">
+                        <td>
+                         <table id="tabCdma_UpdDownList" style="border: solid 1px #6A84BF; text-align: center;" align="center" runat="server">
+                               <tr>
+                                    <td>
+                                    <asp:GridView ID="GvCdmaUpdDownList" runat="server" SkinID="GridViewSkin"
+                                        AutoGenerateColumns="False" onselectedindexchanging="GvCdmaUpdDownList_SelectedIndexChanging" 
+ >
+                                         <Columns>
+                                          <asp:TemplateField HeaderText="Index" >
+                                         <ItemTemplate> 
+                                            <%# (Container.DataItemIndex+1).ToString()%> 
+                                       </ItemTemplate>
+                                        </asp:TemplateField> 
+                                        <asp:BoundField DataField="FileName" HeaderText="文件名" >
+                                            <HeaderStyle Width="50%" />
+                                        </asp:BoundField>
+                                         <asp:BoundField DataField="CreateTime" HeaderText="產生時間" >
+                                            <HeaderStyle Width="50%" />
+                                        </asp:BoundField>
+                                        <asp:CommandField  HeaderText="下載" SelectText="Download" 
+                                            ShowSelectButton="True" >
+                                            <ItemStyle HorizontalAlign="Center" />
+                                        </asp:CommandField>
+                                    </Columns>
+                                    </asp:GridView>
+                                </td>
+                            </tr>
+                               
+                        </table>
+                        </td>
+                        <td>
+                          <table id="tabGfsDownList" style="border: solid 1px #6A84BF; text-align: center;" align="center" runat="server">
+                             <tr>
+                                 <td>
+                                    <asp:GridView ID="GvGfsDownList" runat="server" SkinID="GridViewSkin"
+                                        AutoGenerateColumns="False" 
+                                         onselectedindexchanging="GvGfsDownList_SelectedIndexChanging" >
+                                         <Columns>
+                                            <asp:TemplateField HeaderText="Index" >
+                                             <ItemTemplate> 
+                                                <%# (Container.DataItemIndex+1).ToString()%> 
+                                           </ItemTemplate>
+                                            </asp:TemplateField> 
+                                        <asp:BoundField DataField="FileName" HeaderText="文件名" >
+                                            <HeaderStyle Width="50%" />
+                                        </asp:BoundField>
+                                         <asp:BoundField DataField="CreateTime" HeaderText="產生時間" >
+                                            <HeaderStyle Width="50%" />
+                                        </asp:BoundField>
+                                        <asp:CommandField  HeaderText="下載" SelectText="Download" 
+                                            ShowSelectButton="True" >
+                                            <ItemStyle HorizontalAlign="Center" />
+                                        </asp:CommandField>
+                                    </Columns>
+                                    </asp:GridView>
+                        </td>
+                             </tr>
+                        </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="foot">
+                    <div id="foot_content" style="background-color: #B1C7FF">
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%" id="tblCopyRight">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <span id="ctl00_copyright_lblCopyright">Copyright &copy; 2011. BF Foxconn, Inc.</span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 系統異常請聯繫(TJ-IT/32033/32042/32039)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>  
+        </td>
+    </tr>
+</table>
+
+ </div>                                                                                                        
+</form>
+</body>
+</html>

@@ -1,0 +1,454 @@
+/**************************** VERTICAL (Default / No suffixes) *************************************************/
+.igdm_Control 
+{
+	background-color: white;
+	cursor: default;
+	float:left;
+	/*border: solid 1px;*/
+	white-space: nowrap; /* do not get text wrapped within the menu item*/
+	font-family:Verdana,Arial,Lucida Grande,Lucida Sans Unicode,Lucida,Helvetica,Sans-serif;	
+	background-image: url(images/igdm_bg_normal.jpg);
+	background-repeat: repeat-x;	
+	border: 0px none;
+}
+
+.igdm_Control ul li a
+{
+	
+	text-decoration: none;
+	font-family: Verdana;
+	font-size: 12px;
+	cursor: default; 
+	font-family:Verdana,Arial,Lucida Grande,Lucida Sans Unicode,Lucida,Helvetica,Sans-serif;	
+	display: block;
+}
+
+/*
+ Main Control CSS class when it's disabled
+*/
+.igdm_ControlDisabled
+{
+	
+}
+
+/*
+ Main control css class on hover
+*/
+.igdm_ControlHover
+{
+	
+}
+
+.igdm_ControlFocus
+{
+
+}
+
+/******************************** ROOT ELEMENTS ***************************************************/
+.igdm_MenuGroupRoot
+{
+	/*border: 1px solid #000;*/ /* puts a black border around the menu blocks */
+	background-color: #8aa; /* makes the menu blocks mint green - a bg-color MUST be included for IE to work properly! */
+	padding-left: 0px; /* stops the usual indent from ul */
+	cursor: default; /* gives an arrow cursor */
+	margin-left: 0px; /* Opera 7 final's margin and margin-box model cause problems */
+	list-style-type: none; /* removes the bullet points */
+	padding-top: 0px;
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	/* position: relative; */ /* makes the menu blocks be positioned relative to their parent menu item                                       the lack of offset makes these appear normal, but it will make a difference                                       to the absolutely positioned child blocks */
+	color: #000; /* sets the default font colour to black */
+}
+
+.igdm_MenuItemRoot
+{
+	font-size: 10px;
+	font-weight: bold;
+	color: #fff;
+	padding: 6px;
+	padding-left: 12px;		
+}
+
+.igdm_MenuItemRoot img, .igdm_MenuItemRootHover img
+{
+	clear: none;
+	margin-right: 6px;
+	text-align: left;
+	vertical-align: text-top;
+	border: 0px none;
+}
+
+
+.igdm_MenuItemRoot a span
+{
+	color: #fff;
+}
+
+.igdm_MenuItemRootHover
+{
+	font-size: 10px;
+	font-weight: bold;
+	padding: 6px;
+	padding-left: 12px;
+}
+.igdm_MenuItemRootHover a span
+{
+	color: #dedede;
+}
+
+.igdm_MenuItemRootFocus
+{
+	
+}
+
+.igdm_MenuItemRootSelected
+{
+	
+}
+
+.igdm_MenuItemRootDisabled
+{
+	
+}
+
+/********************************** END ROOT ELEMENTS *********************************************/
+
+/****************************** MenuGroup (UL) ELEMENTS (SubMenu) *********************************/
+/* UL (List) */
+.igdm_MenuGroup
+{
+	/*border: 1px solid #000;*/ /* puts a black border around the menu blocks */
+	background-color: #8aa; 
+	padding-left: 0px; /* stops the usual indent from ul */
+	cursor: default; /* gives an arrow cursor */
+	margin-left: 0px; /* Opera 7 final's margin and margin-box model cause problems */
+	list-style-type: none; /* removes the bullet points */
+	padding-top: 0px;
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	color:Black;
+}
+
+/* UL (List) */
+.igdm_MenuGroupHover
+{
+	background-color: #ffa; /* gives the active menu items a yellow background */
+	color: #000; /* makes the active menu item text black */
+}
+
+/**************************** END Menu Group Elemnts ********************************************/
+
+/************ MenuItem elements (single menu item - LI (base element) has > a > span) ***********/
+/* List Item (Li) */
+.igdm_MenuItem
+{
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	color: #333; /* sets the default font colour to white */
+	background: #FFFFF7 none repeat scroll 0 0;
+	padding: 5px;
+	font-weight: normal;
+	border: 1px solid #B0B1A7;
+	border-top: 0px none;
+}
+
+.igdm_MenuItem a span, .igdm_MenuItemHover a span 
+{
+	color: #000;
+}
+
+/* List Item (Li) that is a parent of a menu which will appear on the bottom */
+.igdm_MenuItemParentVertical
+{
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	background-color: green; /* sets the default font colour to green */
+	padding: 5px;
+	font-weight: normal;
+	border: 1px solid #B0B1A7;
+	border-top: 0px none;	
+}
+.igdm_MenuItemParentVertical a span
+{
+	color: #333;
+}
+
+/* List Item (Li) */
+.igdm_MenuItemFocus
+{
+	
+}
+
+/* List Item (Li) */
+.igdm_MenuItemParentVerticalFocus
+{
+	
+}
+
+/* List Item (Li) */
+.igdm_MenuItemHover
+{
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	color: #333; /* sets the default font colour to white */
+	background: #E2EAED none repeat scroll 0 0;
+	font-weight: normal;
+	padding: 5px;
+	border: 1px solid #B0B1A7;
+	border-top: 0px none;	
+}
+
+/* List Item (Li) */
+.igdm_MenuItemParentVerticalHover
+{
+	
+}
+
+/* List Item (Li) */
+.igdm_MenuItemDisabled
+{
+
+}
+
+/* List Item (Li) */
+.igdm_MenuItemParentVerticalDisabled
+{
+
+}
+
+/* List Item (Li) */
+.igdm_MenuItemSelected
+{
+	
+}
+
+
+/* List Item (Li) */
+.igdm_MenuItemParentVerticalSelected
+{
+	
+}
+
+/************************************************************************************************\
+|********************** Horizontal / Suffixed with "Horizontal" *********************************|
+\************************************************************************************************/
+.igdm_ControlHorizontal
+{
+	background-color: white;
+	cursor: default;
+	float:left;
+	/*border: solid 1px;*/
+	white-space: nowrap; /* do not get text wrapped within the menu item*/
+	font-family:Verdana,Arial,Lucida Grande,Lucida Sans Unicode,Lucida,Helvetica,Sans-serif;	
+	background-image: url(images/igdm_bg_normal.jpg);
+	background-repeat: repeat-x;	
+	border: 0px none;
+}
+
+.igdm_ControlHorizontal ul li a
+{
+	
+	text-decoration: none;
+	font-family: Verdana;
+	font-size: 12px;
+	cursor: default; 
+	font-family:Verdana,Arial,Lucida Grande,Lucida Sans Unicode,Lucida,Helvetica,Sans-serif;	
+	display: block;
+}
+
+/*
+ Main Control CSS class when it's disabled
+*/
+.igdm_ControlDisabledHorizontal
+{
+	
+}
+
+/*
+ Main control css class on hover
+*/
+.igdm_ControlHoverHorizontal
+{
+	
+}
+
+.igdm_ControlFocusHorizontal
+{
+
+}
+
+/************** End Main Control Definitions ********************/
+
+/******************************** ROOT ELEMENTS - Group and Item ***************************************/
+/** Definitions for Root elements should be always before definitions of subElements **/
+.igdm_MenuGroupRootHorizontal
+{
+	/*border: 1px solid #000;*/ /* puts a black border around the menu blocks */
+	background-color: #8aa; /* makes the menu blocks mint green - a bg-color MUST be included for IE to work properly! */
+	padding-left: 0px; /* stops the usual indent from ul */
+	cursor: default; /* gives an arrow cursor */
+	margin-left: 0px; /* Opera 7 final's margin and margin-box model cause problems */
+	list-style-type: none; /* removes the bullet points */
+	padding-top: 0px;
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	/* position: relative; */ /* makes the menu blocks be positioned relative to their parent menu item                                       the lack of offset makes these appear normal, but it will make a difference                                       to the absolutely positioned child blocks */
+	color: #000; /* sets the default font colour to black */
+}
+
+.igdm_MenuItemRootHorizontal
+{
+	float: left; /* Required to implement horizontal orientation of menu */
+	font-size: 10px;
+	font-weight: bold;
+	color: #fff;
+	padding: 6px;
+	padding-left: 12px;		
+}
+
+.igdm_MenuItemRootHorizontal img, .igdm_MenuItemRootHoverHorizontal img
+{
+	clear: none;
+	margin-right: 6px;
+	text-align: left;
+	vertical-align: text-top;
+	border: 0px none;
+}
+
+
+.igdm_MenuItemRootHorizontal a span
+{
+	color: #fff;
+}
+
+.igdm_MenuItemRootHoverHorizontal
+{
+	float: left; /* Required to implement horizontal orientation of menu */
+	font-size: 10px;
+	font-weight: bold;
+	padding: 6px;
+	padding-left: 12px;
+}
+.igdm_MenuItemRootHoverHorizontal a span
+{
+	color: #dedede;
+}
+
+.igdm_MenuItemRootFocusHorizontal
+{
+	float: left; /* Required to implement horizontal orientation of menu */
+}
+
+.igdm_MenuItemRootSelectedHorizontal
+{
+	float: left; /* Required to implement horizontal orientation of menu */	
+}
+
+.igdm_MenuItemRootDisabledHorizontal
+{
+	float: left; /* Required to implement horizontal orientation of menu */	
+}
+
+/********************************** END ROOT ELEMENTS *********************************************/
+
+/****************************** MenuGroup (UL) ELEMENTS (SubMenu) *********************************/
+/* UL (List) */
+.igdm_MenuGroupHorizontal
+{
+	/*border: 1px solid #000;*/ /* puts a black border around the menu blocks */
+	background-color: #8aa; 
+	padding-left: 0px; /* stops the usual indent from ul */
+	cursor: default; /* gives an arrow cursor */
+	margin-left: 0px; /* Opera 7 final's margin and margin-box model cause problems */
+	list-style-type: none; /* removes the bullet points */
+	padding-top: 0px;
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	color:Black;
+}
+
+/* UL (List) */
+.igdm_MenuGroupHoverHorizontal
+{
+	background-color: #ffa; /* gives the active menu items a yellow background */
+	color: #000; /* makes the active menu item text black */
+}
+
+
+/**************************** END Menu Group Elemnts ********************************************/
+
+/************ MenuItem elements (single menu item - LI (base element) has > a > span) ***********/
+/* List Item (Li) */
+.igdm_MenuItemHorizontal
+{
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	color: #333; /* sets the default font colour to white */
+	background: #FFFFF7 none repeat scroll 0 0;
+	padding: 5px;
+	font-weight: normal;
+	border: 1px solid #B0B1A7;
+	border-top: 0px none;
+}
+
+.igdm_MenuItemHorizontal a span, .igdm_MenuItemHoverHorizontal a span 
+{
+	color: #000;
+}
+
+/* List Item (Li) that is a parent of a menu which will appear on the bottom */
+.igdm_MenuItemParentHorizontal
+{
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	background-color: green; /* sets the default font colour to green */
+	padding: 5px;
+	font-weight: normal;
+	border: 1px solid #B0B1A7;
+	border-top: 0px none;	
+}
+.igdm_MenuItemParentHorizontal a span
+{
+	color: #333;
+}
+
+/* List Item (Li) */
+.igdm_MenuItemFocusHorizontal
+{
+	float: left; /* Required to implement horizontal orientation of menu */	
+}
+
+/* List Item (Li) */
+.igdm_MenuItemParentHorizontalFocus
+{	
+	float: left; /* Required to implement horizontal orientation of menu */
+}
+
+/* List Item (Li) */
+.igdm_MenuItemHoverHorizontal
+{
+	margin: 0px; /* Opera 7 puts large spacings between li elements */
+	color: #333; /* sets the default font colour to white */
+	background: #E2EAED none repeat scroll 0 0;
+	font-weight: normal;
+	padding: 5px;
+	border: 1px solid #B0B1A7;
+	border-top: 0px none;	
+}
+
+/* List Item (Li) */
+.igdm_MenuItemParentHorizontalHover
+{
+}
+
+/* List Item (Li) */
+.igdm_MenuItemDisabledHorizontal
+{
+}
+
+/* List Item (Li) */
+.igdm_MenuItemParentHorizontalDisabled
+{
+}
+
+/* List Item (Li) */
+.igdm_MenuItemSelectedHorizontal
+{
+}
+
+
+/* List Item (Li) */
+.igdm_MenuItemParentHorizontalSelected
+{
+}

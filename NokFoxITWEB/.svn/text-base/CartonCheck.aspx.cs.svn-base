@@ -1,0 +1,257 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+
+public partial class CartonCheck : System.Web.UI.Page
+{
+    static string dataBaseType = "";
+    static string readConnection = "";
+    static string writeConnection = "";
+    static string prgType = "";
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            if (Session["Param1"] != null)                  // 1 表示數據庫 I/O
+            {
+                dataBaseType = Session["Param2"].ToString();  // Oracle
+                readConnection = Session["Param3"].ToString();  // 讀資料庫
+                writeConnection = Session["Param4"].ToString();   // 寫資料庫
+                prgType = Session["Param5"].ToString(); // menu or auto 
+            }
+            else
+            {
+                dataBaseType = "oracle";  // Oracle
+                readConnection = ConfigurationManager.AppSettings["L8StandByConnectionString"].ToString();// 讀資料庫
+                writeConnection = ConfigurationManager.AppSettings["bjl6testConnectionString"].ToString();// 寫資料庫
+                prgType = "menu "; // menu or auto 
+            }
+            lblCarton_QuantityCounts.Visible = false;
+            lblNoEualCounts.Visible = false;
+            lblEqualCount.Visible = false;
+            lblEqualCountInFo.Visible = false;
+            txtStartDate.Text = DateTime.Now.AddDays(-5).ToString("yyyy/MM/dd");
+            txtEndDate.Text = DateTime.Now.ToString("yyyy/MM/dd");
+            string ddlDNSql = "SELECT DISTINCT INVOICE_NUMBER FROM CMCS_SFC_PACKING_LINES_ALL ORDER BY INVOICE_NUMBER DESC";
+            DDLBindData(ddlDN, ddlDNSql);
+        }
+    }
+    /// <summary>
+    /// 綁定DN
+    /// </summary>
+    /// <param name="ddlBind"></param>
+    /// <param name="ddlSql"></param>
+    protected void DDLBindData(DropDownList ddlBind, string ddlSql)
+    {
+        try
+        {
+            DataTable dtBind = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, ddlSql);
+            if (dtBind.Rows.Count > 0)
+            {
+                ddlBind.Items.Clear();
+                ddlBind.DataSource = dtBind;
+                ddlBind.DataValueField = dtBind.Columns[0].Caption;
+                ddlBind.DataTextField = dtBind.Columns[0].Caption;
+                ddlBind.DataBind();
+                ListItem li = new ListItem();
+                li.Text = "";
+                ddlBind.Items.Insert(0, li);
+            }
+        }
+        catch (Exception ex)
+        {
+            Response.Write(ex.ToString());
+        }
+    }
+    /// <summary>
+    /// 在頁面顯示出caston對應的數量
+    /// </summary>
+    public void BindGridView()
+    {
+        string queryCartonSql = string.Empty;
+        queryCartonSql = ReturnSql();
+        if (queryCartonSql == "DateFomartIsWrong!")
+        {
+            lblCarton_QuantityCounts.Visible = false;
+            lblNoEualCounts.Visible = false;
+            lblEqualCount.Visible = false;
+            lblEqualCountInFo.Visible = false;
+            gvCartonCheck.DataSource = null;
+            gvCartonCheck.DataBind();
+            Page.RegisterStartupScript("aa", "<script>alert('輸入的日期不正確，請輸入正確格式的日期或選擇日期！');</script>");
+            return;
+        }
+        if (queryCartonSql == "DNIsWrong")
+        {
+            lblCarton_QuantityCounts.Visible = false;
+            lblNoEualCounts.Visible = false;
+            lblEqualCount.Visible = false;
+            lblEqualCountInFo.Visible = false;
+            gvCartonCheck.DataSource = null;
+            gvCartonCheck.DataBind();
+            Page.RegisterStartupScript("aa", "<script>alert('此DN不符合要求！');</script>");
+            return;
+        }
+        DataTable dt = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, queryCartonSql);
+        if (dt.Rows.Count == 0)
+        {
+            if (rboCondition.SelectedValue == "1")
+            {
+                lblCarton_QuantityCounts.Visible = false;
+                lblNoEualCounts.Visible = false;
+                lblEqualCount.Visible = false;
+                lblEqualCountInFo.Visible = false;
+                gvCartonCheck.DataSource = null;
+                gvCartonCheck.DataBind();
+                Page.RegisterStartupScript("aa", "<script language=javascript>alert('Carton對應的出貨數量一致!');</script>");
+            }
+            if (rboCondition.SelectedValue == "2")
+            {
+                QuantityEqual();
+                lblCarton_QuantityCounts.Visible = false;
+                lblNoEualCounts.Visible = false;
+                lblEqualCount.Visible = true;
+                lblEqualCountInFo.Visible = true;
+            }
+            return;
+        }
+        lblCarton_QuantityCounts.Visible = true;
+        lblNoEualCounts.Visible = true;
+        lblEqualCount.Visible = false;
+        lblEqualCountInFo.Visible = false;
+        lblNoEualCounts.Text = dt.Rows.Count.ToString();
+        Session["queryCarton"] = dt;
+        gvCartonCheck.DataSource = dt;
+        gvCartonCheck.DataBind();
+    }
+    /// <summary>
+    /// DN對應的Carton數量都相等時的處理
+    /// </summary>
+    public void QuantityEqual()
+    {
+        string queryDNEqualSql = "SELECT INVOICE_NUMBER,INTERNAL_CARTON,QUANTITY,QUANTITY AS SHIP_TO_QUANTITY,SHIP_DATE" +
+                                 " FROM (SELECT DISTINCT * FROM CMCS_SFC_PACKING_LINES_ALL WHERE INVOICE_NUMBER='" + txtDN.Text.Trim() + "')";
+        DataTable dtDN = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, queryDNEqualSql);
+        int totalCount = 0;
+        for (int i = 0; i < dtDN.Rows.Count; i++)
+        {
+            totalCount += Convert.ToInt32(dtDN.Rows[i][2].ToString());
+        }
+        Session["queryCarton"] = dtDN;
+        gvCartonCheck.DataSource = dtDN;
+        gvCartonCheck.DataBind();
+        lblEqualCountInFo.Text = totalCount.ToString();
+    }
+    /// <summary>
+    /// DN作為查詢條件和不作為查詢條件時的sql語句
+    /// </summary>
+    /// <returns></returns>
+    public string ReturnSql()
+    {
+        string querySql = string.Empty;
+        querySql = "SELECT * FROM (SELECT  DISTINCT a.INVOICE_NUMBER,a.INTERNAL_CARTON," +
+                  " a.QUANTITY,COUNT(b.IMEI) AS SHIP_TO_QUANTITY,a.SHIP_DATE" +
+                  " FROM ( SELECT DISTINCT INVOICE_NUMBER,INTERNAL_CARTON, QUANTITY,SHIP_DATE FROM CMCS_SFC_PACKING_LINES_ALL) a," +
+                  " (SELECT DISTINCT CARTON_NO,IMEI,STATUS FROM  SHP.CMCS_SFC_SHIPPING_DATA) b" +
+                  " WHERE a.INTERNAL_CARTON=b.CARTON_NO AND a.INTERNAL_CARTON IS NOT NULL AND b.STATUS='已出庫'" +
+                  " GROUP BY a.INVOICE_NUMBER,a.INTERNAL_CARTON,a.QUANTITY,a.SHIP_DATE) c" +
+                  " WHERE c.QUANTITY !=c.SHIP_TO_QUANTITY";
+        if (rboCondition.SelectedValue == "1")
+        {
+            DateTime dateTime1;
+            DateTime dateTime2;
+            string beginDate = txtStartDate.Text.Trim();
+            string endDate = txtEndDate.Text.Trim();
+            if (DateTime.TryParse(beginDate, out dateTime1) && DateTime.TryParse(endDate, out dateTime2))
+            {
+                beginDate = dateTime1.ToString("yyyy/MM/dd");
+                endDate = dateTime2.ToString("yyyy/MM/dd");
+            }
+            else
+            {
+                return "DateFomartIsWrong!";
+            }
+            int beginDateValue = 0;
+            int endDateValue = 0;
+            if (int.TryParse(txtStartDate.Text.Trim().Replace("/", ""), out beginDateValue)
+                          && int.TryParse(txtEndDate.Text.Trim().Replace("/", ""), out endDateValue))
+            {
+                if (beginDateValue > endDateValue)
+                {
+                    txtStartDate.Text = endDate;
+                    txtEndDate.Text = beginDate;
+                    beginDate = txtStartDate.Text.Trim();
+                    endDate = txtEndDate.Text.Trim();
+                }
+            }
+            querySql += " AND to_char( c.SHIP_DATE,'yyyy/MM/dd') between '" + beginDate + "' and '" + endDate + "'";
+        }
+        if (rboCondition.SelectedValue == "2")
+        {
+            string queryDN = "SELECT DISTINCT INVOICE_NUMBER FROM CMCS_SFC_PACKING_LINES_ALL a," +
+                            "SHP.CMCS_SFC_SHIPPING_DATA b" +
+                            " WHERE a.INTERNAL_CARTON=b.CARTON_NO AND a.INTERNAL_CARTON IS NOT NULL AND b.STATUS='已出庫'" +
+                            " AND INVOICE_NUMBER='" + txtDN.Text.Trim() + "'";
+            DataTable dtableDN = DataBaseOperation.SelectSQLDT(dataBaseType, readConnection, queryDN);
+            if (dtableDN.Rows.Count == 0)
+            {
+                return "DNIsWrong";
+            }
+            querySql += " AND INVOICE_NUMBER='" + txtDN.Text.Trim() + "'";
+        }
+
+        querySql += " ORDER BY to_char(c.SHIP_DATE,'yyyy/MM/dd') DESC, c.INVOICE_NUMBER,c.INTERNAL_CARTON";
+        return querySql;
+    }
+    protected void btnQuery_Click(object sender, EventArgs e)
+    {
+        gvCartonCheck.PageIndex = 0;
+        try
+        {
+            BindGridView();
+        }
+        catch (Exception ex)
+        {
+            Response.Write(ex.ToString());
+        }
+    }
+    protected void gvCartonCheck_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowIndex != -1)
+        {
+            e.Row.Cells[0].Text = (gvCartonCheck.PageIndex * gvCartonCheck.PageSize + e.Row.RowIndex + 1).ToString();
+        }
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            for (int i = 0; i < e.Row.Cells.Count; i++)
+            {
+                e.Row.Cells[i].Attributes.Add("nowrap", "true");
+                if (e.Row.Cells[i].Text == "&nbsp;")
+                {
+                    e.Row.Cells[i].Text = "";
+                }
+            }
+            e.Row.Attributes.Add("onMouseOver", "Color=this.style.backgroundColor;this.style.backgroundColor='#EEFFCC'");
+            e.Row.Attributes.Add("onMouseOut", "this.style.backgroundColor=Color;");
+        }
+    }
+    protected void gvCartonCheck_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        gvCartonCheck.PageIndex = e.NewPageIndex;
+        gvCartonCheck.DataSource = Session["queryCarton"];
+        gvCartonCheck.DataBind();
+    }
+    protected void ddlDN_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        txtDN.Text = ddlDN.SelectedValue.Trim();
+    }
+}

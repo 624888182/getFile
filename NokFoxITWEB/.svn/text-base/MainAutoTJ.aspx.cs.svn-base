@@ -1,0 +1,936 @@
+﻿using System.Globalization;
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using Economy.BLL;
+using Economy.Publibrary;
+using SCM.GSCMDKen;
+// using Prilibrary.FsplitNew;
+using System.Data.SqlClient;
+using System.IO;
+using System.Windows.Forms;
+using System.Threading;
+using EconomyUser;
+using SFC.TJWEB;
+using System.Data.OracleClient;
+using System.Collections.Generic;
+using System.Linq;
+
+
+public partial class Main : System.Web.UI.Page
+{
+  //  public static string NetDBPath = "Data Source=10.186.19.104;Initial Catalog=FMRPB1;User ID =sa;Password=Sa123456;Timeout=120;";// ConfigurationManager.AppSettings["DefaultConnectionString"];
+  //  public static string LocDBPath = "Data Source=127.0.0.1;Initial Catalog=FMRPB1;User ID =sa;Password=sa123456;Timeout=120;";// ConfigurationManager.AppSettings["DefaultConnectionString"];
+  //  public static string RunDBPath = ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; //ConnectionString"]; //LocDBPath;
+  //  static string WebSrverDir = "http://localhost/WebExe/Main.aspx";
+  //  public static string NetDB1     = "Data Source=10.83.16.96;Initial Catalog=SCM;User ID =sa;Password=Sa123456;Timeout=120;";
+  //  public static string NetDB2     = "Data Source=10.83.16.74;Initial Catalog=SCM;User ID =sa;Password=Sa123456;Timeout=120;";
+  //  public static string NetDB3     = "Data Source=10.186.33.41;Initial Catalog=SCM;User ID =sa;Password=Sa123456;Timeout=120;";
+      static string NetSqlDB4  = ConfigurationManager.AppSettings["Sql221String"]; 
+  //  public static string NetDB86 = ConfigurationManager.AppSettings["Sql86String"]; // "Data Source=10.186.171.86;Initial Catalog=MHReckon;User ID =sa;Password=Sa123456;Timeout=120;";    
+      static string OraL10DBAMain = "";      // 76  Oracle Unix
+      static string OraL10DBAStandBy = "";    // 211 Oracle Unix
+      static string OraL6DBAMain = "";        // 214 Oracle Unix 
+      static string OraL6DBAStandBy = "";     // 
+      static string OraWebCTLDBA = "";        // 221 Oracle Window
+      static string SqlWebCTLDBA = "";        // 221 Sql Windoq 
+      string SiteName = "TJSFC";
+
+    ClassLibrarySCM1.Class1 LibSCM1Pointer = new ClassLibrarySCM1.Class1();
+    ClassLibraryUSR1.Class1 LibUSR1Pointer = new ClassLibraryUSR1.Class1();
+  //  ShipPlanlib ShipPlanlibPointer = new ShipPlanlib();
+    UsrCtllib   UsrCtllibPointer   = new UsrCtllib();
+  //  Pictlib     PictlibPointer     = new Pictlib();
+    FPubLib     FPubLibPointer     = new FPubLib();
+  //  FSplitlib   FSplitlibPointer   = new FSplitlib();
+  //  FsplitNew   FsplitNewPointer   = new FsplitNew();
+    Jinvlib     JinvlibPointer     = new Jinvlib();
+    AutoUpload  AutoUploadPointer  = new AutoUpload();
+    CreateFile  CreateFilePointer  = new CreateFile();
+    TJLibZhu    TJLibZhuPointer    = new TJLibZhu();
+    TJSY        TJSYPointer        = new TJSY();
+    DataDN_3B2  DataDN_3B2Pointer  = new DataDN_3B2();
+    IntelSNTrax IntelSNTraxPointer = new IntelSNTrax();
+    UpdSendToCust UpdSendToCustPointer = new UpdSendToCust();
+    GetSAP3B2   GetSAP3B2Pointer = new GetSAP3B2();
+    CreateDN_3B2 CreateDN_3B2Pointer = new CreateDN_3B2();
+    GetSapBOMINVData GetSapBOMINVDataPointer = new GetSapBOMINVData();
+    TGETWO2      TGETWO2Pointer = new TGETWO2();
+    CreateDNList CreateDNListPointer = new CreateDNList();
+    GetSharpImeiList GetSharpImeiListPointer = new GetSharpImeiList();
+    CreatSendDNListFile CreatSendDNListFilePointer = new CreatSendDNListFile();
+    DeLinkPidlib DeLinkPidlibPointer = new DeLinkPidlib();
+    DeLinkPidlib4 DeLinkPidlib4Pointer = new DeLinkPidlib4();
+    ChiMeilib  ChiMeilibPointer = new ChiMeilib();
+    
+    // SCMMain SCMMainPointer = new SCMMain();
+    static string Username, FPassword, SPassword, PSDB, PSPath, PSType, LoginFlag;
+    static string PSFlag, Acttype;
+  //  DbAccessing myAccessing = new DbAccessing();
+   //  protected string CurrDay = DateTime.Today.ToString("yyyyMMdd");  // 20100320
+   // protected string Currtime = DateTime.Now.ToString("yyyyMMddHHmmssmm");
+   // public static int swflag1 = 0, swflag2 = 0, swflag3 = 0;
+   // public static int arrayPicLong = 5000, DataPicLong = 0, DataNewLong, arrayPicPriLong=5000, DataPicPriLong=0;
+   // public static string[,] arrayPic = new string[arrayPicLong + 1, 20 + 1];
+   // public static string[,] arrayPicPri = new string[arrayPicPriLong + 1, 20 + 1];
+    public string VUrl;
+    static string ParaAutoflag = "";
+    static int Aautorunflag = 0, Aerrcnt = 0;
+    static int Arunstatus = 0, ASysCount = 1;
+    static int cnt1=1, cnt2=1, firstcnt=0;
+    static int Aautoctlflag = 1; // Auto Control
+    static int AautoCount = 1;   // Auto Control
+    protected string oraDba = "oracle";
+    static string IntelReadDB = "L10IntelConnectingString", IntelWriDB = "L10IntelConnectingString", MotStandDB = "L8StandByConnectionString";
+    static string IntelSFCReadDB = "L10IntelConnectingString";
+    string tmpstr = "";
+    static string ITSys = "SHARP";
+    // protected string ProgramParam = "N";
+    static int ArrMax = 200;
+    static string[] ReadTxtArray = new string[ArrMax];
+    
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        string r1 = "", t11="";
+        int    in1 = 0;
+
+        if (!Page.IsPostBack)
+        {
+            string t1 = "", t2 = "", t3 = "", t4 = "", t5 = "", t6 = "", t7 = "", t8 = "", t9 = "";
+            // ParaAutoflag = Request["Autoflag"];  //   http://localhost:1328/IDMMot/MainSCM.aspx?Autoflag=1  1000=1Sec
+            InitVar();
+            // DataPicLong = Convert.ToInt32(PictlibPointer.GetPictByUserName(Username, arrayPic, arrayPicLong, NetSqlDB4, ref DataPicLong, ref DataNewLong));
+            TextBox1.Focus();
+            TextBox4.Text = " TJ IDM Web Server http://10.186.171.221/TJIDMWeb/MainAuto.aspx ";
+            Timer1.Enabled = false;
+            t11 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "FirstTime", "", "", "", NetSqlDB4, "sql");         // 10 Code
+            IntelReadDB = ReadParaTxt("WebReadParam.txt", "10301"); //  暫用 L8 StandBy  ReadParaTxt("WebReadParam.txt", "10201");
+            IntelWriDB = ReadParaTxt("WebReadParam.txt", "10202");
+            IntelSFCReadDB = ReadParaTxt("WebReadParam.txt", "10301");
+
+            r1 = ReadParaTxt("WebReadParam.txt", "10001");
+            //// Auto Only
+
+            //GetSAP3B2 getsap = new GetSAP3B2();
+            //getsap.GetONE_DN("0080167718"); 
+            string Loc1 = "";
+            GetTextFile(ref ReadTxtArray, ArrMax, "2");  // "1" Org, "2" Decode by Pcode "23101" 
+            Loc1 = UsrCtllibPointer.GetTextByCode(ref ReadTxtArray, ArrMax, "10001", "1");  // "1" 不傳換
+            Loc1 = UsrCtllibPointer.GetTextBySite(ref ReadTxtArray, ArrMax, SiteName, "1", ref OraL10DBAMain, ref OraL10DBAStandBy, ref OraL6DBAMain, ref OraL6DBAStandBy, ref OraWebCTLDBA, ref SqlWebCTLDBA, ref t1, ref t2, ref t3, ref t4, ref t5, ref t6, ref t7, ref t8);  // "1" 不傳換
+            Loc1 = UsrCtllibPointer.CheckServer(ref OraL10DBAMain, ref OraL10DBAStandBy, ref OraL6DBAMain, ref OraL6DBAStandBy, ref OraWebCTLDBA, ref SqlWebCTLDBA, ref t1, ref t2, ref t3, ref t4, ref t5, ref t6, ref t7, ref t8);  // "1" 不傳換
+            if (Convert.ToInt32(Loc1) != 0) 
+            {
+                Response.Write("<script>alert('Open Table Error ')</script>");
+                TextBox4.Text = "Open Table Error " + t1; 
+            }
+            // Response.Write("<script>alert(' Open Table Error， Try Again !  '" + Loc1 + "' ')</script>");
+            //Response.Write("<script>alert('Open Table Error ')</script>" + Loc1); 
+
+            
+
+            if (Aautoctlflag == 1)
+            {
+                
+                TextBox4.Text = "系統自動啟動 " + ASysCount.ToString();
+                firstcnt++;
+                Aautoctlflag = Aautoctlflag;
+                t11 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "FirstTimeMainloop", "", "", "", NetSqlDB4, "sql");         // 10 Code
+                tmpstr = MainLoop();
+                Timer1.Enabled = true;
+            }
+
+
+        }
+        
+              
+
+        if (Aautoctlflag == 1)
+        {
+            Timer1.Enabled = true;
+            AautoCount++;
+        }
+        // Response.Write("<script>window.open( 'ShowPict.aspx','one','width=500,height=200,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=220,left=350');</script>");//
+        // sw3 = MainLoop();
+        
+
+    }   // end Page_load;
+
+  
+
+    protected string MainLoop()
+    {
+        int i = 3;
+        string s1 = "", Ret1 = "";
+        Timer1.Enabled = false;
+        TextBox4.Text = "系統自動啟動" + "IDMMainLoop" + ASysCount.ToString();
+        string t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "MainLoop", "", "", "", NetSqlDB4, "sql");         // 10 Code
+        // Test 20130320 
+        AutoMotProc();
+        // AutoIntelProc();
+        // AutoSharpProc();
+        // AutoGooProc();
+        AutoTJL6Proc();  // Get Sap Data Only
+        AutoTJL6ToL8PIDProc();
+        AutoTJL6ToL8PIDProcCheck();
+        AutoTJL6ToL8PIDProcCopyIMEI();
+        Ret1 = DeLinkPidlib4Pointer.L6ToL8SFCSFIS1C_MODEL_DESC_T("1", "oracle", OraL6DBAMain, OraL10DBAMain);
+        // AutoChieMeiProc();  // 20130330
+        Timer1.Enabled = true;
+        return ("");        
+     
+    }
+  
+
+
+    private void InitVar()
+    {
+       Username="";
+       FPassword="";
+       SPassword="";
+       PSDB="";
+       PSPath="";
+       PSType="";
+       PSFlag="N";
+       Acttype = "C";
+       LoginFlag = "N";
+       Session["SUsername"] = "web";
+       Session["SReadFlag"] = "";
+    
+    }  // initvar
+
+protected void  Button1_Click(object sender, EventArgs e)
+{
+    ChkUsrPS();
+}
+
+public void ChkUsrPS()
+{
+    int FLong = 0;
+    String RPSStr = "";
+    Username = TextBox1.Text;
+    FPassword = TextBox2.Text;
+    string s1="",s2="",s3="",s4="";
+    char[] Rtrschar = new char[20];
+   
+    Acttype = "U";
+
+    // Response.Redirect("http://localhost/test/Index.aspx");
+    // Response.Redirect("~/InfoShare/Index.aspx");   
+
+    LoginFlag = "Y";
+    Button2.Visible = true;
+    Session["SUsername"] = "";
+
+    
+    if ((Username == "") || (FPassword == "")) s1 = "-1";
+    string tmpsql = "select * from Fuser1 where UserID = '" + Username + "' ";
+    DataSet tmpds = LibSCM1Pointer.GetDataByDataPath(tmpsql, NetSqlDB4);
+    if ((tmpds.Tables.Count <= 0) || (s1 == "-1") || (FPassword != tmpds.Tables[0].Rows[0]["PassWD"].ToString()))
+    {
+        LoginFlag = "N";
+        Button2.Visible = false;
+        TextBox1.Focus();
+        Response.Write("<script>alert('Open Users Fail ! You are not the Users! Pls Entry Again ! ')</script>");
+        return;  
+    }
+    else
+    {
+        s2 = (tmpds.Tables[0].Rows.Count).ToString();
+        s3 = tmpds.Tables[0].Rows[0]["PassWD"].ToString();
+        s4 = tmpds.Tables[0].Rows[0]["CheckSumNum"].ToString();          
+    }
+
+    Button2.Visible = true;
+    Session["SUsername"] = Username;
+    // DataPicLong = Convert.ToInt32(PictlibPointer.GetPictByUserName(Username, arrayPic, arrayPicLong, NetSqlDB4, ref DataPicLong, ref DataNewLong));
+    // DataPicPriLong = Convert.ToInt32(PictlibPointer.GetPictByPriUserName(Username, arrayPicPri, arrayPicPriLong, NetSqlDB4, ref DataPicPriLong, ref DataNewLong));
+           
+    // Session["real_name"] = "OK";
+    // Response.Redirect("main.aspx");          
+}   // end ChkUsrPS()
+
+
+protected void Button2_Click(object sender, EventArgs e)  // Modify 
+{
+    Timer1.Enabled = false;
+    string s1 = "";
+
+    if (Username == "kenlin") LoginFlag = "Y";
+
+    if (LoginFlag != "Y") return;
+    // tCheckSum = LibUSR1Pointer.Usr1ConvertPS(Username, FPassword);
+   
+    s1 = UsrCtllibPointer.ChkUsr(Username, FPassword, SPassword, PSDB, NetSqlDB4, "U");
+    
+    if ( s1 == "-1" ) Response.Write("<script>alert('Modify Password error 失敗，請稍后重試！')</script>");
+
+}
+
+protected void Button3_Click(object sender, EventArgs e)
+{
+    string s1="";
+
+    if (LoginFlag != "Y") return;
+    
+    // 會先執行完本 SubRoutine 再 Run 此網站
+    Response.Write("<script>window.open( '"+TextBox3.Text+"','one','width=500,height=200,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=220,left=350');</script>");
+    // Response.Redirect(TextBox3.Text);
+    // Response.Redirect(WebSrverDir);
+}
+
+protected void TextBox2_TextChanged(object sender, EventArgs e)
+{
+    FPassword = TextBox2.Text;
+    // ChkUsrPS(); 
+}
+
+public string tChkUsr(string tUsername, string tFPassword, string tSPassword, string tPSDB, string tPSPath, string tPSType)
+{
+
+    string rets = ""; 
+
+    return (rets);
+}  // end ChkUsr
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Encl String Algorithm : 
+// 1. Input string  default for (v1 = 0; v1 < 20; v1++) trschar[v1] = Convert.ToChar((v1*v1+47) % 255 );
+//    Put Password in this array from start
+// 2. encchar string default  encchar[v1] = Convert.ToChar((v1*v1+4703) % 255 );
+// 3. OutPut string  rchar = trschar[v1] ^= encchar[v1]; 
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+protected void Button4_Click(object sender, EventArgs e)
+{
+    Timer1.Enabled = false;
+    string aa;
+    aa = (Session["SUsername"]).ToString();
+
+    // Response.Write("<script>window.open( 'Fusrm1.aspx','one','width=1000,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    Response.Write("<script>window.open( 'Fusrm1.aspx?SUsername="+ Username +"','one','width=1000,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+  
+}
+
+protected void tvManuTree_SelectedNodeChanged(object sender, EventArgs e)
+{
+
+}
+protected void Button7_Click(object sender, EventArgs e)
+{
+    return;
+    Response.Redirect("~/InfoShare/Index.aspx");
+    // Response.Write("<script>window.open( '~/InfoShare/Index.aspx','one','width=800,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // ImageButton1.ImageUrl = "~/Picture/PictS1.jpg";
+    // ImageButton1.ImageUrl = "~/Picture/" + arrayPict[v3, 2]; 
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+//  1000  for 1 second,  //  60000 for 1 minute, 1800000 for 30 minute
+//  
+protected void Timer1_Tick(object sender, EventArgs e)
+{
+    string s1 = "";
+    TextBox4.Text = "Timer Interrupt";
+    ASysCount++;
+    //Aautoctlflag = Aautoctlflag; //Auto only
+    string t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "TimerINT", "", "", "", NetSqlDB4, "sql");         // 10 Code
+     
+    // return; // not auto only
+
+    // Aautoctlflag = Aautoctlflag;
+    AautoCount++;
+    if (Aautoctlflag == 1)  // boot automatic runnning
+    {
+        if (Arunstatus == 0) // go to running
+        {
+            t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", AautoCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "TimeINTGOToMainloop", "", "", "", NetSqlDB4, "sql");  // 10 Code
+            s1 = MainLoop();
+        }
+        else
+            Aerrcnt++;
+    }
+     
+    if (Aerrcnt > 2)
+    {
+        Aerrcnt = 0;
+        Arunstatus = 0;
+    }
+
+    return;
+    // if ( ASysCount >= 1 )  // 一次 20 分, 3*20=60 次 60*20=1200/60=20 Hr 
+    //      Response.Write("<SCRIPT   LANGUAGE='JavaScript'>window.opener=null;window.close();</SCRIPT> "); // close system
+   
+   
+
+}
+
+///////////////////////////////////////////////////////////////////////
+protected void Button8_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'ShowVideo.aspx','one','width=800,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // Response.Write("<script>window.open( 'TestVideo.aspx','one','width=800,height=500,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // VUrl = "Video/arrival_transit.wmv";
+}
+protected void Button5_Click(object sender, EventArgs e)
+{
+
+    //Response.Write("<script>window.open( 'ShowPict.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+  
+}
+protected void btnLogout_Click(object sender, EventArgs e)
+{
+    Response.Write("<SCRIPT   LANGUAGE='JavaScript'>window.opener=null;window.close();</SCRIPT> ");
+}
+protected void Button34_Click(object sender, EventArgs e)
+{
+    // Response.Write("<script>window.open( 'FMers1.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    //Aautorunflag=1;   // Automatic running
+    //Arunstatus=0;     // currstatus
+    //runstep=0;       // run step
+    //TextBox4.Text  = "Start Running Program from Generaete 4A3_Detail_PNOneSet" + ASysCount.ToString();
+    //Timer1.Interval = 30000;
+    //Timer1.Enabled = true;
+    // string s1 = MainLoop();
+}
+protected void Button35_Click(object sender, EventArgs e)
+{
+    Aautorunflag = 0;   // Automatic running
+    Arunstatus = 0;     // currstatus
+  //  runstep = 0;       // run step
+
+    Timer1.Enabled = false;
+    TextBox4.Text = "Clear Loop flag" + ASysCount.ToString();
+}
+protected void Button37_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'FNspl1.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+protected void Button39_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'Fndvf1.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    // Timer1.Enabled = true;
+}
+protected void Button20_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "Monitor_TJSFC", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'Monitor_TJSFC/Monitor_TJSFC.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+  
+}
+protected void Button19_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'Finvm1.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+protected void Button21_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'TestStandByInsert.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+
+protected void Button42_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //Response.Write("<script>window.open( 'FNspl6.aspx','one','width=900,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+   
+}
+protected void Button41_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //
+    //string retstr = FPubLibPointer.PubWri_MessLog("CopyData", "1", "2", "3", "4", "5", "6", "7", "8", NetDB86, "sql");
+    //
+    //if (FPassword.ToLower() == "web") 
+    //Response.Write("<script>window.open( 'StandByInsert.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+protected void Button43_Click(object sender, EventArgs e)
+{
+
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "AllDBQuery", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'AllDBQuery.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+
+}
+
+
+protected void Button22_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "IpLoad_Check", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'UpLoad_Check.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+
+}
+
+protected void Button23_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "Check_data", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'Check_Data.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+
+
+protected void Button24_Click(object sender, EventArgs e)
+{
+    //Timer1.Enabled = false;
+    //string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "Traceability", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    //if (FPassword.ToLower() == "web")
+    //    Response.Write("<script>window.open( 'Traceability/TJTraceMenu.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+}
+
+protected void Button45_Click(object sender, EventArgs e)
+{
+   // Timer1.Enabled = false;
+   // if (FPassword.ToLower() == "web")
+   //     Response.Write("<script>window.open( 'UPDModify.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+}
+
+protected void Button25_Click(object sender, EventArgs e)
+{
+    // Timer1.Enabled = false;
+    // if (FPassword.ToLower() == "web")
+    //     Response.Write("<script>window.open( 'CreateMotoFile.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+
+
+}
+
+protected void Button26_Click(object sender, EventArgs e)  // Pass L6 to L8
+{
+    return;        
+}
+
+
+/////////////////////////////////////////////////////////////////////
+protected void  Button27_Click(object sender, EventArgs e)
+{
+//    Timer1.Enabled = false; // 檢查 Carton
+
+    
+}
+
+protected void Button47_Click(object sender, EventArgs e)
+{
+
+}
+
+// Copy Data from L6 to L8 
+protected void Button49_Click(object sender, EventArgs e)
+{
+    return;
+    if (FPassword.ToLower() != "ken") return;
+// Pass Data from L6 to L8
+    string t1 = FPubLibPointer.PubWri_MessLog("IDMTrace", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "L6toL8", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    Timer1.Enabled = false;
+
+    string r1 = ReadParaTxt("WebReadParam.txt", "10001");
+    string r3 = ReadParaTxt("WebReadParam.txt", "10003");
+    Session["Param1"] = 1;
+    Session["Param2"] = "oracle";   // Type 1 
+    t1 = ConfigurationManager.AppSettings[r1];  // DBReadString
+    Session["Param3"] = t1; // DBReadString
+    t1 = ConfigurationManager.AppSettings[r3];  // DBWruteString
+    Session["Param4"] = t1; // DBWriteString
+    Session["Param5"] = "menu"; // DBWriteString
+    Session["Param6"] = ReadParaTxt("WebReadParam.txt", "10004"); // Test Read
+    Session["Param7"] = "10004"; // TableNo
+    Session["Param8"] = ReadParaTxt("WebReadParam.txt", "10005"); // Test Write Table
+    Response.Write("<script>window.open( 'MainMotPrg/TrsL6ToL8.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=10,left=00');</script>");
+    
+   // Thread.Sleep(5000);	 // 1 Min 60000---休眠1秒鐘 1000
+ 
+}
+protected void Button17_Click(object sender, EventArgs e)
+{
+    if (FPassword.ToLower() != "kenken") return;
+    Timer1.Enabled = true;
+    // Aautoctlflag = 1; // auto only
+    Button17.Text = "系統自動啟動中";
+    TextBox4.Text = "系統自動啟動";
+    string tmpstr = MainLoop();    
+}
+
+protected void Button50_Click(object sender, EventArgs e)
+{
+    if (FPassword.ToLower() != "kenken") return;
+    AutoMotProc();
+}
+
+public string Auto_CreDN()
+{
+        return("");
+}
+
+////////////////////////////////////////////////////////////
+// Auto Generate UPD
+// 1. Use Table UPD_PODN_List_T table
+// 2. Index Invoice(DN), 
+// 3. DN, PO, UPDflag, Sapflag, 
+// 4. Auto_CreDN() -- Generate DN, PO 
+// 5. Auto_CloseSap() -- Check and Write Sap
+// 6. Auto_GenUPDEMEI() -- Check Sapclag="C" , Close , write
+// Appendix :
+// 1. Need check double or already generate UPD/EMEI
+// 2. Sap.Cmcs_pack_line_all singe DN + Multi Carton
+// 3. Sap.Sap_DN_Info singe DN + Multi Item
+// 4. Sap.Cmcs_ship_date Singe Carton + Multi PSN,EMEI
+// 5. DN Count = Sap.Sap_Invoice_Info
+///////////////////////////////////////////////////////////
+public void AutoMotProc()
+{
+
+    string t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "MotAuto", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    TextBox4.Text = "系統自動 Execute Motor" + firstcnt.ToString();
+    string DBReadString = OraL10DBAStandBy; //  ConfigurationManager.AppSettings["L8StandByConnectionString"]; // bjl6testConnectionString
+    string DBWriString = OraWebCTLDBA; // ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // bjl6testConnectionString   
+
+    // 221
+    int int1 = AutoUploadPointer.GetDnWithInsert(DBReadString, DBWriString);
+    TJLibZhuPointer.CheckSAPClose(DBWriString, DBWriString);
+    t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "MotCalSap", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    TJSYPointer.check3s4s(DBReadString, DBWriString);
+    int int2 = AutoUploadPointer.GetCreateUpdFile(DBReadString, DBWriString);
+    CreateDNListPointer.Create_DnList2("1", "oracle", DBReadString, DBWriString, DBWriString, "Auto"); // New Add 20120913 單筆出貨主檔
+    ////////////////////////////////////////////
+    // 真實數據庫 76
+    string DBRealtime = OraL10DBAMain; //  ConfigurationManager.AppSettings["NormalDbConnectionString"]; // 真實數據庫 76
+    int1 = AutoUploadPointer.GetDnWithInsert(DBReadString, DBRealtime);
+    TJLibZhuPointer.CheckSAPClose(DBRealtime, DBRealtime);
+    TJSYPointer.check3s4s(DBReadString, DBRealtime);
+
+    int I1 = 0, I2 = 0, I3 = 0;
+    I1 = Timer1.Interval;
+    if (I1 != 0)
+    {
+        I2 = I1 / 1000;
+        if (I2 > 0) I2 = I2 / 60;
+        string CurrDay  = DateTime.Now.ToString("yyyyMMddHHmm");
+        string SendDay  = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+        string SendDay1 = DateTime.Now.AddDays(-2).ToString("yyyyMMdd");
+        string SendDay2 = DateTime.Now.AddDays(-3).ToString("yyyyMMdd");
+        string CurrTime = CurrDay.Substring(8, 4);
+        // int LTime = 1200 + I2; 1hr Check
+        int LTime = 1300;
+        if ((Convert.ToInt32(CurrTime) > 1200) && (Convert.ToInt32(CurrTime) < LTime))
+        {
+            t1 = CreatSendDNListFilePointer.GetDNlistData1("1", "oracle", DBWriString, DBWriString, DBWriString, "auto", SendDay);
+            t1 = CreatSendDNListFilePointer.GetDNlistData1("1", "oracle", DBWriString, DBWriString, DBWriString, "auto", SendDay1);
+            t1 = CreatSendDNListFilePointer.GetDNlistData1("1", "oracle", DBWriString, DBWriString, DBWriString, "auto", SendDay2);
+        }
+    }
+    // int int2 = CreateFilePointer.GetCreateUpdFile(DBReadString, DBWriString);    
+    // int int3 = UpdSendToCust(DBReadString, DBWriString, "oracle");  
+    //string st3 = Auto_GenUPDEMEI(DBReadString, DBWriString);   
+}
+
+public void AutoIntelProc()
+{
+   // public static string IntelReadDB = "L10IntelConnectingString", IntelWriDB = "L10IntelConnectingString", MotStandDB = "L8StandByConnectionString";
+   
+    string tmporaDba = "oracle";
+    // if (FPassword.ToLower() != "kenken") return;
+    string t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "IntelAuto", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    TextBox4.Text = "系統自動 Execute Intel" + firstcnt.ToString();
+    string DBReadString = ConfigurationManager.AppSettings[IntelReadDB];  // ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString
+    string DBWriString = ConfigurationManager.AppSettings[IntelWriDB];    // ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+    string DBSFCString = ConfigurationManager.AppSettings[IntelSFCReadDB];
+
+    t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "GetDN", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    int int1 = AutoUploadPointer.GetDnWithInsertIntel(DBReadString, DBWriString);
+    // 20120614 TJLibZhuPointer.CheckSAPClose(DBWriString, DBWriString);
+    TJLibZhuPointer.CheckSAPCloseMess(DBWriString, DBWriString, NetSqlDB4, ASysCount.ToString());
+    TJSYPointer.check3s4s(DBReadString, DBWriString);
+    // int int2 = Insert by VB program 
+    // int int3 = DataDN_3B2Pointer.GetDn3B2("1", "oracle", DBWriString, DBWriString, DBSFCString, "auto" );  // 20120414    
+    t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "Get3B2", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    int int3 = CreateDN_3B2Pointer.CreateDN3B2("1", "oracle", DBReadString, DBWriString, DBSFCString, "auto");    // tmp Readdba
+  //  int int3 = DataDN_3B2Pointer.GetDn3B2("1", "oracle", DBReadString, DBWriString, DBSFCString, "auto");    // tmp Readdba
+    int int4 = GetSAP3B2Pointer.GetSapDn3B2("1", "oracle", DBWriString, DBWriString, "auto"); // Update Only
+    int int5 = IntelSNTraxPointer.GenerateSNTraxData("1", "oracle", DBReadString, DBWriString, "auto");
+    //int1 = UpdSendToCustPointer.AutoSendFile(DBReadString, DBReadString, tmporaDba); // AutoSend
+    
+    // int int2 = AutoUploadPointer.GetCreateUpdFile(DBReadString, DBWriString);
+    //string st3 = Auto_GenUPDEMEI(DBReadString, DBWriString);
+}
+
+
+public void AutoSharpProc()
+{
+    // if (FPassword.ToLower() != "kenken") return;
+    string t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "SharpAuto", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    TextBox4.Text = "系統自動 Execute Sharp" + firstcnt.ToString();
+    string DBReadString = ConfigurationManager.AppSettings["L8StandByConnectionString"]; // bjl6testConnectionString
+    string DBWriString = ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // bjl6testConnectionString
+    int int1 = AutoUploadPointer.GetDnWithInsertCTL(DBReadString, DBWriString, "SHARP");
+    TJLibZhuPointer.CheckSAPCloseByCustomer(DBWriString, DBWriString, "SHARP");
+    t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "SharpCalSap", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    TJSYPointer.check3s4sByCustomer(DBReadString, DBWriString, "SHARP");
+        
+    int ret1 = GetSharpImeiListPointer.GetSharpIMEIData("1", "oracle", DBReadString, DBWriString, "", "Auto");     
+    //int int2 = AutoUploadPointer.GetCreateUpdFile(DBReadString, DBWriString, "SHARP");    
+
+}
+
+//  OraL10DBAMain, ref OraL10DBAStandBy, ref OraL6DBAMain, ref OraL6DBAStandBy, ref OraWebCTLDBA, ref SqlWebCTLDBA,
+//  Add   PUBLIB.CUSTOMERMODEL New Model 
+public void AutoGooProc()
+{
+    string t1 = FPubLibPointer.PubWri_MessLog("ZZAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "MotAuto", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    TextBox4.Text = "系統自動 Execute Web" + firstcnt.ToString();
+    string DBReadString = OraL10DBAStandBy; //  ConfigurationManager.AppSettings["L8StandByConnectionString"]; // bjl6testConnectionString
+    string DBWriString = OraWebCTLDBA; // ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // bjl6testConnectionString   
+
+    // 221
+    int int1 = AutoUploadPointer.GetDnWithInsert(DBReadString, DBWriString); // 211, 221
+    TJLibZhuPointer.CheckSAPClose(DBWriString, DBWriString);  // 221, 221
+    t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "ZZCalSap", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    TJSYPointer.check3s4s(DBReadString, DBWriString);
+    int int2 = AutoUploadPointer.GetCreateUpdFile(DBReadString, DBWriString);
+    // Moto CreateDNListPointer.Create_DnList2("1", "oracle", DBReadString, DBWriString, DBWriString, "Auto"); // New Add 20120913 單筆出貨主檔
+    ////////////////////////////////////////////
+    // 真實數據庫 213
+    string DBRealtime = OraL10DBAMain; //  ConfigurationManager.AppSettings["NormalDbConnectionString"]; // 真實數據庫 76
+    int1 = AutoUploadPointer.GetDnWithInsert(DBReadString, DBRealtime);
+    TJLibZhuPointer.CheckSAPClose(DBRealtime, DBRealtime);
+    TJSYPointer.check3s4s(DBReadString, DBRealtime);
+
+}
+public void AutoTJL6Proc()
+{
+    // public static string IntelReadDB = "L10IntelConnectingString", IntelWriDB = "L10IntelConnectingString", MotStandDB = "L8StandByConnectionString";
+    // 1. Get Wo and Read Sap Write to tmp
+    // 2. Read Tmp to Real
+    string tmporaDba = "oracle";
+    string t1 = FPubLibPointer.PubWri_MessLog("IDMAuto", ASysCount.ToString(), Aautorunflag.ToString(), Aautoctlflag.ToString(), Arunstatus.ToString(), "L6Auto", "", "", "", NetSqlDB4, "sql");         // 10 Code
+    TextBox4.Text = "系統自動 Execute L6" + firstcnt.ToString();
+
+    //string DBReadString = ConfigurationManager.AppSettings[IntelReadDB];  // ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString
+    //string DBWriString = ConfigurationManager.AppSettings[IntelWriDB];    // ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+    //string DBSFCString = ConfigurationManager.AppSettings[IntelSFCReadDB];
+
+    string DBSFCString = OraL6DBAMain; // ConfigurationManager.AppSettings["tjl8SMTConnectionString"];
+    string DBReadString = OraL6DBAMain; // ConfigurationManager.AppSettings["tjl8SMTConnectionString"];
+    string DBWriString = OraL6DBAMain; //  ConfigurationManager.AppSettings["tjl8SMTConnectionString"];
+    // string DBWriString = ConfigurationManager.AppSettings["tjl8SMTConnectionString"];
+    //GetSapBOMINVData gb = new GetSapBOMINVData(DBReadString, DBWriString);
+    //GetSapBOMINVData gb = new GetSapBOMINVData();
+    int Reti1 = GetSapBOMINVDataPointer.ExecuteGetSap(DBReadString, DBWriString, "");  // space 為未產生工單, "1" 為 7 天 
+    int Reti2 = TGETWO2Pointer.SAPREPARTGPUPdate( tmporaDba, DBReadString, DBWriString);
+
+    return;
+  
+}
+
+///////////////////////////////////////////
+// Insert Into L8 from L6 
+//
+public void AutoTJL6ToL8PIDProc()
+{
+    string InDB = "MAINPIDTRACE";
+    string InFile = "L6ToL82";
+    string OutFile = "MAINPIDTRACE";
+    string[,] arrayOutDB = new string[10+ 1, 10 + 1];
+    string InDBIP = OraL6DBAMain; // L6 Server  ConfigurationManager.AppSettings[ReadParaTxt("WebReadParam.txt", "20003")]; 
+    string cnt =  ReadParaTxt("WebReadParam.txt", "20101");
+    int v1=0, v2=0, v3=20101;
+    if ( cnt == "" ) return;
+    string DBReadString = "", DBWriString1 = "", DBWriString2 = "";
+    v1 = Convert.ToInt32(cnt);
+    for ( v2=1; v2<=v1; v2++ )
+    {
+        v3 = 20101 + v2; 
+        arrayOutDB[v2, 1] = v2.ToString();
+        arrayOutDB[v2, 2] = InDBIP;
+        arrayOutDB[v2, 3] = ConfigurationManager.AppSettings[ReadParaTxt("WebReadParam.txt", v3.ToString()) ];
+        arrayOutDB[v2, 4] = ""; 
+    }
+
+
+    DBReadString = OraL6DBAMain;  // L6 Server // arrayOutDB[1, 3];  // ConfigurationManager.AppSettings["L8StandByConnectionString"];   // 211 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString
+    DBWriString1 = OraWebCTLDBA;  // Web ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // 221 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+    DBWriString2 = OraL10DBAMain; // L10 Server ConfigurationManager.AppSettings["NormalDbConnectionString"]; // 221 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+    string Ret1 = DeLinkPidlib4Pointer.CopyL6PID("1", "oracle", DBReadString, DBWriString1, DBWriString2, ref arrayOutDB);
+    //string Ret2 = DeLinkPidlibPointer.GetMAINPIDTRACEData( "1", "oracle", DBReadString, DBWriString);
+ 
+}
+
+public void AutoTJL6ToL8PIDProcCheck()
+{
+
+    string DBReadString = OraL10DBAStandBy; // ConfigurationManager.AppSettings["L8StandByConnectionString"];   // 211 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString
+    string DBWriString1 = OraWebCTLDBA;  // ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // 221 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+    string DBWriString2 = OraL10DBAMain; // ConfigurationManager.AppSettings["NormalDbConnectionString"]; // 221 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+    string Ret1 = DeLinkPidlib4Pointer.CopyL6PIDCheck("1", "oracle", DBWriString2, DBWriString2);
+    //string Ret2 = DeLinkPidlibPointer.GetMAINPIDTRACEData( "1", "oracle", DBReadString, DBWriString);
+
+}
+
+public void AutoTJL6ToL8PIDProcCopyIMEI()
+{
+
+    string DBReadString = OraL10DBAStandBy; //  ConfigurationManager.AppSettings["L8StandByConnectionString"];   // 211 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString
+    string DBWriString1 = OraWebCTLDBA; // ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // 221 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+    string DBWriString2 = OraL10DBAMain; // ConfigurationManager.AppSettings["NormalDbConnectionString"]; // 221 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+    string Ret1 = DeLinkPidlib4Pointer.CopyL6PIDIMEI("1", "oracle", DBWriString2, DBWriString2);
+    //string Ret2 = DeLinkPidlibPointer.GetMAINPIDTRACEData( "1", "oracle", DBReadString, DBWriString);
+
+}
+
+public void AutoChieMeiProc()
+{
+    string DBReadString = OraL10DBAStandBy; //  ConfigurationManager.AppSettings["L8StandByConnectionString"];   // 211 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString
+    string DBWriString1 = OraWebCTLDBA; //  ConfigurationManager.AppSettings["L8TestandWebConnectionString"]; // 221 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+  //  string DBWriString2 = ConfigurationManager.AppSettings["NormalDbConnectionString"]; // 221 ConfigurationManager.AppSettings["L10IntelConnectingString"]; // bjl6testConnectionString   
+    string Ret1 = ChiMeilibPointer.CMDelPOData("1", "oracle", DBReadString, DBWriString1, "-10");
+    string Ret2 = ChiMeilibPointer.CMDelUpdate("1", "oracle", DBReadString, DBWriString1, "-10");
+
+
+}
+
+
+///////////////////////////////////////////////////////
+// 0 - 5 為代號, 第 6 位開始為 Para   // 代表無效
+// 10001 : Raed DB6 String
+// 10002 : Write Moto  L10
+// 10003 : Wrute Intel L10
+private string ReadParaTxt(string FilePara, string ParaNum)
+{
+    string retPara = "";
+    int ArrMax = 100;
+    string[] ReadTxtArray = new string[ArrMax];
+    string FileName = "SetReadParam.txt";
+    if (FilePara != "") FileName = FilePara;
+    string ServerPath = Server.MapPath("~\\" + FileName);
+    FileInfo fi = new FileInfo(ServerPath);
+    StreamReader sr = fi.OpenText();
+    string InString = "";
+    int i = 0, strlen = 0;
+
+    while (((InString = sr.ReadLine()) != null) && (i < ArrMax))
+    {
+        ReadTxtArray[i] = InString;
+        //             Response.Write(ReadTxtArray[i]);
+        //             Response.Write("<br>");
+        if ((InString != "") && (InString != " ") && (InString.Substring(0, 2) != "//"))
+        {
+            strlen = InString.Length - 1;
+            if ((InString.Substring(0, 5) == ParaNum) && (strlen >= 6))
+            {
+                retPara = InString.Substring(6, strlen - 5);
+                i = ArrMax;  // Break
+            }
+
+        }
+        i++;
+
+    }
+
+    sr.Close();
+    return (retPara);
+}
+
+public void GetTextFile(ref string[] ReadTxtArray, int ArrMax, string dtype)
+{
+    string retPara = "";
+    //  int ArrMax = 200;
+    //  string[] ReadTxtArray = new string[ArrMax];
+    //  string[] ProtTxtArray = new string[ArrMax];
+    //  string[] CProtTxtArray = new string[ArrMax];
+
+    //  string DBString = "", ProDBSTring = "", PCode = "", ConString = "", PStrSpilt = "",
+
+    string InString = "", PCode = "", PStrSpilt = ",";
+    string t1 = "";
+    int v1 = 0;
+    string FileName = "WebReadParam.txt";
+    string FilePara = "", ParaNum = "License Document By IT Team 20120131 Donot Copy and Delete this file";
+    if (FilePara != "") FileName = FilePara;
+    string ServerPath = Server.MapPath("~\\" + FileName);
+    FileInfo fi = new FileInfo(ServerPath);
+    StreamReader sr = fi.OpenText();
+    string EnCodeStr = "", DnCodeStr = "";
+    int i = 0, strlen = 0, Chead = 5;
+    PCode = ReadParaTxt("WebReadParam.txt", "23101"); // "License Document By IT Team 20120131 Donot Copy and Delete this file";
+
+
+    while (((InString = sr.ReadLine()) != null) && (i < ArrMax))
+    {
+        //if ((InString != "") && (InString != " ") && (InString.Substring(0, 2) != "//"))
+        //    ReadTxtArray[i] = InString;
+
+        if ((InString != "") && (InString != " ") && (InString.Substring(0, 2) != "//"))
+        {
+            strlen = InString.Length - 1;
+            t1 = InString.Substring(0, 5); // Pre 5 code 
+            v1 = Convert.ToInt32(t1);
+            if ((v1 >= 23201) && (v1 <= 23999) && (dtype == "2"))
+            {
+                retPara = InString.Substring(6, strlen - 5);
+                EnCodeStr = InString.Substring(Chead + 1, strlen - Chead);
+                // DnCodeStr = ConvertlibPointer.DeEncCode(EnCodeStr, PCode, PStrSpilt, "");
+                DnCodeStr = LibUSR1Pointer.DBDeEncCode(EnCodeStr, PCode, ",", "2DBA");
+                ReadTxtArray[i] = InString.Substring(0, 6) + DnCodeStr;
+
+                //  i = ArrMax;  // Break
+            }
+            else
+                ReadTxtArray[i] = InString;
+
+        }
+        i++;
+
+    }
+
+    sr.Close();
+
+
+
+}  // end GetTextFile
+
+}  // end public partial class Main ////// End all SubRoutine ////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// r1 = ReadParaTxt("WebReadParam.txt", "10001");  WebReadParam.txt is Param Text
+// Document : Session 傳參數string Session["Param1"] = 1; tSUsername = Session["Param1"].ToString(); 
+// Session["Param1"] = 1;  代表第 1 類表傳  Session["Param2"] 為讀資料庫位置
+// Document : Session 傳參數string Session["Param1"] = 1; tSUsername = Session["Param1"].ToString(); 
+//  Session["Param1"] = 1;         // Data Process I/O
+//  Session["Param2"] = "oracle";  // 數據庫
+//  Session["Param3"] = str1;      // DBReadString
+//  Session["Param4"] = str2;      // DBWriString
+//  Session["Param5"] = "auto";    // 自動或手動執行
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Transfer L6 To L8 temp file in L8=6 in PUBLIB
+// 1. Write 3 sequence table when PSN generated
+//    1.1 L6ToL8T1 (  for Gen L8 table in L6  )
+//    1.2 L6ToL8T2 (  for L8 table in L6 write to L8 table in L8
+//    1.3 L6ToL8T3 (  record only )  Just Write Only
+//    1.4 Write 3 table by PSN, DocumentID, F1_FLAG by sequence  
+//    1.5 Generate L8 table program read and get L6ToL8T1 PSN then write 6 L8 tablle in L6 and kill  L6ToL8T1 by PSN
+//        Program never leave and running each 10 sec. It will better if can count time when running frequence. 
+//    1.6 Move     L8 table program read and get L6ToL8T2 PSN then write 6 L8 tablle in L8 and kill  L6ToL8T2 by PSN
+//        Progran running each 30 minute   
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        

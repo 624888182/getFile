@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="WOFrom" xml:space="preserve">
+    <value>工單起</value>
+  </data>
+  <data name="WOTo" xml:space="preserve">
+    <value>工單迄</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>機種</value>
+  </data>
+  <data name="LineF" xml:space="preserve">
+    <value>線別自</value>
+  </data>
+  <data name="LineE" xml:space="preserve">
+    <value>迄</value>
+  </data>
+  <data name="Query" xml:space="preserve">
+    <value>查詢</value>
+  </data>
+  <data name="Line" xml:space="preserve">
+    <value>線&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;別</value>
+  </data>
+  <data name="WONull" xml:space="preserve">
+    <value>請輸入工單號</value>
+  </data>
+  <data name="ModelNull" xml:space="preserve">
+    <value>請輸入機種</value>
+  </data>
+  <data name="MainID" xml:space="preserve">
+    <value>上板</value>
+  </data>
+  <data name="SecondaryID" xml:space="preserve">
+    <value>下板</value>
+  </data>
+  <data name="CDate" xml:space="preserve">
+    <value>掃描日期</value>
+  </data>
+  <data name="StationID" xml:space="preserve">
+    <value>站點</value>
+  </data>
+  <data name="StateID" xml:space="preserve">
+    <value>狀態</value>
+  </data>
+  <data name="EmpID" xml:space="preserve">
+    <value>員工編號</value>
+  </data>
+  <data name="InvalidDigit" xml:space="preserve">
+    <value>無效的線別</value>
+  </data>
+  <data name="SDateFrom" xml:space="preserve">
+    <value>掃描日期起</value>
+  </data>
+  <data name="SDateTo" xml:space="preserve">
+    <value>掃描日期迄</value>
+  </data>
+  <data name="Item" xml:space="preserve">
+    <value>料號</value>
+  </data>
+  <data name="WO" xml:space="preserve">
+    <value>工單</value>
+  </data>
+  <data name="QueryCondition" xml:space="preserve">
+    <value>當前查詢條件都為空，請輸入至少一個查詢條件！</value>
+  </data>
+  <data name="WOQty" xml:space="preserve">
+    <value>工單數量</value>
+  </data>
+  <data name="WoInfo" xml:space="preserve">
+    <value>工單資訊</value>
+  </data>
+  <data name="ProductInfo" xml:space="preserve">
+    <value>Product ID 生產資訊</value>
+  </data>
+  <data name="IMEIRelationShip" xml:space="preserve">
+    <value>Product ID、IMEI,Picasso&amp;PPID 關系</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>生產段</value>
+  </data>
+  <data name="WONotExist" xml:space="preserve">
+    <value>工單不存在！</value>
+  </data>
+  <data name="DateFrom" xml:space="preserve">
+    <value>日期起</value>
+  </data>
+  <data name="DateTo" xml:space="preserve">
+    <value>日期迄</value>
+  </data>
+  <data name="ErrorDateTime" xml:space="preserve">
+    <value>請輸入正確的日期和時間 (例︰2007/01/29 17:32)!</value>
+  </data>
+  <data name="ErrorInt" xml:space="preserve">
+    <value>請輸入正確的整數！</value>
+  </data>
+  <data name="TopN" xml:space="preserve">
+    <value>前N項</value>
+  </data>
+  <data name="DefectCode" xml:space="preserve">
+    <value>不良代碼</value>
+  </data>
+  <data name="DefectDesc" xml:space="preserve">
+    <value>不良描述</value>
+  </data>
+  <data name="Qty" xml:space="preserve">
+    <value>數量</value>
+  </data>
+  <data name="InspectionQty" xml:space="preserve">
+    <value>總不良數量</value>
+  </data>
+  <data name="DefectRate" xml:space="preserve">
+    <value>不良率</value>
+  </data>
+  <data name="PanelID" xml:space="preserve">
+    <value>板邊號</value>
+  </data>
+  <data name="WODate" xml:space="preserve">
+    <value>工單日期</value>
+  </data>
+  <data name="BOMVer" xml:space="preserve">
+    <value>BOM版本</value>
+  </data>
+  <data name="SerialQty" xml:space="preserve">
+    <value>邊板數</value>
+  </data>
+  <data name="PrintDate" xml:space="preserve">
+    <value>列印日期</value>
+  </data>
+  <data name="ProductID" xml:space="preserve">
+    <value>小板ID</value>
+  </data>
+  <data name="BaseInfo" xml:space="preserve">
+    <value>基本信息</value>
+  </data>
+  <data name="ErrorMsg" xml:space="preserve">
+    <value>錯誤信息</value>
+  </data>
+  <data name="RepairInfo" xml:space="preserve">
+    <value>維修信息</value>
+  </data>
+  <data name="MaterialNO" xml:space="preserve">
+    <value>料號</value>
+  </data>
+  <data name="Factory" xml:space="preserve">
+    <value>廠區</value>
+  </data>
+  <data name="ComputerName" xml:space="preserve">
+    <value>電腦名</value>
+  </data>
+  <data name="E2PDate" xml:space="preserve">
+    <value>E2P日期</value>
+  </data>
+  <data name="PCName" xml:space="preserve">
+    <value>電腦名</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>月份</value>
+  </data>
+  <data name="Report" xml:space="preserve">
+    <value>產生報表</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>周</value>
+  </data>
+  <data name="StatisticsType" xml:space="preserve">
+    <value>統計類型</value>
+  </data>
+  <data name="TestStation" xml:space="preserve">
+    <value>機&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;台</value>
+  </data>
+  <data name="PassQty" xml:space="preserve">
+    <value>Pass數量</value>
+  </data>
+  <data name="FailQty" xml:space="preserve">
+    <value>Fail數量</value>
+  </data>
+  <data name="TotalQty" xml:space="preserve">
+    <value>總&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;計</value>
+  </data>
+  <data name="MachineYield" xml:space="preserve">
+    <value>機台良率(%)</value>
+  </data>
+  <data name="LinesYield" xml:space="preserve">
+    <value>產線良率(%)</value>
+  </data>
+  <data name="MachineYield1" xml:space="preserve">
+    <value>機台良率</value>
+  </data>
+  <data name="SMTLineYield" xml:space="preserve">
+    <value>SMT產線良率</value>
+  </data>
+  <data name="ASSYLineYield" xml:space="preserve">
+    <value>組裝產線良率</value>
+  </data>
+  <data name="TestContent" xml:space="preserve">
+    <value>測試內容</value>
+  </data>
+  <data name="EmpTip" xml:space="preserve">
+    <value>請輸入測試員工號</value>
+  </data>
+  <data name="TestPC" xml:space="preserve">
+    <value>測試機臺</value>
+  </data>
+  <data name="OutPut" xml:space="preserve">
+    <value>數據導齣</value>
+  </data>
+  <data name="ForSelect" xml:space="preserve">
+    <value>請選擇</value>
+  </data>
+  <data name="ErrorStation" xml:space="preserve">
+    <value>必須選擇測試工站</value>
+  </data>
+  <data name="ErrorContent" xml:space="preserve">
+    <value>必須選擇測試內容</value>
+  </data>
+  <data name="ErrorTime" xml:space="preserve">
+    <value>開始時間必須小于結束時間</value>
+  </data>
+  <data name="ErrorTimenull" xml:space="preserve">
+    <value>必須輸入起迄時間</value>
+  </data>
+  <data name="ErrorEmp" xml:space="preserve">
+    <value>測試員工號錯誤</value>
+  </data>
+  <data name="CountName" xml:space="preserve">
+    <value>本功能訪問量為：</value>
+  </data>
+  <data name="ErrorModel" xml:space="preserve">
+    <value>請選擇測試機種</value>
+  </data>
+  <data name="ErrorQuery" xml:space="preserve">
+    <value>當前查詢條件不足，請再輸入至少一個查詢條件！</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>沒有找到要查詢的數！</value>
+  </data>
+  <data name="NoTable" xml:space="preserve">
+    <value>無數據錶格，無法導齣！</value>
+  </data>
+  <data name="DownLoad" xml:space="preserve">
+    <value>下載</value>
+  </data>
+  <data name="InvoiceNO" xml:space="preserve">
+    <value>發票號</value>
+  </data>
+  <data name="NoInput" xml:space="preserve">
+    <value>請輸入發票號或P工單號！</value>
+  </data>
+  <data name="ColumnDesc" xml:space="preserve">
+    <value>欄位描述</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>欄位名</value>
+  </data>
+  <data name="FunctionType" xml:space="preserve">
+    <value>功能類型</value>
+  </data>
+  <data name="FunctionValue" xml:space="preserve">
+    <value>功能值</value>
+  </data>
+  <data name="Employee" xml:space="preserve">
+    <value>工號</value>
+  </data>
+  <data name="Fixtured" xml:space="preserve">
+    <value>測試機台</value>
+  </data>
+  <data name="OnlineName" xml:space="preserve">
+    <value>線別名稱</value>
+  </data>
+  <data name="FailureItem" xml:space="preserve">
+    <value>不良項目</value>
+  </data>
+  <data name="FixtureID" xml:space="preserve">
+    <value>治具名</value>
+  </data>
+  <data name="LineID" xml:space="preserve">
+    <value>線別</value>
+  </data>
+  <data name="FunctionName" xml:space="preserve">
+    <value>功能名稱</value>
+  </data>
+  <data name="FunctionDesc" xml:space="preserve">
+    <value>功能描述</value>
+  </data>
+  <data name="CartonID" xml:space="preserve">
+    <value>箱號</value>
+  </data>
+  <data name="GustPN" xml:space="preserve">
+    <value>客戶料號</value>
+  </data>
+  <data name="ScanDate" xml:space="preserve">
+    <value>掃描時間</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>狀態</value>
+  </data>
+  <data name="TransferOuteDate" xml:space="preserve">
+    <value>轉出時間</value>
+  </data>
+  <data name="Dept" xml:space="preserve">
+    <value>部門名稱</value>
+  </data>
+  <data name="EffectiveFrom" xml:space="preserve">
+    <value>生效日期</value>
+  </data>
+  <data name="EffectiveTo" xml:space="preserve">
+    <value>終止日期</value>
+  </data>
+  <data name="LoginName" xml:space="preserve">
+    <value>登入名稱</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>用戶名稱</value>
+  </data>
+  <data name="LineRate" xml:space="preserve">
+    <value>產線良率</value>
+  </data>
+  <data name="LineFirstRate" xml:space="preserve">
+    <value>產線首次良率</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>導入</value>
+  </data>
+  <data name="SAPHONHAIPN" xml:space="preserve">
+    <value>SAP插件料號</value>
+  </data>
+  <data name="SAPLOCATION" xml:space="preserve">
+    <value>SAP插件位置</value>
+  </data>
+  <data name="ComPare" xml:space="preserve">
+    <value>對比</value>
+  </data>
+  <data name="SMTHONHAIPN" xml:space="preserve">
+    <value>SMT插件料號</value>
+  </data>
+  <data name="SMTLOCATION" xml:space="preserve">
+    <value>SMT 插件位置</value>
+  </data>
+  <data name="TabID" xml:space="preserve">
+    <value>菜單編號</value>
+  </data>
+  <data name="TabsDefinitions" xml:space="preserve">
+    <value>菜單定義</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>功能描述</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>權限</value>
+  </data>
+  <data name="MenuID" xml:space="preserve">
+    <value>菜單號</value>
+  </data>
+  <data name="UserID" xml:space="preserve">
+    <value>工號</value>
+  </data>
+  <data name="UserNotExists" xml:space="preserve">
+    <value>輸入用戶不存在﹗</value>
+  </data>
+  <data name="Function" xml:space="preserve">
+    <value>功能菜單</value>
+  </data>
+  <data name="DataExists" xml:space="preserve">
+    <value>數據已經存在﹗</value>
+  </data>
+  <data name="Import_date" xml:space="preserve">
+    <value>導入時間</value>
+  </data>
+  <data name="FParentID" xml:space="preserve">
+    <value>父編號</value>
+  </data>
+  <data name="FTabOrder" xml:space="preserve">
+    <value>順序號</value>
+  </data>
+  <data name="ErrorProductID" xml:space="preserve">
+    <value>請輸入ProductID</value>
+  </data>
+  <data name="NoInputWO" xml:space="preserve">
+    <value>請輸入正確的S工單號！</value>
+  </data>
+  <data name="NoOut" xml:space="preserve">
+    <value>此盤料未下線﹗</value>
+  </data>
+  <data name="NoRecord" xml:space="preserve">
+    <value>抱歉﹐没有查到你所要的数据﹗</value>
+  </data>
+  <data name="InputError" xml:space="preserve">
+    <value>請輸入有效的S工單﹗</value>
+  </data>
+  <data name="CartonNo" xml:space="preserve">
+    <value>箱號</value>
+  </data>
+  <data name="QueryByModel" xml:space="preserve">
+    <value>按機種查詢</value>
+  </data>
+  <data name="QueryByPID" xml:space="preserve">
+    <value>按PID查詢</value>
+  </data>
+  <data name="InputError1" xml:space="preserve">
+    <value>此板子沒有進“組裝投入”工站，請先投入！</value>
+  </data>
+  <data name="Average" xml:space="preserve">
+    <value>樣本平均值</value>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>測試細項</value>
+  </data>
+  <data name="Lo_Limit" xml:space="preserve">
+    <value>測試值下限</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>樣本最大值</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>樣本最小值</value>
+  </data>
+  <data name="Tetval_CP" xml:space="preserve">
+    <value>CP</value>
+  </data>
+  <data name="Tetval_CPK" xml:space="preserve">
+    <value>CPK</value>
+  </data>
+  <data name="Tetval_Sample" xml:space="preserve">
+    <value>樣本數目</value>
+  </data>
+  <data name="Up_Limit" xml:space="preserve">
+    <value>測試值上限</value>
+  </data>
+  <data name="ExportExcel" xml:space="preserve">
+    <value>導出Excel表</value>
+  </data>
+  <data name="SelectModel" xml:space="preserve">
+    <value>請選擇幾種！</value>
+  </data>
+  <data name="WONotMatchPart" xml:space="preserve">
+    <value>工單和料號不一致!</value>
+  </data>
+  <data name="ModelNotMatchPart" xml:space="preserve">
+    <value>幾種和料號不一致!</value>
+  </data>
+  <data name="PlsChooseCondition" xml:space="preserve">
+    <value>請選擇一個查詢條件!</value>
+  </data>
+  <data name="PlsSelectModel" xml:space="preserve">
+    <value>請選擇正確的幾種!</value>
+  </data>
+  <data name="LVID" xml:space="preserve">
+    <value>請輸入要查詢的 ID:</value>
+  </data>
+  <data name="LHParth" xml:space="preserve">
+    <value>請選擇要導入的Excel文件:</value>
+  </data>
+  <data name="LHPorder" xml:space="preserve">
+    <value>請輸入要導入的工單:</value>
+  </data>
+  <data name="Sorder" xml:space="preserve">
+    <value>S 工單</value>
+  </data>
+  <data name="edit" xml:space="preserve">
+    <value>編輯</value>
+  </data>
+  <data name="PID_qty" xml:space="preserve">
+    <value>工單數量</value>
+  </data>
+  <data name="Prd_type" xml:space="preserve">
+    <value>PID 類型</value>
+  </data>
+  <data name="Spart" xml:space="preserve">
+    <value>料號</value>
+  </data>
+  <data name="Squence_id" xml:space="preserve">
+    <value>連板數</value>
+  </data>
+  <data name="ChangePorder" xml:space="preserve">
+    <value>轉工單</value>
+  </data>
+  <data name="IMEI" xml:space="preserve">
+    <value>IMEI</value>
+  </data>
+  <data name="Porder" xml:space="preserve">
+    <value>P工單</value>
+  </data>
+  <data name="unlink" xml:space="preserve">
+    <value>拆解</value>
+  </data>
+  <data name="INTERNALCARTON" xml:space="preserve">
+    <value>箱號</value>
+  </data>
+  <data name="INVOICENUMBER" xml:space="preserve">
+    <value>訂單號</value>
+  </data>
+  <data name="ITEMNUMBER" xml:space="preserve">
+    <value>料號</value>
+  </data>
+  <data name="QUANTITY" xml:space="preserve">
+    <value>數量</value>
+  </data>
+  <data name="SHIPDATE" xml:space="preserve">
+    <value>出貨日期</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>條碼類型</value>
+  </data>
+  <data name="PartNo" xml:space="preserve">
+    <value>料號</value>
+  </data>
+  <data name="SMTLack" xml:space="preserve">
+    <value>SMT產線缺料預警</value>
+  </data>
+  <data name="DetailExcel" xml:space="preserve">
+    <value>Station ID</value>
+  </data>
+</root>

@@ -1,0 +1,744 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Data.OracleClient;
+using SCM.GSCMDKen;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+using System.Collections;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+using System.Threading;
+using System.Linq;
+using Economy.Publibrary;
+
+
+
+public partial class MainNokAuto_Main : System.Web.UI.Page
+{
+    FPubLib FPubLibPointer = new FPubLib();
+    DVETAToETAlib DVETAToETAlibPointer = new DVETAToETAlib();
+    // DataBaseOperation DataBaseOperationPtr = new DataBaseOperation();
+    string login_no = "";
+    string login_name = "";
+    static string web = "";
+    static string DBRead = "", DBWri = "", DBWriUpdate = "", DBtype = "", tmpProgramtype = "", PrgStatus = "";
+    static string Supertype = "1"; // 1 Standard, "S" SupervisorUsets
+    static string p1 = "", p2 = "", p3 = "", p4 = "", p5 = "", p6 = "", p7 = "", p8 = "", p9 = "";
+    static int TimecntNoIntoMain = 0, Timeloopcnt = 0, swcnt = 0, MainLoopCnt = 0;
+    static string DBMess = ConfigurationManager.AppSettings["Sql207String"];
+    int MaxLoopCnt = 20;
+   
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        string tmp1 = "", tmp2 = "";
+         if(!Page.IsPostBack)
+         {
+
+           // web = Session["Param1"].ToString();
+           if ( Session["Param1"] != null )
+           {
+               web = Session["Param1"].ToString();
+               p1 = Session["Param1"].ToString();
+               p2 = Session["Param2"].ToString();
+               p3 = Session["Param3"].ToString();
+               p4 = Session["Param4"].ToString();
+               p5 = Session["Param5"].ToString();
+               p6 = Session["Param6"].ToString();
+               p7 = Session["Param7"].ToString();
+               p8 = Session["Param8"].ToString();
+           }
+           else
+           {
+               tmp1 = ConfigurationManager.AppSettings["Sql207Syncro"];  // 20121030
+               tmp2 = ConfigurationManager.AppSettings["SyncroConnectionSqlServer"]; // "Data Source=10.186.19.104;Initial Catalog=FMRPB1;User ID =sa;Password=Sa123456;Timeout=120;";
+               p1 = "1";
+               p2 = "sql";
+               p3 = tmp1;     // DBReadString
+               p4 = tmp1;     // DBWriteString 207
+               p5 = "auto";   // Menu input
+               p6 = "1";       // Programflag = '1' ETDToETA
+               p7 = "NokETDUPD";    // ITSystem
+               p8 = tmp2;     // Update DB
+           }
+
+           DBtype = p2; 
+           DBRead = p3;
+           DBWri  = p4;
+           DBWriUpdate = p8;
+           tmpProgramtype = p6;
+           TextBox2.Text = p7;          
+           this.user_id.Text = "";
+           this.user_pwd.Text = "";
+           TextBox1.Text = "";
+           // if (p5.ToLower() == "auto") MainETDToETA(); // No Way to running because not read paramarter 
+        }
+
+         MainProc();
+        
+    }
+    
+
+    private void MainETDToETA()
+    {
+        // Timer1.Enabled = false; // Test Only
+        string selectSqlA = "", selectSqlB = "", tmps1="", tmps2 = "";
+        int CountA = 0, CountB = 0;
+        // int MainLoopCnt = 0, swcnt = 0;
+        DataSet tmpds = null;
+        DataSet tmpds1 = null;
+        DataSet tmpds2 = null;
+        int v1 = 0, v2 = 0;
+
+        PrgStatus = "StartMainL";
+        swcnt = 0;
+        MainLoopCnt = 0;
+        tmps2 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "MainETD", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), MainLoopCnt.ToString(), CountA.ToString(), CountB.ToString(), swcnt.ToString(), DBMess, "sql");         // 10 Code
+         
+        while ( swcnt == 0 )
+        {
+         PrgStatus = "StartMainL";
+         CountA = 0;
+         CountB = 0;
+         selectSqlA = "SELECT *  FROM [ReqProcETDToETA]  where FinishedDate='' ";
+         tmpds1 = DataBaseOperation.SelectSQLDS("sql", DBRead, selectSqlA);
+         if (tmpds1.Tables.Count > 0) CountA = tmpds1.Tables[0].Rows.Count;
+
+         //v2 = CountA;
+         //for (v1 = 0; v1 < v2; v1++)
+         //{
+         //    tmps1 = tmpds.Tables[0].Rows[v1]["FinishedDate"].ToString();
+         //}  
+
+         selectSqlB = "SELECT count(*) as cnt1  FROM [ReqProcETDToETA]  where FinishedDate !='' and (PVUpdateTime = '' or PVUpdateTime is Null) and (EVUpdateTime = '' or EVUpdateTime is Null)";
+         tmpds2 = DataBaseOperation.SelectSQLDS("sql", DBRead, selectSqlB);
+         if (tmpds2.Tables.Count > 0) CountB = Convert.ToInt32(tmpds2.Tables[0].Rows[v1]["cnt1"].ToString()); // tmpds.Tables[0].Rows.Count;
+
+         tmps2 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "Main20Lop", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), MainLoopCnt.ToString(), CountA.ToString(), CountB.ToString(), swcnt.ToString(), DBMess, "sql");         // 10 Code
+         
+   
+         if ( CountA > 0 )  
+         {
+             // Proc ETAToETD
+            MainLoopCnt = 0;
+            PrgStatus = "ProcETDToETA";
+            tmps2 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "ETDLoop", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), MainLoopCnt.ToString(), CountA.ToString(), CountB.ToString(), "", DBMess, "sql");         // 10 Code
+            DVETAToETAlibPointer.ProcETDToETA(p1, p2, p3, p4, p5, p6, p7);
+            tmps2 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "ETDEND", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), MainLoopCnt.ToString(), CountA.ToString(), CountB.ToString(), "", DBMess, "sql");         // 10 Code
+            
+         }
+         else
+         if ( CountB > 0)  // Get Data
+         {
+                // Proc Update
+                MainLoopCnt = 0;
+                PrgStatus = "ETAToSyncro";
+                tmps2 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "TOSynLoop", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), MainLoopCnt.ToString(), CountA.ToString(), CountB.ToString(), "", DBMess, "sql");         // 10 Code
+                ETAToSyncro(DBRead, DBWriUpdate); // 207, 208 
+                tmps2 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "TOSynEnd", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), MainLoopCnt.ToString(), CountA.ToString(), CountB.ToString(), "", DBMess, "sql");         // 10 Code
+         }
+         else
+         {
+                MainLoopCnt++;
+         }
+
+         
+         TextBox7.Text = MainLoopCnt.ToString() + " Second";
+         Thread.Sleep( MainLoopCnt * 1000 );	 // 10 Min 6000 000---休眠2秒鐘 2000
+
+         if (MainLoopCnt > MaxLoopCnt) swcnt = 1;  // End while
+         
+        }  // end while   
+
+        PrgStatus = "";
+        tmps2 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "EndMainlop", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), MainLoopCnt.ToString(), CountA.ToString(), CountB.ToString(), swcnt.ToString(), DBMess, "sql");         // 10 Code
+        // Timer1.Enabled = true;
+    }
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        string user_id_v = this.user_id.Text;
+        string aa = user_id.Text;
+        string user_pwd_v = this.user_pwd.Text;
+        if (user_id_v.Equals(""))
+        {
+            RegisterClientScriptBlock("0", "<script>alert('請輸入工號！')</script>");
+            this.user_id.Focus();
+            return;
+        }
+        if(user_pwd_v.Equals("")){
+            RegisterClientScriptBlock("0", "<script>alert('請輸入密碼！')</script>");
+            this.user_pwd.Focus();
+            return;
+        }
+        if (!checkLoginUser(user_id_v, user_pwd_v, "1"))
+        {
+            RegisterClientScriptBlock("0", "<script>alert('工號或密碼不正確，請重新輸入！')</script>");
+            this.user_id.Focus();
+            return;
+        }
+        else
+        {
+          //  Response.Redirect(web+"?delflag=true");
+           //Response.Write("<script>window.close();</script>");
+    
+        }
+    }
+
+    private bool checkLoginUser(string user_id, string password, string functype)
+    {
+        bool isOk = false;
+        Button5.Text = "須輸入Admin及密碼";
+      //  TextBox4.Text.S
+        string t1 = FPubLibPointer.ChkUsrPSExist(TextBox4.Text, TextBox5.Text, DBRead);
+        if (t1 == "-1") return isOk;
+        else Supertype = "S";
+
+        string tfunc = functype;
+        isOk = true;
+        string sp = FPubLibPointer.UsrPSFunc(this.user_id.Text, this.user_pwd.Text, TextBox2.Text, TextBox1.Text, DBRead, tfunc, "sql", Supertype, TextBox6.Text, "", "" );
+        
+        if ( sp == "-1" ) isOk = false;
+
+        return isOk;
+                
+       
+    }
+
+    private DataSet queryByDefinedSql(string sqlstr)
+    {
+        OracleDataAdapter ada = new OracleDataAdapter();
+        DataSet dsPos = new DataSet();
+        OracleConnection con = new OracleConnection(ConfigurationManager.AppSettings["dbconnstr"]);
+        OracleCommand com = new OracleCommand(sqlstr, con);
+        com.CommandType = CommandType.Text;
+        ada.SelectCommand = com;
+        con.Open();
+        ada.Fill(dsPos, "allUser");
+        con.Close();
+        return dsPos;
+    }
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+        Response.Write("<SCRIPT   LANGUAGE='JavaScript'>window.opener=null;window.close();</SCRIPT> "); // close system
+        //string web = Request.QueryString["web"].ToString();
+        //Response.Redirect(web);
+    }
+    protected void TextBox1_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void Button4_Click(object sender, EventArgs e)  // Modify
+    {
+        string t1 = ChkSuperPW(TextBox4.Text, TextBox5.Text, DBRead);
+        if (TextBox1.Text != TextBox3.Text) return;
+        if (TextBox1.Text == "") return;
+        string sp = FPubLibPointer.UsrPSFunc(this.user_id.Text, this.user_pwd.Text, TextBox2.Text, TextBox1.Text, DBRead, "2", "sql", t1, TextBox6.Text, "", "");
+      
+    }
+    protected void Button3_Click(object sender, EventArgs e)
+    {
+        string t1 = ChkSuperPW(TextBox4.Text, TextBox5.Text, DBRead);
+        string sp = FPubLibPointer.UsrPSFunc(this.user_id.Text, this.user_pwd.Text, TextBox2.Text, TextBox1.Text, DBRead, "3", "sql", t1, TextBox6.Text, "", ""); // Delete
+
+    }
+    protected void ok_Click(object sender, EventArgs e)
+    {
+        string t1 = ChkSuperPW(this.user_id.Text, this.user_pwd.Text, DBRead);
+        if (t1 == "-1") Button5.Text = "密碼錯誤";
+        else Button5.Text = "密碼正確";
+    }
+
+
+    private string ChkSuperPW( string pUser, string pPst2, string pDRStr )
+    {
+        string t1 = FPubLibPointer.ChkUsrPSExist( pUser, pPst2, pDRStr);
+        if (t1 == "-1") return("1"); // Normal Users 
+
+        if ( ( pUser.ToLower() != "admin" ) && ( pUser.ToLower() != "kenlin" )) return("1"); // Normal Users 
+
+        string p6 = Session["Param6"].ToString();
+        if (p6.ToLower() != "supervisor") return ("1");  // Not Get Para from Web
+
+        Supertype = "s";
+        return("s");
+    }
+
+    protected void Button5_Click(object sender, EventArgs e)
+    {
+       MainProc();
+    }
+
+    private void ETAToSyncro(string SourceStr, string ObjectStr)
+    {
+        #region ETAToSyncro
+        SqlConnection conn = new SqlConnection(SourceStr);
+        SqlConnection SyncroCon = new SqlConnection(ObjectStr);
+        conn.Open();
+        SyncroCon.Open();
+
+        string SelectSql = "";
+        string UpdateSql = "";
+        string sID = "";
+        string sPV = "";
+        string sEV = "";
+        string sCustomerSite = "";
+        string sFoxconnSite = "";
+        string sPartNO = "";
+        int iETA = 0;
+        string sSyncroID = "";
+        string[,] sETA;
+        int iEVCount = 0;
+        int iPVCount = 0;
+        int i = 0;
+        //try 
+        //{
+        //    //Right Code
+        //}
+        //catch (Exception ex)
+        //{
+        //    Response.Write(ex.ToString());
+        //    //Error ex
+        //}
+        //finally
+        //{
+        //    //close Connection
+        //}
+
+
+        //----Found Document ID need to convert to Syncro
+        SelectSql = "select DocumentID,EVUpdateTime,PVUpdateTime from ReqProcETDToETA " +
+                    "Where FinishedDate is not null " +
+                    "And  " +
+                    "(((DocumentID like '%EV%' or DocumentID like '%EP%') and LTrim(IsNUll(EVUpdateTime,''))='' ) " +
+                    "or ((DocumentID like '%PV%' or DocumentID like '%EP%') and LTrim(IsNUll(PVUpdateTime,''))='' )) ";
+        DataTable dt_ID = new DataTable();
+        SqlDataAdapter da_ID = new SqlDataAdapter(SelectSql, conn);
+        da_ID.Fill(dt_ID);
+        int iID;
+        iID = dt_ID.Rows.Count;
+        for (iID = 0; iID < dt_ID.Rows.Count; iID++)
+        {
+            try
+            {
+                sID = dt_ID.Rows[iID][0].ToString();
+                sEV = dt_ID.Rows[iID][1].ToString();
+                sPV = dt_ID.Rows[iID][2].ToString();
+                sEV = sEV.Trim();
+                sPV = sPV.Trim();
+
+                sCustomerSite = "";
+                sFoxconnSite = "";
+                sPartNO = "";
+                iEVCount = 0;
+
+                #region EV
+                //Whether need update EV
+                // if sID includes 'EV','
+
+                //if ((sID.Substring(sID.Length - 2) == "EV") || (sID.Substring(sID.Length - 2) == "EP"))
+                if (((sID.Substring(18, 2) == "EV") || (sID.Substring(18, 2) == "EP")) && (sEV == ""))
+                {
+                    #region GetETA
+                    #region RunSQL
+                    SelectSql = "select " +
+                                "CustomerSite,FoxconnSite,CustomerPN,SpDate_8Bytes,(Case when SWWeekDay = 'Day' then SumSpQty When SWWeekDay='Week' then SumC3 end) QTY,SWWeekDay,[AccountNum],DocumentID,Nokia1Document_ID " +
+                                "from dbo.PreETA where documentID='" + sID + "' " +
+                                " And DVType='EV' " +
+                                "order by CustomerSite,FoxconnSite,CustomerPN,SpDate_8Bytes ";
+
+                    DataTable dt_ETA = new DataTable();
+                    SqlDataAdapter da_ETA = new SqlDataAdapter(SelectSql, conn);
+                    da_ETA.Fill(dt_ETA);
+                    #endregion
+                    sETA = new string[dt_ETA.Rows.Count, 10];
+                    //0  CustomerSite,1 FoxconnSite,2 CustomerPN,3 SpDate,4 Qty, 5 DayWeek, 6 SyncroID(need search),7 UpdateQty.8 AccountNum,9 DocumentID
+                    for (iETA = 0; iETA < dt_ETA.Rows.Count; iETA++)
+                    {
+                        sETA[iETA, 0] = dt_ETA.Rows[iETA][0].ToString();
+                        sETA[iETA, 1] = dt_ETA.Rows[iETA][1].ToString();
+                        sETA[iETA, 2] = dt_ETA.Rows[iETA][2].ToString();
+                        sETA[iETA, 3] = dt_ETA.Rows[iETA][3].ToString();
+                        sETA[iETA, 4] = dt_ETA.Rows[iETA][4].ToString();
+                        sETA[iETA, 5] = dt_ETA.Rows[iETA][5].ToString();
+                        //sETA[iETA, 6] = dt_ETA.Rows[iETA][8].ToString();
+                        sETA[iETA, 6] = "";
+                        sETA[iETA, 7] = "0";
+                        sETA[iETA, 8] = dt_ETA.Rows[iETA][6].ToString();
+                        sETA[iETA, 9] = dt_ETA.Rows[iETA][7].ToString();
+                        sETA[iETA, 0] = sETA[iETA, 0].Trim();
+                        sETA[iETA, 1] = sETA[iETA, 1].Trim();
+                        sETA[iETA, 2] = sETA[iETA, 2].Trim();
+                        sETA[iETA, 3] = sETA[iETA, 3].Trim();
+                        sETA[iETA, 4] = sETA[iETA, 4].Trim();
+                        sETA[iETA, 5] = sETA[iETA, 5].Trim();
+                        sETA[iETA, 6] = sETA[iETA, 6].Trim();
+                        sETA[iETA, 8] = sETA[iETA, 8].Trim();
+                        sETA[iETA, 9] = sETA[iETA, 9].Trim();
+                    }
+                    #endregion
+
+                    #region GetSyncroID
+                    for (iETA = 0; iETA < dt_ETA.Rows.Count; iETA++)
+                    {
+                        if (sETA[iETA, 6] == "")
+                        {
+                            if ((sETA[iETA, 0] != sCustomerSite) || (sETA[iETA, 1] != sFoxconnSite) || (sETA[iETA, 2] != sPartNO))
+                            {
+                                // Search Syncro Document_ID
+                                sCustomerSite = sETA[iETA, 0].ToString();
+                                sFoxconnSite = sETA[iETA, 1].ToString();
+                                sPartNO = sETA[iETA, 2].ToString();
+                                #region RunSQL
+                                SelectSql = "select max(S.Document_ID) " +
+                                          "from syncro_4A5_Detail_plant S,Syncro_4A3_Partner P,Customer_Plant C " +
+                                          "where S.Document_ID=P.Document_iD " +
+                                          "And P.Forecast_PartnerGBI=C.Plant_Code " +
+                                          "And S.Forecast_CustomerPN='" + sPartNO + "' " +
+                                          "And C.Plant_Name= '" + sCustomerSite + "' " +
+                                          "And substring (substring(Foxconn_Site,11,len(Foxconn_Site)),0,CHARINDEX(':',substring(Foxconn_Site,11,len(Foxconn_Site))))='" + sFoxconnSite + "' ";
+                                DataTable dt_SyncroID = new DataTable();
+                                SqlDataAdapter da_SyncroID = new SqlDataAdapter(SelectSql, SyncroCon);
+                                da_SyncroID.Fill(dt_SyncroID);
+                                #endregion
+                                sSyncroID = dt_SyncroID.Rows[0][0].ToString();
+                                dt_SyncroID.Dispose();
+                                da_SyncroID.Dispose();
+
+                                #region RunSQLUpdate
+                                if (sSyncroID != "")
+                                {
+                                    UpdateSql = "Update PreETA Set Nokia2Document_ID = '" + sSyncroID + "' Where DocumentID = '" + sID + "' And CustomerSite='" + sCustomerSite + "' And FoxconnSite= '" + sFoxconnSite + "' " +
+                                                "And CustomerPN='" + sPartNO + "' And DVType='EV'";
+                                    EXECSQL(UpdateSql, conn);
+                                }
+                                #endregion
+                            }
+                            sETA[iETA, 6] = sSyncroID;
+                        }
+                    }
+                    #endregion
+                    // Update Syncro DB
+                    #region UpdateSyncroDB
+                    for (iETA = 0; iETA < dt_ETA.Rows.Count; iETA++)
+                    {
+                        if (sETA[iETA, 6] != "")
+                        {
+                            #region RunSQLUpdate
+                            UpdateSql = " Update   syncro_4A5_Detail_Plant " +
+                                        " Set Forecast_QtyCommit=" + sETA[iETA, 4].ToString() +
+                                        " ,FoxconnUpload_Flag='Y' " +
+                                        " Where Document_ID= '" + sETA[iETA, 6].ToString() + "' " +
+                                        " And Forecast_CustomerPN='" + sETA[iETA, 2].ToString() + "' " +
+                                        " And Forecast_BeginDate='" + sETA[iETA, 3].ToString() + "Z' " +
+                                        " And Forecast_IntervalCode='" + sETA[iETA, 5].ToString() + "' " +
+                                        " And substring (substring(Foxconn_Site,11,len(Foxconn_Site)),0,CHARINDEX(':',substring(Foxconn_Site,11,len(Foxconn_Site))))='" + sETA[iETA, 1].ToString() + "' ";
+
+                            i = EXECSQL(UpdateSql, SyncroCon);
+                            #endregion
+                            sETA[iETA, 7] = Convert.ToString(i);
+                            if (i > 0)
+                            {
+                                iEVCount = iEVCount + i;
+                            }
+                        }
+
+
+
+
+                        if (iETA == dt_ETA.Rows.Count - 1)   //Last one
+                        {
+                            UpdateSql = "insert into Syncro_4A3_Marge_Status " +
+                                        "(Nokia_Site,Upload_Date,Marge_Flag,Confirm_Flag,Upload_User,Upload_FilePath) " +
+                                        " values ('" + sETA[iETA, 0] + "',replace(replace(replace(replace(convert(varchar,getdate(),121),'-',''),' ',''),':',''),'.',''), " +
+                                        " 'N','N','NewUpdateApp','" + sETA[iETA, 9] + "') ";
+                            EXECSQL(UpdateSql, SyncroCon);
+
+
+
+                        }
+                        else
+                        {
+                            if (sETA[iETA, 0] != sETA[iETA + 1, 0])
+                            {
+                                UpdateSql = "insert into Syncro_4A3_Marge_Status " +
+                                            "(Nokia_Site,Upload_Date,Marge_Flag,Confirm_Flag,Upload_User,Upload_FilePath) " +
+                                            " values ('" + sETA[iETA, 0] + "',replace(replace(replace(replace(convert(varchar,getdate(),121),'-',''),' ',''),':',''),'.',''), " +
+                                            " 'N','N','NewUpdateApp','" + sETA[iETA, 9] + "') ";
+
+                                EXECSQL(UpdateSql, SyncroCon);
+                            }
+
+                        }
+
+                    }
+                    #endregion
+                    #region SaveRecord
+                    for (iETA = 0; iETA < dt_ETA.Rows.Count; iETA++)
+                    {
+                        UpdateSql = "Insert Into [MemoryETAToSyncro] " +
+                                    "([CustomerSite],[FoxconnSite],[CustomerPN],[SPDate_8Bytes],[SumSPQty],[SWWeekDay],[SyncroID],[UpdateQty],[AccountNum],[Type],[DocumentID]) " +
+                                    "values " +
+                                   "('" + sETA[iETA, 0] + "'," + "'" + sETA[iETA, 1] + "','" + sETA[iETA, 2] + "','" + sETA[iETA, 3] + "','" + sETA[iETA, 4] + "','" + sETA[iETA, 5] + "','" + sETA[iETA, 6] + "','" + sETA[iETA, 7] + "','" + sETA[iETA, 8] + "','EV','" + sETA[iETA, 9] + "')";
+
+                        EXECSQL(UpdateSql, conn);
+                    }
+                    #endregion
+                    UpdateSql = "Update ReqProcETDToETA Set EVUpdateTime=Convert(varchar,getDate(),120),EVUpdateQty=" + Convert.ToString(iEVCount) +
+                                " Where DocumentID='" + sID + "' ";
+
+                    EXECSQL(UpdateSql, conn);
+
+                    dt_ETA.Dispose();
+                    da_ETA.Dispose();
+
+
+                }
+                #endregion
+
+                #region PV
+                //Whether need update PV
+                // if sID includes 'EV','
+                //if ((sID.Substring(sID.Length - 2) == "PV") || (sID.Substring(sID.Length - 2) == "EP"))
+
+                if (((sID.Substring(18, 2) == "PV") || (sID.Substring(18, 2) == "EP")) && (sPV == ""))
+                {
+                    #region GetETA
+                    iPVCount = 0;
+                    sCustomerSite = "";
+                    sFoxconnSite = "";
+                    sPartNO = "";
+
+                    SelectSql = "select " +
+                                "CustomerSite,FoxconnSite,CustomerPN,SpDate_8Bytes, SumC3 QTY,SWWeekDay,[AccountNum],DocumentID,Nokia1Document_ID " +
+                                "from PreETA where documentID='" + sID + "' " +
+                                "And SWWeekDay='Week' " +
+                                "And DVType='PV'  " +
+                                "order by CustomerSite,FoxconnSite,CustomerPN,SpDate_8Bytes ";
+                    DataTable dt_ETA = new DataTable();
+                    SqlDataAdapter da_ETA = new SqlDataAdapter(SelectSql, conn);
+                    da_ETA.Fill(dt_ETA);
+                    sETA = new string[dt_ETA.Rows.Count, 10];
+                    //0  CustomerSite,1 FoxconnSite,2 CustomerPN,3 SpDate,4 Qty, 5 DayWeek, SyncroID(need search),UpdateQty.
+                    for (iETA = 0; iETA < dt_ETA.Rows.Count; iETA++)
+                    {
+                        sETA[iETA, 0] = dt_ETA.Rows[iETA][0].ToString();
+                        sETA[iETA, 1] = dt_ETA.Rows[iETA][1].ToString();
+                        sETA[iETA, 2] = dt_ETA.Rows[iETA][2].ToString();
+                        sETA[iETA, 3] = dt_ETA.Rows[iETA][3].ToString();
+                        sETA[iETA, 4] = dt_ETA.Rows[iETA][4].ToString();
+                        sETA[iETA, 5] = dt_ETA.Rows[iETA][5].ToString();
+                        //sETA[iETA, 6] = dt_ETA.Rows[iETA][8].ToString();
+                        sETA[iETA, 6] = "";
+                        sETA[iETA, 7] = "0";
+                        sETA[iETA, 8] = dt_ETA.Rows[iETA][6].ToString();
+                        sETA[iETA, 9] = dt_ETA.Rows[iETA][7].ToString();
+                        sETA[iETA, 0] = sETA[iETA, 0].Trim();
+                        sETA[iETA, 1] = sETA[iETA, 1].Trim();
+                        sETA[iETA, 2] = sETA[iETA, 2].Trim();
+                        sETA[iETA, 3] = sETA[iETA, 3].Trim();
+                        sETA[iETA, 4] = sETA[iETA, 4].Trim();
+                        sETA[iETA, 5] = sETA[iETA, 5].Trim();
+                        sETA[iETA, 6] = sETA[iETA, 6].Trim();
+                        sETA[iETA, 8] = sETA[iETA, 8].Trim();
+                        sETA[iETA, 9] = sETA[iETA, 9].Trim();
+                    }
+                    #endregion
+                    #region GetSyncroPVID
+                    for (iETA = 0; iETA < dt_ETA.Rows.Count; iETA++)
+                    {
+                        if (sETA[iETA, 6] == "")
+                        {
+                            if ((sETA[iETA, 0] != sCustomerSite) || (sETA[iETA, 1] != sFoxconnSite) || (sETA[iETA, 2] != sPartNO))
+                            {
+                                // Search Syncro Document_ID
+                                sCustomerSite = sETA[iETA, 0].ToString();
+                                sFoxconnSite = sETA[iETA, 1].ToString();
+                                sPartNO = sETA[iETA, 2].ToString();
+                                SelectSql = "select max(S.Document_ID) " +
+                                          "from syncro_4A1_Status_Flag_plant S,Syncro_4A1_Partner P,Customer_Plant C, " +
+                                          "syncro_4A1_Status_Flag D " +
+                                          "where S.Document_ID=P.Document_iD " +
+                                          "And D.Document_ID = S.Document_ID " +
+                                          "And D.Forecast_CustomerPN = S.Forecast_CustomerPN " +
+                                          "And D.Forecast_PNType ='B' " +
+                                          "And P.Forecast_PartnerGBI=C.Plant_Code " +
+                                          "And S.Forecast_CustomerPN='" + sPartNO + "' " +
+                                          "And C.Plant_Name= '" + sCustomerSite + "' " +
+                                          "And substring (substring(S.Foxconn_Site,11,len(S.Foxconn_Site)),0,CHARINDEX(':',substring(S.Foxconn_Site,11,len(S.Foxconn_Site))))='" + sFoxconnSite + "' ";
+                                DataTable dt_SyncroID = new DataTable();
+                                SqlDataAdapter da_SyncroID = new SqlDataAdapter(SelectSql, SyncroCon);
+                                da_SyncroID.Fill(dt_SyncroID);
+                                sSyncroID = dt_SyncroID.Rows[0][0].ToString();
+                                dt_SyncroID.Dispose();
+                                da_SyncroID.Dispose();
+
+                                UpdateSql = "Update PreETA Set Nokia2Document_ID = '" + sSyncroID + "' Where DocumentID = '" + sID + "' And CustomerSite='" + sCustomerSite + "' And FoxconnSite= '" + sFoxconnSite + "' " +
+                                            "And CustomerPN='" + sPartNO + "' And DVType='PV' ";
+
+                                EXECSQL(UpdateSql, conn);
+
+                            }
+                            sETA[iETA, 6] = sSyncroID;
+                        }
+                    }
+                    #endregion
+                    #region Update4A1
+                    // Update Syncro DB
+                    for (iETA = 0; iETA < dt_ETA.Rows.Count; iETA++)
+                    {
+                        if (sETA[iETA, 6] != "")
+                        {
+                            UpdateSql = " Update   syncro_4A1_Detail_Plant " +
+                                      " Set Forecast_QtyCommit=" + sETA[iETA, 4].ToString() +
+                                      " ,FoxconnUpload_Flag='Y' " +
+                                      " Where Document_ID= '" + sETA[iETA, 6].ToString() + "' " +
+                                      " And Forecast_CustomerPN='" + sETA[iETA, 2].ToString() + "' " +
+                                      " And Forecast_BeginDate='" + sETA[iETA, 3].ToString() + "Z' " +
+                                      " And Forecast_IntervalCode='Week' " +
+                                      " And substring (substring(Foxconn_Site,11,len(Foxconn_Site)),0,CHARINDEX(':',substring(Foxconn_Site,11,len(Foxconn_Site))))='" + sETA[iETA, 1].ToString() + "' ";
+
+                            i = EXECSQL(UpdateSql, SyncroCon);
+                            sETA[iETA, 7] = Convert.ToString(i);
+                            if (i > 0)
+                            {
+                                iPVCount = iPVCount + i;
+
+                            }
+
+                        }
+                    }
+                    #endregion
+                    #region SaveRecordToDB
+                    for (iETA = 0; iETA < dt_ETA.Rows.Count; iETA++)
+                    {
+                        UpdateSql = "Insert Into [MemoryETAToSyncro] " +
+                                    "([CustomerSite],[FoxconnSite],[CustomerPN],[SPDate_8Bytes],[SumSPQty],[SWWeekDay],[SyncroID],[UpdateQty],[AccountNum],[Type],[DocumentID]) " +
+                                    "values " +
+                                   "('" + sETA[iETA, 0] + "'," + "'" + sETA[iETA, 1] + "','" + sETA[iETA, 2] + "','" + sETA[iETA, 3] + "','" + sETA[iETA, 4] + "','" + sETA[iETA, 5] + "','" + sETA[iETA, 6] + "','" + sETA[iETA, 7] + "','" + sETA[iETA, 8] + "','PV','" + sETA[iETA, 9] + "')";
+
+                        EXECSQL(UpdateSql, conn);
+                    }
+                    #endregion
+                    UpdateSql = "Update ReqProcETDToETA Set PVUpdateTime=Convert(varchar,getDate(),120),PVUpdateQty=" + Convert.ToString(iPVCount) +
+                                " Where DocumentID='" + sID + "' ";
+
+                    EXECSQL(UpdateSql, conn);
+                    dt_ETA.Dispose();
+                    da_ETA.Dispose();
+
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                Response.Write(ex.ToString());
+            }
+        }
+        dt_ID.Dispose();
+        da_ID.Dispose();
+        conn.Close();
+        conn.Dispose();
+        SyncroCon.Close();
+        SyncroCon.Dispose();
+        //Response.Write("<script language='javascript'>alert('Finish')</script>");
+        //Response.Write("Finish");
+        #endregion
+    }
+
+    private int EXECSQL(string SQL, SqlConnection conn)
+    {
+        int i;
+        SqlCommand cmd = new SqlCommand(SQL, conn);
+        try
+        {
+            i = cmd.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+            i = -1;
+        }
+        finally
+        {
+            cmd.Dispose();
+
+        }
+        return i;
+    }
+
+    /////////////////////////////////////////////// 
+    // 1. TimecntNoIntoMain count how many time not go for Mainproc 
+    // 2. PrgStatus 為程式完成
+    ////////////////////////////////////////////
+    protected void Timer1_Tick(object sender, EventArgs e)
+    {
+        // Timer1.Enabled = false;
+        string s1 = "";
+        TextBox7.Text = "Int Timer Interrupt";
+        Timeloopcnt++;  // 進入次數
+        if (Timeloopcnt > 1000 ) Timeloopcnt = 1;
+
+        TextBox4.Text = Timeloopcnt.ToString() + " " + TimecntNoIntoMain.ToString();
+        string t1 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "TimeInt", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), TimecntNoIntoMain.ToString(), "", "", "", DBMess, "sql");         // 10 Code
+     
+        // tmp close 20121102
+        //if (TimecntNoIntoMain >= 6)   // 6 次未中斷, 強制 exec  6*20 = 120 ( 2 hr )  
+        //{
+        //    TimecntNoIntoMain = 0;      
+        //    PrgStatus = "";
+        //}
+
+        if (PrgStatus == "")
+        {
+            t1 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "TimeToMain", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), TimecntNoIntoMain.ToString(), "", "", "", DBMess, "sql");         // 10 Code
+            TimecntNoIntoMain = 0;
+            MainProc();// ETAToETA and Update            
+        }
+        else
+        {
+            TimecntNoIntoMain++; // 沒執行 Main次數
+            t1 = FPubLibPointer.PubWri_MessLog("NokETDUPD", "TimeOut", TimecntNoIntoMain.ToString(), Timeloopcnt.ToString(), PrgStatus.ToString(), TimecntNoIntoMain.ToString(), "", "", "", DBMess, "sql");         // 10 Code
+     
+        }
+
+    }
+
+
+    private void MainProc()
+    {
+        Timer1.Enabled = false;
+        MainETDToETA();
+        Timer1.Enabled = true;
+
+    }
+    protected void Button6_Click(object sender, EventArgs e)
+    {
+        Response.Write("<script>alert(' 開原有 2各網站, 請書入第 2 密碼才能打開 ! ')</script>");
+        if (TextBox6.Text.ToLower() == "foxconn88")
+            Response.Write("<script language='javascript'>window.open('http://10.186.19.104/kenETDToETA/UploadData/NLVDailyIncoming.aspx','new','height=200,width=300,top=500,left=500')</script>");
+        else
+            Response.Write("<script>alert(' Password error ! ')</script>");
+    }
+    protected void Button7_Click(object sender, EventArgs e)
+    {
+        Response.Write("<script>alert(' 開原有 2各網站, 請書入第 2 密碼才能打開 ! ')</script>");
+        if (TextBox6.Text.ToLower() == "foxconn88")
+        {
+            PrgStatus = "ETAToSyncro";
+            ETAToSyncro(DBRead, DBWri);
+            PrgStatus = "";
+        }   
+        else
+            Response.Write("<script>alert(' Password error ! ')</script>");
+
+    }
+} // End Class

@@ -1,0 +1,75 @@
+A:link.dh1,A:visited.dh1,A:active.dh1,.dh1 {
+	LINE-HEIGHT: normal; FONT-STYLE: normal; FONT-FAMILY: Arial; COLOR: #ffffff; FONT-SIZE: 12px; TEXT-DECORATION: none
+}
+A:link {
+	TEXT-DECORATION: none
+}
+A:visited {
+	TEXT-DECORATION: none
+}
+A:hover,A:hover.dh1 {
+	COLOR: #ff0000; TEXT-DECORATION: none
+}
+.about1 {
+	LINE-HEIGHT: 25px; FONT-FAMILY: Arial; COLOR: #333333; FONT-SIZE: 12px; TEXT-DECORATION: none
+}
+.bq1 {
+	FONT-FAMILY: Arial; COLOR: #333333; FONT-SIZE: 9px; TEXT-DECORATION: none
+}
+.dh2 {
+	FONT-FAMILY: Arial; COLOR: #ffffff; FONT-SIZE: 16px; TEXT-DECORATION: none
+}
+.gcsl1 {
+	FONT-FAMILY: Arial; COLOR: #333333; FONT-SIZE: 16px; FONT-WEIGHT: bold
+}
+daohang1 {
+	FONT-FAMILY: Arial; COLOR: #333333; FONT-SIZE: 12px; TEXT-DECORATION: none
+}
+.daohang2 {
+	FONT-FAMILY: Arial; COLOR: #333333; FONT-SIZE: 12px; TEXT-DECORATION: none
+}
+
+#brandMenu
+{
+    FONT-FAMILY: Arial; COLOR: #333333; FONT-SIZE: 12px;line-height:30px; width:150px; text-align:left; border-bottom:solid 1px #333333;  padding-left:10px;
+    }
+    #brandMenu a,A:hover,A:link{ text-decoration:none; color:#333333;}
+    
+.pName
+{
+    font:Arial;color:#333333;font-size:14px;line-height:30px; text-align:left; vertical-align:middle; padding-left:15px;
+    }
+    
+.pDec
+{
+    font:Arial;color:#333333;font-size:12px;line-height:20px; text-align:left; vertical-align:middle; padding-left:15px; border-bottom:1px dotted #333333;
+    }
+    
+    
+.list 
+{
+     padding-left:10px; list-style-type:none; margin:0px;
+    }
+    
+    .list  li{ display:inline; width:180px; margin:20px 10px 20px 10px; padding-top:15px;}
+    .list li a,a:hover,a:link;a:visited{ color:#333333;font-size:12px; text-decoration:none;}
+    .list li img{ width:150px; height:50px; border:0px; margin:auto;}
+    
+.product h3
+{
+    font:14px bold;
+    text-align:center;
+    line-height:25px;
+    }
+    
+.product p
+{
+    font:12px;
+    line-height:18px;
+    text-indent:30px;
+    }
+    
+.select a,.select
+{
+    padding-left:20px;color:#ff0000; font-weight:bold;
+    }

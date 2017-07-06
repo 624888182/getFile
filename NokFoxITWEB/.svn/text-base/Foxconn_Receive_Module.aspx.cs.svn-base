@@ -1,0 +1,222 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+public partial class Foxconn_Receive_Module : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        lbl_F0.Text = "";
+        lbl_F1.Text = "";
+        lbl_F2.Text = "";
+        lbl_F3.Text = "";
+        lbl_F4.Text = "";
+        lbl_F5.Text = "";
+        lbl_F6.Text = "";
+        lbl_ScanCount.Text = "";
+        lbl_Total.Text = "";
+        if (!Page.IsPostBack)
+        {
+
+            string[] DocIDs = new string[0];
+            int iRet = ReceiveData.GetLastDocumentID(10,ref DocIDs);
+            if (iRet != 0)
+            { 
+                string sError= ReceiveData.GetErrorMessage();
+                ShowMessageLabel(2, sError);
+            }
+            lst_Doc.Items.Clear();
+            int i;
+            for (i=0; i< DocIDs.GetLength(0); i++)
+                lst_Doc.Items.Add(DocIDs[i]);
+            lbl_Status.Text = "";
+            txt_Doc.Text = "";
+            lbl_PSN.Text = "PSN: ";
+            lbl_Doc.Text = "DocID";
+        }
+        #region SCANPSN
+        if ((RadioButtonList1.SelectedIndex ==0) && (txt_PSN.Text.Trim() != ""))
+        {
+            if (txt_Doc.Text.Trim() != "")
+            { 
+                string PSN= txt_PSN.Text.Trim();
+                string DOC = txt_Doc.Text.Trim();
+                string[] RET= new string[0];
+                lbl_Doc.Text = "DOC ID:" +DOC;
+                lbl_PSN.Text = "PSN: " + PSN;
+                int iRet = ReceiveData.CheckPSN(PSN, DOC, ref RET);
+                if (iRet == 0)
+                {
+                    lbl_ScanCount.Text = RET[9];
+                    lbl_Total.Text = RET[8];
+                    if (RET[0] == "1")
+                    {
+                        lbl_F0.Text = RET[1];
+                        lbl_F1.Text = RET[2];
+                        lbl_F2.Text = RET[3];
+                        lbl_F3.Text = RET[4];
+                        lbl_F4.Text = RET[5];
+                        lbl_F5.Text = RET[6];
+                        lbl_F6.Text = RET[7];
+
+                        ShowMessageLabel(1,RET[11]);
+                    }
+                    else
+                    {
+                        ShowMessageLabel(3,RET[11]);
+                    }
+                }
+                else
+                {
+                    string sError = ReceiveData.GetErrorMessage();
+                    sError = "ERROR: " + sError;
+                    ShowMessageLabel(3, sError);
+                }
+            }
+            else
+            {
+                ShowMessageLabel(2,"Please, select or input document id ");
+            }
+        }
+        #endregion
+
+        #region SCANCARTON
+        if ((RadioButtonList1.SelectedIndex == 1) && (txt_Carton.Text.Trim() != ""))
+        {
+            if (txt_Doc.Text.Trim() != "")
+            {
+                string sCarton = txt_Carton.Text.Trim();
+                string DOC = txt_Doc.Text.Trim();
+                string[] RET = new string[0];
+                lbl_Doc.Text = "DOC ID:" + DOC;
+                lbl_PSN.Text = "Carton ID: " + sCarton;
+                int iRet = ReceiveData.CheckCarton(sCarton, DOC,ref RET);
+                if (iRet == 0)
+                {
+                    lbl_ScanCount.Text = RET[9];
+                    lbl_Total.Text = RET[8];
+                    if (RET[0] == "1")
+                    {
+                        lbl_F0.Text = RET[1];
+                        lbl_F1.Text = RET[2];
+                        lbl_F2.Text = RET[3];
+                        lbl_F3.Text = RET[4];
+                        lbl_F4.Text = RET[5];
+                        lbl_F5.Text = RET[6];
+                        lbl_F6.Text = RET[7];
+
+                        ShowMessageLabel(1, RET[11]);
+                    }
+                    else
+                    {
+                        ShowMessageLabel(3, RET[11]);
+                    }
+                }
+                else
+                {
+                    string sError = ReceiveData.GetErrorMessage();
+                    sError = "ERROR: " + sError;
+                    ShowMessageLabel(3, sError);
+                }
+            }
+            else
+            {
+                ShowMessageLabel(2, "Please, select or input document id ");
+            }
+        
+        
+        
+        }
+
+        #endregion
+
+        SetInputFocus();
+    }
+    protected void TextBox1_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void ddl_DocID_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void lst_Doc_SelectedIndexChanged(object sender, EventArgs e)
+    {
+    }
+    protected void lst_Doc_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void btn_Sel_Click(object sender, EventArgs e)
+    {
+        if (lst_Doc.SelectedItem != null)
+        {
+            txt_Doc.Text = lst_Doc.SelectedItem.Text;
+            string[] RET = new string[0];
+            int iRet = ReceiveData.GetDocumentCount(txt_Doc.Text, ref RET);
+            if (iRet != 0)
+            {
+                string sError = ReceiveData.GetErrorMessage();
+                ShowMessageLabel(2, sError);
+            }
+            else
+            {
+                lbl_Total.Text = RET[0];
+                lbl_ScanCount.Text = RET[1];
+            }
+        }
+        SetInputFocus();
+
+    }
+
+    protected void RadioButtonList1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        txt_PSN.Text = "";
+        txt_Carton.Text = "";
+        if (RadioButtonList1.SelectedIndex == 0)
+        {
+            txt_PSN.Enabled = true;
+            txt_Carton.Enabled = false;
+        }
+        else if (RadioButtonList1.SelectedIndex == 1)
+        {
+            txt_PSN.Enabled = false;
+            txt_Carton.Enabled = true;
+        }
+        SetInputFocus();
+    }
+
+    private void ShowMessageLabel(int iType, string sText)
+    {
+        lbl_Status.Text = sText;
+        switch (iType)
+        { 
+            case 2:
+                lbl_Status.BackColor = System.Drawing.Color.Yellow;
+                break;
+            case 3:
+                lbl_Status.BackColor = System.Drawing.Color.Red;
+                break;
+            default:
+                lbl_Status.BackColor = System.Drawing.Color.Green;
+                break;
+        }
+    }
+
+    private void SetInputFocus()
+    {
+        if (RadioButtonList1.SelectedIndex == 0)
+        {
+            txt_PSN.Text = "";
+            txt_PSN.Focus();
+        }
+        else
+        {
+            txt_Carton.Text = "";
+            txt_Carton.Focus();
+        }
+    }
+}

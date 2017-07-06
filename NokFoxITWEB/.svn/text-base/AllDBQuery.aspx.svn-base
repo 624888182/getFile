@@ -1,0 +1,401 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Web.Master" AutoEventWireup="true" CodeFile="AllDBQuery.aspx.cs" Inherits="AllDBQuery" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+
+    <style type="text/css">
+        .style4
+        {
+            width: 40px;
+        }
+        .style5
+        {
+            width:92px;
+        }
+        .style6
+        {
+            width: 66px;
+        }
+        .style7
+        {
+            width: 75px;
+        }
+        .style12
+        {
+            width: 92px;
+            height: 24px;
+        }
+        .style13
+        {
+            width: 75px;
+            height: 24px;
+        }
+        .style14
+        {
+            width: 40px;
+            height: 24px;
+        }
+        .style15
+        {
+            width: 66px;
+            height: 24px;
+        }
+        .style16
+        {
+            width: 92px;
+            height: 72px;
+        }
+        .style17
+        {
+            width: 75px;
+            height: 72px;
+        }
+        .style18
+        {
+            width: 40px;
+            height: 72px;
+        }
+        .style19
+        {
+            width: 66px;
+            height: 72px;
+        }
+        .style20
+        {
+            width: 92px;
+            height: 47px;
+        }
+        .style21
+        {
+            width: 75px;
+            height: 47px;
+        }
+        .style22
+        {
+            width: 40px;
+            height: 47px;
+        }
+        .style23
+        {
+            width: 66px;
+            height: 47px;
+        }
+        .style24
+        {
+            width: 92px;
+            height: 64px;
+        }
+        .style25
+        {
+            width: 75px;
+            height: 64px;
+        }
+        .style26
+        {
+            width: 40px;
+            height: 64px;
+        }
+        .style27
+        {
+            width: 66px;
+            height: 64px;
+        }
+        .style28
+        {
+            width: 92px;
+            height: 68px;
+        }
+        .style29
+        {
+            width: 75px;
+            height: 68px;
+        }
+        .style30
+        {
+            width: 40px;
+            height: 68px;
+        }
+        .style31
+        {
+            width: 66px;
+            height: 68px;
+        }
+        .style32
+        {
+            width: 92px;
+            height: 76px;
+        }
+        .style33
+        {
+            width: 75px;
+            height: 76px;
+        }
+        .style34
+        {
+            width: 40px;
+            height: 76px;
+        }
+        .style35
+        {
+            width: 66px;
+            height: 76px;
+        }
+        .style36
+        {
+            width: 92px;
+            height: 57px;
+        }
+        .style37
+        {
+            width: 75px;
+            height: 57px;
+        }
+        .style38
+        {
+            width: 40px;
+            height: 57px;
+        }
+        .style39
+        {
+            width: 66px;
+            height: 57px;
+        }
+    </style>
+
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+        <div> 
+                 <table class="style1" style="height: 610px; width: 101%; margin-bottom: 0px">
+            <tr>
+                <td style=" vertical-align: top;" class="style5" height="30">
+       
+                    DB SErver Name</td>
+                <td style=" vertical-align: top;" class="style7" height="30">
+       
+                    &nbsp;DB Server</td>
+                <td style=" vertical-align: top;" class="style4">
+       
+                    10.186.171.215 (Quart)
+                </td>
+                <td style=" vertical-align: top;" class="style6">
+       
+                    10.186.166.108 ( Max )
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style5" height="30">
+       
+                    IP</td>
+                <td style=" vertical-align: top;" class="style7">
+       
+                    10.186.171.76/211 date</td>
+                
+                <td style=" vertical-align: top;" class="style4">
+       
+                    10.186.171.215  date</td>
+                <td style=" vertical-align: top;" class="style6">
+       
+                    10.186.166.108 date</td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style5">
+       
+                    CDMA R_Function_log_t ( 奇美 )
+                </td>
+                <td style=" vertical-align: top;" class="style7">
+       
+                    <asp:TextBox ID="TextBox1" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox28" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style4" height="30">
+       
+                    <asp:TextBox ID="TextBox2" runat="server" Width="140px" 
+                        ontextchanged="TextBox2_TextChanged"></asp:TextBox>
+                    <asp:TextBox ID="TextBox29" runat="server" Width="140px" 
+                        ontextchanged="TextBox2_TextChanged"></asp:TextBox>
+                        
+                </td>
+                <td style=" vertical-align: top;" class="style6">
+       
+                    <asp:TextBox ID="TextBox3" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox30" runat="server" Width="140px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style5">
+       
+                    CDMA R_Functiondetail_t ( 奇美 )</td>
+                <td style=" vertical-align: top;" class="style7">
+       
+                    <asp:TextBox ID="TextBox4" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox31" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style4" height="30">
+       
+                    <asp:TextBox ID="TextBox5" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox32" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style6">
+       
+                    <asp:TextBox ID="TextBox6" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox33" runat="server" Width="140px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style12">
+       
+                    testinfo_head
+                    <br />
+                    ( 亞芳 + 賽隆 )
+                </td>
+                <td style=" vertical-align: top;" class="style13">
+       
+                    <asp:TextBox ID="TextBox7" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox34" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style14">
+       
+                    <asp:TextBox ID="TextBox8" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox35" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style15">
+       
+                    <asp:TextBox ID="TextBox9" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox36" runat="server" Width="140px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style36">
+       
+                    testinfo_detail<br />
+                    (&nbsp; 亞芳 )
+                </td>
+                <td style=" vertical-align: top;" class="style37">
+       
+                    <asp:TextBox ID="TextBox10" runat="server" Width="140px" 
+                        ontextchanged="TextBox10_TextChanged"></asp:TextBox>
+                    <asp:TextBox ID="TextBox37" runat="server" Width="140px" 
+                        ontextchanged="TextBox10_TextChanged"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style38">
+       
+                    <asp:TextBox ID="TextBox11" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox38" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style39">
+       
+                    <asp:TextBox ID="TextBox12" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox39" runat="server" Width="140px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style16">
+       
+                    WCDMA_TSE<br />
+                    R_function_head_t</td>
+                <td style=" vertical-align: top;" class="style17">
+       
+                    <asp:TextBox ID="TextBox13" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox40" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style18">
+       
+                    <asp:TextBox ID="TextBox14" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox41" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style19">
+       
+                    <asp:TextBox ID="TextBox15" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox42" runat="server" Width="140px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style20">SHP<br />
+                    cmcs_sfc_imeinum</td>
+                <td style=" vertical-align: top;" class="style21">
+                    <asp:TextBox ID="TextBox16" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox43" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style22">
+                    <asp:TextBox ID="TextBox17" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox44" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style23">
+                    <asp:TextBox ID="TextBox18" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox45" runat="server" Width="140px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style24">SFC<br />
+                    mes_assy_pid_join</td>
+                <td style=" vertical-align: top;" class="style25">
+                    <asp:TextBox ID="TextBox19" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox46" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style26">
+                    <asp:TextBox ID="TextBox20" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox47" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style27">
+                    <asp:TextBox ID="TextBox21" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox48" runat="server" Width="140px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style28">SFC<br />
+                    mes_assy_history</td>
+                <td style=" vertical-align: top;" class="style29">
+                    <asp:TextBox ID="TextBox22" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox49" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style30">
+                    <asp:TextBox ID="TextBox23" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox50" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style31">
+                    <asp:TextBox ID="TextBox24" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox51" runat="server" Width="140px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style32">SFC<br />
+                    R_wip_tracking_t_pid</td>
+                <td style=" vertical-align: top;" class="style33">
+                    <asp:TextBox ID="TextBox25" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox52" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style34">
+                    <asp:TextBox ID="TextBox26" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox53" runat="server" Width="140px"></asp:TextBox>
+                </td>
+                <td style=" vertical-align: top;" class="style35">
+                    <asp:TextBox ID="TextBox27" runat="server" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="TextBox54" runat="server" Width="140px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style5">&nbsp;</td>
+                <td style=" vertical-align: top;" class="style7">&nbsp;</td>
+                <td style=" vertical-align: top;" class="style4" height="30">&nbsp;</td>
+                <td style=" vertical-align: top;" class="style6">&nbsp;</td>
+            </tr>
+            <tr>
+                <td style=" vertical-align: top;" class="style5">
+       
+                    &nbsp;</td>
+                <td style=" vertical-align: top;" class="style7">
+       
+                    <asp:Button ID="Button1" runat="server" onclick="Button1_Click" Text="Query" />
+                </td>
+                <td style=" vertical-align: top;" class="style4" height="30">
+       
+                    <asp:Button ID="btnrestore" runat="server" Text="Restore" />
+                </td>
+                <td style=" vertical-align: top;" class="style6">
+       
+                    &nbsp;</td>
+            </tr>
+        </table>
+
+</div>
+</asp:Content>
+

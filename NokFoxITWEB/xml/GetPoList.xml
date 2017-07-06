@@ -1,0 +1,30 @@
+<soapenv:Envelope xmlns:glob="http://sap.com/xi/SAPGlobal20/Global" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <glob:PurchaseOrderSimpleByElementsQuery_sync>
+      <PurchaseOrderSimpleSelectionByElements>
+
+        <SelectionByPartySellerPartyKeyPartyID>
+          <InclusionExclusionCode>I</InclusionExclusionCode>
+          <IntervalBoundaryTypeCode>3</IntervalBoundaryTypeCode>
+          <!--<LowerBoundarySellerPartyID>1000252</LowerBoundarySellerPartyID>
+          <UpperBoundarySellerPartyID>1000252</UpperBoundarySellerPartyID>-->
+        </SelectionByPartySellerPartyKeyPartyID>
+
+        <SelectionByPurchaseOrderLifeCycleStatusCode>
+           <InclusionExclusionCode>I</InclusionExclusionCode>
+           <IntervalBoundaryTypeCode>3</IntervalBoundaryTypeCode>
+           <LowerBoundaryPurchaseOrderLifeCycleStatusCode>5</LowerBoundaryPurchaseOrderLifeCycleStatusCode> 
+           <UpperBoundaryPurchaseOrderLifeCycleStatusCode>6</UpperBoundaryPurchaseOrderLifeCycleStatusCode>             
+        </SelectionByPurchaseOrderLifeCycleStatusCode>
+
+      </PurchaseOrderSimpleSelectionByElements>
+
+      <ProcessingConditions>
+        <QueryHitsMaximumNumberValue>1000000</QueryHitsMaximumNumberValue>
+        <QueryHitsUnlimitedIndicator>false</QueryHitsUnlimitedIndicator>
+      </ProcessingConditions>
+
+    </glob:PurchaseOrderSimpleByElementsQuery_sync>
+  </soapenv:Body>
+</soapenv:Envelope>

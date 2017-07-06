@@ -1,0 +1,587 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.IO;
+using System.Collections;
+using System.Data.SqlClient;
+using Economy.Publibrary;
+//using SCM.GSCMDKen;
+using SFC.TJWEB;
+using System.Windows.Forms;
+using System.Threading;
+using EconomyUser;
+using System.Linq;
+using System.Web.UI;
+using System.Data.Odbc;
+
+
+
+namespace SFC.TJWEB
+{
+/// <summary>
+/// Summary description for public ShipPlanlib()	
+/// </summary>
+/// // ShipPlanlibPointer.TrsStrToInteger(arrayEtdUpload[var1 + 1, 5]); 
+///       
+public class BJNLVMODlib
+{
+    protected DateTime tmptoday = DateTime.Today;
+    protected string Currtime = DateTime.Now.ToString("yyyyMMddHHmmssmm");
+    protected string CuurDate = DateTime.Today.ToString("yyyyMMdd");   
+    //ShipPlanlib ShipPlanlibPointer = new ShipPlanlib();
+    //DeLinkPidlib DeLinkPidlibPointer = new DeLinkPidlib();
+    //DeLinkPidlib3 DeLinkPidlib3Pointer = new DeLinkPidlib3();
+    // FSplitlib FSplitlibPointer = new FSplitlib();
+    // FSplitArraylib FSplitArraylibPointer = new FSplitArraylib();
+    ClassLibrarySCM1.Class1 LibSCM1Pointer = new ClassLibrarySCM1.Class1();
+    ClassLibraryUSR1.Class1 LibUsrPointer = new ClassLibraryUSR1.Class1();
+    ClassLibraryPDBA1.Class1 LibPDBA1Pointer = new ClassLibraryPDBA1.Class1();
+
+    string DBType = "oracle";
+    static int PredayQty = 10;
+    static int Gdaycnt = 2;
+    static string tmpType = "";
+    
+    static string tDocumentID = DateTime.Now.ToString("yyyyMMddHHmmssmm");
+    static string tDocumentIDPid = DateTime.Now.ToString("yyyyMMddHHmmssmm");
+
+    public string TransUpToMasterModel(string BSite, string Dtype, string SysDate, string DBType, string DBReadString, string DBWriString, string PCode)
+    {
+           return ("");
+    }
+
+    public string GetDatafromQAServer1(string BSite, string Dtype, string SysDate, string DBType, string DBReadString, string DBWriString, string PCode)
+    {
+        string Ret1 = "", sqlr = "", sqlw = DBType, tmpsqlW = "", sp = "", sp0 = "0", tpo = "", tdn = "", tmpselwri = "", ErrFlag = "", sp1 = "";
+        DataSet dt1 = null, dt2 = null, DNdt = null, dt3 = null, dt4 = null;
+        int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, v6 = 0, v7 = 0, daycnt = 1, DNCnt = 0, v8 = 0;
+        string t01 = "", t02 = "", t03 = "", t04 = "", t05 = "", t06 = "", t07 = "", t08 = "", t09 = "", t10 = "", t11 = "", t12 = "", t13 = "", t14 = "", t15 = "";
+        string t21 = "", t22 = "", t23 = "", t121 = "";
+        string tmp1 = "", tmp2 = "", tmp3 = "", tmp4 = "", tmp5 = "", tmp6 = "", tmp7 = "";
+        Decimal d1 = 0, d2 = 0, d3 = 0;
+        string tmpDate = DateTime.Today.ToString("yyyyMMdd");
+        string tmp1Date = DateTime.Today.AddDays(Gdaycnt).ToString("yyyyMMdd");
+        string ChkDate = DateTime.Today.ToString("yyyyMM");
+
+        if ( SysDate != "") ChkDate = SysDate.Substring(0, 8);
+        //tmp1 = "TOP";
+        //sqlr = " update BOMTXT set DataLevel = '00' where (  ( DataLevel = 'TOP' )  and ( flag is null )) ";
+        //v4 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr);
+        //if (v4 > 0) // Successed
+        //    v4 = v4;
+
+        //    sqlr = "  SELECT  * from BOMTXT  where ( ( substring(CDATE,1,6) = '" + ChkDate + "' ) and  ( flag is null ) ) order by DataLevel asc ";
+        sqlr = "  SELECT  Max(AutoCode) tmpLast from PqcOpYeildHead where FactoryCode = '" + BSite + "' ";
+        DNdt = PDataBaseOperation.PSelectSQLDS(DBType, DBWriString, sqlr);
+        if (DNdt == null) return ("-1"); // Syn Error
+        tmp1 = DNdt.Tables[0].Rows[0]["tmpLast"].ToString().Trim();  // Max AutoCode in BJ-NLVC
+        if ( tmp1 == "") return ("0");     // Not Data
+
+
+        // sqlr = "  SELECT  tmpOpDate.*,  CAST ( OpDate as varchar(40)) TmpOpDate from PqcOpYeildHead tmpOpDate where AutoCode > '" + tmp1 + "' ";
+        sqlr = "  SELECT  tmpPqcOpYeildHead.*, CONVERT(varchar(100), OpDate, 21) TmpOpDate, CONVERT(varchar(100), CreateDate, 21) TmpCreateDate,  "
+            + "  CONVERT(varchar(100), ModifyDate, 21) TmpModifyDate  from PqcOpYeildHead tmpPqcOpYeildHead where AutoCode > '" + tmp1 + "' and   "
+            + "   FactoryCode = '" + BSite + "' ";
+        DNdt = PDataBaseOperation.PSelectSQLDS(DBType, DBReadString, sqlr);
+        if (DNdt == null) return ("-1"); // Syn Error
+        DNCnt = DNdt.Tables[0].Rows.Count;
+        if (DNCnt == 0) return ("0");     // Not Data
+
+        string[,] arrayMOD1 = new string[DNCnt + 1, 50 + 1];
+        for (v1 = 0; v1 <= DNCnt; v1++)
+            for (v2 = 0; v2 <= 10; v2++)
+                arrayMOD1[v1, v2] = "";
+
+
+        DateTime DT1 = DateTime.Today;
+
+        for (v1 = 0; v1 < DNCnt; v1++)
+        {
+            arrayMOD1[v1 + 1, 00] = (v1 + 1).ToString();
+            arrayMOD1[v1 + 1, 01] = DNdt.Tables[0].Rows[v1]["AutoCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 02] = DNdt.Tables[0].Rows[v1]["FactoryCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 03] = DNdt.Tables[0].Rows[v1]["OpPosition"].ToString().Trim();
+            tmp2 = DNdt.Tables[0].Rows[v1]["TmpOpDate"].ToString().Trim(); // "yyyy-mm-dd hh:MI:ss.fff").Trim();   // DT1 = Convert.ToDateTime(tmp2);  
+                                                                        // tmp3 = (Convert.ToDateTime(tmp2)).ToString("yyyy-MM-dd hh:MM:ss.fff").Trim();
+            if ((tmp2 == null) || (tmp2 == "")) tmp2 = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff").Trim();
+            arrayMOD1[v1 + 1, 04] = (Convert.ToDateTime(tmp2)).ToString("yyyy-MM-dd HH:mm:ss.fff").Trim();
+            arrayMOD1[v1 + 1, 05] = DNdt.Tables[0].Rows[v1]["ShiftCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 06] = DNdt.Tables[0].Rows[v1]["ManufactureTypeCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 07] = DNdt.Tables[0].Rows[v1]["MachineID"].ToString().Trim();
+            arrayMOD1[v1 + 1, 08] = DNdt.Tables[0].Rows[v1]["ModelID"].ToString().Trim();
+            arrayMOD1[v1 + 1, 09] = DNdt.Tables[0].Rows[v1]["LotCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 10] = DNdt.Tables[0].Rows[v1]["LotQty"].ToString().Trim();
+            if ((arrayMOD1[v1 + 1, 10] == null) || (arrayMOD1[v1 + 1, 10] == "")) arrayMOD1[v1 + 1, 10] = "0";
+            arrayMOD1[v1 + 1, 11] = DNdt.Tables[0].Rows[v1]["HHCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 12] = DNdt.Tables[0].Rows[v1]["ProjectCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 13] = DNdt.Tables[0].Rows[v1]["HHName"].ToString().Trim();
+            arrayMOD1[v1 + 1, 14] = DNdt.Tables[0].Rows[v1]["CustPartNo"].ToString().Trim();
+            arrayMOD1[v1 + 1, 15] = DNdt.Tables[0].Rows[v1]["HHTypeCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 16] = DNdt.Tables[0].Rows[v1]["ProductTypeCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 17] = DNdt.Tables[0].Rows[v1]["OpIncomeQty"].ToString().Trim();
+            if ((arrayMOD1[v1 + 1, 17] == null) || (arrayMOD1[v1 + 1, 17] == "")) arrayMOD1[v1 + 1, 17] = "0";
+            arrayMOD1[v1 + 1, 18] = DNdt.Tables[0].Rows[v1]["OpDefectQty"].ToString().Trim();
+            if ((arrayMOD1[v1 + 1, 18] == null) || (arrayMOD1[v1 + 1, 18] == "")) arrayMOD1[v1 + 1, 18] = "0";
+            arrayMOD1[v1 + 1, 19] = DNdt.Tables[0].Rows[v1]["Checker"].ToString().Trim();
+            arrayMOD1[v1 + 1, 20] = DNdt.Tables[0].Rows[v1]["Describe"].ToString().Trim();
+            arrayMOD1[v1 + 1, 21] = DNdt.Tables[0].Rows[v1]["Creator"].ToString().Trim();
+
+            tmp2 = DNdt.Tables[0].Rows[v1]["TmpCreateDate"].ToString().Trim();
+            arrayMOD1[v1 + 1, 22] = (Convert.ToDateTime(tmp2)).ToString("yyyy-MM-dd HH:mm:ss.fff").Trim();
+            if ((tmp2 == null) || (tmp2 == "")) tmp2 = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff").Trim();
+            
+            arrayMOD1[v1 + 1, 23] = DNdt.Tables[0].Rows[v1]["Modifier"].ToString().Trim();
+
+            tmp2 = DNdt.Tables[0].Rows[v1]["TmpModifyDate"].ToString().Trim();
+            if ((tmp2 == null) || (tmp2 == "")) tmp2 = DNdt.Tables[0].Rows[v1]["TmpCreateDate"].ToString().Trim();
+            if ((tmp2 == null) || (tmp2 == "")) tmp2 = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff").Trim();
+
+            arrayMOD1[v1 + 1, 24] = (Convert.ToDateTime(tmp2)).ToString("yyyy-MM-dd HH:mm:ss.fff").Trim();
+            
+            arrayMOD1[v1 + 1, 25] = DNdt.Tables[0].Rows[v1]["ReworkQty"].ToString().Trim();
+            if ((arrayMOD1[v1 + 1, 25] == null) || (arrayMOD1[v1 + 1, 25] == "")) arrayMOD1[v1 + 1, 25] = "0";
+            arrayMOD1[v1 + 1, 26] = "";
+            arrayMOD1[v1 + 1, 27] = "";
+            arrayMOD1[v1 + 1, 28] = "";
+            arrayMOD1[v1 + 1, 29] = "";
+
+
+            tmpsqlW = "Insert into PqcOpYeildHead  ( AutoCode, FactoryCode, OpPosition, OpDate, ShiftCode, ManufactureTypeCode, "
+             + " MachineID, ModelID, LotCode, LotQty, HHCode, ProjectCode, HHName, CustPartNo, HHTypeCode, ProductTypeCode,  "
+             + " OpIncomeQty, OpDefectQty, Checker, Describe, Creator, CreateDate, Modifier, ModifyDate, ReworkQty  ) values "
+    + "( '" + arrayMOD1[v1+1, 01].ToString().Trim() + "', '" + arrayMOD1[v1+1, 02].ToString().Trim() + "', '" + arrayMOD1[v1+1, 03].ToString().Trim() + "',"
+    + "  cast('" + arrayMOD1[v1+1, 04].ToString().Trim() + "' as datetime), '" + arrayMOD1[v1+1, 05].ToString().Trim() + "', '" + arrayMOD1[v1+1, 06].ToString().Trim() + "',"
+    + " '" + arrayMOD1[v1+1, 07].ToString().Trim() + "', '" + arrayMOD1[v1+1, 08].ToString().Trim() + "', '" + arrayMOD1[v1+1, 09].ToString().Trim() + "',"
+    + "  " + arrayMOD1[v1+1, 10].ToString().Trim() + " , '" + arrayMOD1[v1+1, 11].ToString().Trim() + "', '" + arrayMOD1[v1+1, 12].ToString().Trim() + "',"
+    + " '" + arrayMOD1[v1+1, 13].ToString().Trim() + "', '" + arrayMOD1[v1+1, 14].ToString().Trim() + "', '" + arrayMOD1[v1+1, 15].ToString().Trim() + "',"
+    + " '" + arrayMOD1[v1+1, 16].ToString().Trim() + "',  " + arrayMOD1[v1+1, 17].ToString().Trim() + ",   " + arrayMOD1[v1+1, 18].ToString().Trim() + " ,"
+    + " '" + arrayMOD1[v1+1, 19].ToString().Trim() + "', '" + arrayMOD1[v1+1, 20].ToString().Trim() + "', '" + arrayMOD1[v1+1, 21].ToString().Trim() + "',"
+    + " cast('" + arrayMOD1[v1 + 1, 22].ToString().Trim() + "' as datetime), '" + arrayMOD1[v1 + 1, 23].ToString().Trim() + "',  "
+    + " cast('" + arrayMOD1[v1 + 1, 24].ToString().Trim() + "' as datetime),  " + arrayMOD1[v1 + 1, 25].ToString().Trim() + "        ) ";
+            v4 = PDataBaseOperation.PExecSQL(DBType, DBWriString, tmpsqlW);
+            if (v4 > 0) // Successed, It could be not data
+                v6++;
+            else
+            {
+                v7++;
+                tmpsqlW = "Insert into PqcOpYeildHead_Temp  ( AutoCode, FactoryCode, HHCode, Describe  ) values "
+   + "( '" + arrayMOD1[v1 + 1, 01].ToString().Trim() + "', '" + arrayMOD1[v1 + 1, 02].ToString().Trim() + "',  "
+   + "  '" + arrayMOD1[v1 + 1, 11].ToString().Trim() + "', 'E'   ) ";
+                v4 = PDataBaseOperation.PExecSQL(DBType, DBWriString, tmpsqlW);
+            }
+                
+                
+        } // end for
+
+        return ("");
+    }
+
+    public string GetDatafromQAServer2(string BSite, string Dtype, string SysDate, string DBType, string DBReadString, string DBWriString, string PCode)
+    {
+        string Ret1 = "", sqlr = "", sqlw = DBType, tmpsqlW = "", sp = "", sp0 = "0", tpo = "", tdn = "", tmpselwri = "", ErrFlag = "", sp1 = "";
+        DataSet dt1 = null, dt2 = null, DNdt = null, dt3 = null, dt4 = null;
+        int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, v6 = 0, v7 = 0, daycnt = 1, DNCnt = 0, v8 = 0;
+        string t01 = "", t02 = "", t03 = "", t04 = "", t05 = "", t06 = "", t07 = "", t08 = "", t09 = "", t10 = "", t11 = "", t12 = "", t13 = "", t14 = "", t15 = "";
+        string t21 = "", t22 = "", t23 = "", t121 = "";
+        string tmp1 = "", tmp2 = "", tmp3 = "", tmp4 = "", tmp5 = "", tmp6 = "", tmp7 = "";
+        Decimal d1 = 0, d2 = 0, d3 = 0;
+        string tmpDate = DateTime.Today.ToString("yyyyMMdd");
+        string tmp1Date = DateTime.Today.AddDays(Gdaycnt).ToString("yyyyMMdd");
+        string ChkDate = DateTime.Today.ToString("yyyyMM");
+
+        if (SysDate != "") ChkDate = SysDate.Substring(0, 8);
+
+        sqlr = "  SELECT  Max(AutoCode) tmpLast from PqcOpYeildBody where FactoryCode = '" + BSite + "' ";
+        DNdt = PDataBaseOperation.PSelectSQLDS(DBType, DBWriString, sqlr);
+        if (DNdt == null) return ("-1"); // Syn Error
+        tmp1 = DNdt.Tables[0].Rows[0]["tmpLast"].ToString().Trim();  // Max AutoCode in BJ-NLVC
+        if (tmp1 == "") return ("0");     // Not Data
+        sqlr = "  SELECT  top(3) *  from PqcOpYeildBody where AutoCode = '" + tmp1 + "' and FactoryCode = '" + BSite + "'  order by DefectItemCode desc";
+        DNdt = PDataBaseOperation.PSelectSQLDS(DBType, DBWriString, sqlr);
+        if (DNdt == null) return ("-1"); // Syn Error
+        // tmp1 = DNdt.Tables[0].Rows[0]["AutoCode"].ToString().Trim();  // Max AutoCode in BJ-NLVC
+        tmp2 = DNdt.Tables[0].Rows[0]["DefectItemCode"].ToString().Trim();
+        if (tmp1 == "") return ("0");     // Not Data
+        sqlr = "  SELECT  * from PqcOpYeildBody where  ( AutoCode > '" + tmp1 + "' )   "
+        + " or ( (AutoCode = '" + tmp1 + "' ) and ( DefectItemCode > '" + tmp2 + "' ) )  ";
+        DNdt = PDataBaseOperation.PSelectSQLDS(DBType, DBReadString, sqlr);
+        if (DNdt == null) return ("-1"); // Syn Error
+        DNCnt = DNdt.Tables[0].Rows.Count;
+        if (DNCnt == 0) return ("0");     // Not Data
+
+        string[,] arrayMOD1 = new string[DNCnt + 1, 50 + 1];
+        for (v1 = 0; v1 <= DNCnt; v1++)
+            for (v2 = 0; v2 <= 10; v2++)
+                arrayMOD1[v1, v2] = "";
+
+       
+        for (v1 = 0; v1 < DNCnt; v1++)
+        {
+            arrayMOD1[v1 + 1, 00] = (v1 + 1).ToString();
+            arrayMOD1[v1 + 1, 01] = DNdt.Tables[0].Rows[v1]["AutoCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 02] = DNdt.Tables[0].Rows[v1]["FactoryCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 03] = DNdt.Tables[0].Rows[v1]["DefectItemCode"].ToString().Trim();
+            arrayMOD1[v1 + 1, 04] = DNdt.Tables[0].Rows[v1]["DefectQty"].ToString().Trim();
+            if ((arrayMOD1[v1 + 1, 04] == null) || (arrayMOD1[v1 + 1, 04] == "")) arrayMOD1[v1 + 1, 04] = "0";
+
+
+            tmpsqlW = "Insert into PqcOpYeildBody  ( AutoCode, FactoryCode, DefectItemCode,DefectQty  ) values "
+    + " ( '" + arrayMOD1[v1 + 1, 01].ToString().Trim() + "', '" + arrayMOD1[v1 + 1, 02].ToString().Trim() + "', "
+    + "   '" + arrayMOD1[v1 + 1, 03].ToString().Trim() + "',  " + arrayMOD1[v1 + 1, 04].ToString().Trim() + "     ) ";
+            v4 = PDataBaseOperation.PExecSQL(DBType, DBWriString, tmpsqlW);
+            if (v4 > 0) // Successed, It could be not data
+                v6++;
+            else
+            {
+                v7++;
+                tmpsqlW = "Insert into PqcOpYeildBody_Temp  ( AutoCode, FactoryCode, DefectItemCode  ) values "
+    + " ( '" + arrayMOD1[v1 + 1, 01].ToString().Trim() + "', '" + arrayMOD1[v1 + 1, 02].ToString().Trim() + "', "
+    + "   '" + arrayMOD1[v1 + 1, 03].ToString().Trim() + "'    ) ";
+                v4 = PDataBaseOperation.PExecSQL(DBType, DBWriString, tmpsqlW);
+            }
+
+
+        } // end for
+
+        return ("");
+    }
+
+
+    public string ConvertBOM3(string BSite, string Dtype, string SysDate, string DBType, string DBReadString, string DBWriString, string PCode)
+    {
+        string Ret1 = "", sqlr = "", sqlw = "", tmpsqlW = "", sp = "", sp0 = "0", tpo = "", tdn = "", tmpselwri = "", ErrFlag = "", sp1 = "";
+        DataSet dt1 = null, dt2 = null, DNdt = null, dt3 = null, dt4 = null;
+        int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, v6 = 0, v7 = 0, daycnt = 1, DNCnt = 0, v8 = 0;
+        string t01 = "", t02 = "", t03 = "", t04 = "", t05 = "", t06 = "", t07 = "", t08 = "", t09 = "", t10 = "", t11 = "", t12 = "", t13 = "", t14 = "", t15 = "";
+        string t21 = "", t22 = "", t23 = "", t121 = "";
+        string tmp1 = "", tmp2 = "", tmp3 = "", tmp4 = "", tmp5 = "", tmp6 = "", tmp7 = "";
+        Decimal d1 = 0, d2 = 0, d3 = 0;
+        string tmpDate = DateTime.Today.ToString("yyyyMMdd");
+        string tmp1Date = DateTime.Today.AddDays(Gdaycnt).ToString("yyyyMMdd");
+        string ChkDate = DateTime.Today.ToString("yyyyMM");
+
+        if (SysDate != "") ChkDate = SysDate.Substring(0, 6);
+        //tmp1 = "TOP";
+        //sqlr = " update BOMTXT set DataLevel = '00' where (  ( DataLevel = 'TOP' )  and ( flag is null )) ";
+        //v4 = PDataBaseOperation.PExecSQL(DBType, DBReadString, sqlr);
+        //if (v4 > 0) // Successed
+        //    v4 = v4;
+
+    //    sqlr = "  SELECT  * from BOMTXT  where ( ( substring(CDATE,1,6) = '" + ChkDate + "' ) and  ( flag is null ) ) order by DataLevel asc ";
+        sqlr = "  SELECT  * from BOMTXT  where ( ( substring(CDATE,1,6) = '" + ChkDate + "' ) and ( flag is null  ) and ( DataLevel != '' ) ) order by DataLevel asc ";
+        DNdt = PDataBaseOperation.PSelectSQLDS(DBType, DBReadString, sqlr);       
+        if (DNdt == null) return ("-1"); // Syn Error
+        DNCnt = DNdt.Tables[0].Rows.Count;
+        if (DNCnt == 0) return ("0");     // Not Data
+
+        string[,] arrayBOM1 = new string[DNCnt + 1, 50 + 1];
+        for (v1 = 0; v1 <= DNCnt; v1++)
+            for (v2 = 0; v2 <= 10; v2++)
+                arrayBOM1[v1, v2] = "";
+
+        int MaxItem = 50, ItemLen = 0;
+        string[,] arrayBOM1Item = new string[MaxItem + 1, 50 + 1];
+        for (v1 = 0; v1 <= MaxItem; v1++)
+            for (v2 = 0; v2 <= 50; v2++)
+                arrayBOM1[v1, v2] = "";
+
+        ///////////////////////////////////////////////////////
+        // 放上階臨時表, 每次須更新, from array 0
+        string[,] arrayLevel = new string[50 + 1, 3 + 1];
+        for (v1 = 0; v1 <= 50; v1++)
+            for (v2 = 0; v2 <= 3; v2++)
+                arrayLevel[v1, v2] = "";
+
+        string PPart = "", CPart = "";
+
+        v3 = 0; // Length
+        v4 = 0;
+        for (v1 = 0; v1 < DNCnt; v1++)
+        {
+            arrayBOM1[v1 + 1, 0] = (v1 + 1).ToString();
+            arrayBOM1[v1 + 1, 1] = ChkDate; // Chech Date yyyymm
+            arrayBOM1[v1 + 1, 2] = DNdt.Tables[0].Rows[v1]["CDATE"].ToString().Trim();
+            arrayBOM1[v1 + 1, 3] = DNdt.Tables[0].Rows[v1]["DocumentID"].ToString().Trim();
+            arrayBOM1[v1 + 1, 4] = DNdt.Tables[0].Rows[v1]["DataLevel"].ToString().Trim();
+            arrayBOM1[v1 + 1, 5] = DNdt.Tables[0].Rows[v1]["LineID"].ToString().Trim();
+            arrayBOM1[v1 + 1, 6] = DNdt.Tables[0].Rows[v1]["Pri"].ToString().Trim();
+            arrayBOM1[v1 + 1, 7] = DNdt.Tables[0].Rows[v1]["WT"].ToString().Trim();
+            arrayBOM1[v1 + 1, 8] = DNdt.Tables[0].Rows[v1]["Part_Source"].ToString().Trim();
+            arrayBOM1[v1 + 1, 9] = DNdt.Tables[0].Rows[v1]["Phan_Part"].ToString().Trim();
+            arrayBOM1[v1 + 1, 10] = DNdt.Tables[0].Rows[v1]["Outsourcing"].ToString().Trim();
+            arrayBOM1[v1 + 1, 11] = DNdt.Tables[0].Rows[v1]["H_H_PN"].ToString().Trim();
+            arrayBOM1[v1 + 1, 12] = DNdt.Tables[0].Rows[v1]["H_H_PN_Ver"].ToString().Trim();
+            arrayBOM1[v1 + 1, 13] = DNdt.Tables[0].Rows[v1]["Cus_PN"].ToString().Trim();
+            arrayBOM1[v1 + 1, 14] = DNdt.Tables[0].Rows[v1]["Cus_Ver"].ToString().Trim();
+            arrayBOM1[v1 + 1, 15] = DNdt.Tables[0].Rows[v1]["QTY"].ToString().Trim();
+            arrayBOM1[v1 + 1, 16] = DNdt.Tables[0].Rows[v1]["Unit"].ToString().Trim();
+            arrayBOM1[v1 + 1, 17] = DNdt.Tables[0].Rows[v1]["Part_Type"].ToString().Trim();
+            arrayBOM1[v1 + 1, 18] = DNdt.Tables[0].Rows[v1]["Dely_Part"].ToString().Trim();
+            arrayBOM1[v1 + 1, 19] = DNdt.Tables[0].Rows[v1]["English_Name"].ToString().Trim();
+            arrayBOM1[v1 + 1, 20] = DNdt.Tables[0].Rows[v1]["Chinese_Name"].ToString().Trim();
+            arrayBOM1[v1 + 1, 21] = DNdt.Tables[0].Rows[v1]["Process"].ToString().Trim();
+            arrayBOM1[v1 + 1, 22] = ""; // Parent ITEM
+            arrayBOM1[v1 + 1, 41] = ""; // Parent ITEM Ver
+            arrayBOM1[v1 + 1, 42] = ""; // Parent ITEM + Ver
+            arrayBOM1[v1 + 1, 23] = DNdt.Tables[0].Rows[v1]["Op_Scrap"].ToString().Trim();
+            arrayBOM1[v1 + 1, 24] = DNdt.Tables[0].Rows[v1]["Comp_Scrap"].ToString().Trim();
+            arrayBOM1[v1 + 1, 25] = DNdt.Tables[0].Rows[v1]["Target_Op_Scrap"].ToString().Trim();
+            arrayBOM1[v1 + 1, 26] = DNdt.Tables[0].Rows[v1]["Change_Description"].ToString().Trim();
+            arrayBOM1[v1 + 1, 27] = DNdt.Tables[0].Rows[v1]["ABC_Indicator"].ToString().Trim();
+            arrayBOM1[v1 + 1, 28] = DNdt.Tables[0].Rows[v1]["RunningDay"].ToString().Trim();
+            arrayBOM1[v1 + 1, 29] = ""; //  DNdt.Tables[0].Rows[v1]["Flag"].ToString().Trim();   phantom
+            arrayBOM1[v1 + 1, 30] = "11"; //  Phantom, 00, 01, 10, 11
+            arrayBOM1[v1 + 1, 31] = DNdt.Tables[0].Rows[v1]["DataLevel"].ToString().Trim();
+            arrayBOM1[v1 + 1, 37] = DNdt.Tables[0].Rows[v1]["H_H_PN"].ToString().Trim() + "V" + DNdt.Tables[0].Rows[v1]["H_H_PN_Ver"].ToString().Trim(); // Bom+Ver
+            //  Parent   Item     = 22      Child   Item = 11 
+            //           Ver      = 41              Ver  = 12
+            //           Item+ver = 42              Item+Ver = 37 
+            if (arrayBOM1[v1 + 1, 31] != "")
+            {
+                tmp2 = arrayBOM1[v1 + 1, 31].ToString().Trim();
+                v3 = (tmp2.Length) / 2;
+                arrayBOM1[v1 + 1, 32] = v3.ToString(); // Length  LevelCount
+
+                if ( v3 == 1 ) // BOM ITEM
+                {
+                    // arrayBOM1[v1 + 1, 32] = "0"; // Length  LevelCount  Main ITEM 母料號
+                    arrayBOM1Item[v4 + 1, 33] = (v1 + 1).ToString();   // Bom array pointer
+                    arrayBOM1[v1 + 1, 33] = (v4 + 1).ToString();     // Bom ITEM Head 
+                    arrayBOM1Item[v4 + 1, 11] = arrayBOM1[v1 + 1, 11]; // Parent
+                    arrayBOM1Item[v4 + 1, 12] = arrayBOM1[v1 + 1, 12]; // ParentVer
+                    arrayBOM1Item[v4 + 1, 37] = arrayBOM1[v1 + 1, 37]; // Parent + Ver
+                    arrayBOM1Item[v4 + 1, 31] = arrayBOM1[v1 + 1, 31]; // Parent DataLevel
+                    v4++;
+                    ItemLen++;
+                } // arrayBOM1[v1 + 1, 32] = "PARENT";
+
+            }
+
+
+            if ("1A322UP00" == arrayBOM1[v1 + 1, 11].ToString().Trim())
+                v3 = v3;
+
+        } // end for
+
+        // 1 個 BOM Check
+        // 檢查資料, 找出錯誤 BOM
+        // arrayBOM1Item[v4 + 1, 11], 34: Level 1  
+        v2 = 0;
+        v3 = 0;
+        v4 = 0; // pre  Level
+        v5 = 0; // Curr Level
+        v6 = 0; // Pre  Loc
+
+        string PreDataLevel = "", CurrDataLevel = "";
+        int PreLevelLong = 0, CurrLevelLong = 0;
+
+        tmp1 = ""; // pre Item
+        tmp2 = ""; // currency Item
+        string LevelFlag = "", ChkDataLevel = "";
+        string ChkCurrDataLevel = "";
+
+        int v32 = 0; // DatLeveL Legth 
+        sp1 = "";
+        ///////////////////////////////////////////////////////////
+        //  1. 先分組, 每個 BOM 為一組 
+        //  2. 將每組起始 Array 記錄並開始作業
+        ///////////////////////////////////////////////////////////
+        for (v1 = 0; v1 < ItemLen; v1++)
+        {
+            LevelFlag = "";
+            tmp1 = arrayBOM1Item[v1 + 1, 31].ToString(); // BOM ITEM DataLevel ( 須一樣 ) 
+            ChkDataLevel = arrayBOM1Item[v1 + 1, 31].ToString();
+            // tmp2 = arrayBOM1Item[v1 + 1, 33].Substring(0.1); // BOM Detail Pointer            
+            tmp2 = arrayBOM1Item[v1 + 1, 33]; // BOM Detail Pointer 矩陣位置
+          
+            if (tmp2 != "")
+            {
+                v2 = Convert.ToInt32(tmp2);                   // start BOM Array Loc
+                arrayLevel[0, 0] = arrayBOM1Item[v1 + 1, 11]; // Parent 2 個應相同
+                arrayLevel[0, 0] = arrayBOM1[v2 + 1, 11];     // Parent
+            }
+            else
+                arrayBOM1Item[v1 + 1, 29] = "E";  // flag = error
+
+            ChkCurrDataLevel = arrayBOM1[v2, 31].ToString().Trim();
+            ChkCurrDataLevel = ChkCurrDataLevel.Substring(0, 2);
+            // ChkCurrDataLevel = ( arrayBOM1[v2, 31].ToString()).Substring(0, 6); 
+            // while ((ChkDataLevel == arrayBOM1[v2, 31].Substring(0, 2)) && ( sp1 == arrayBOM1Item[v1 + 1, 29].ToString()) ) 
+            // while ( ChkDataLevel == arrayBOM1[v2, 31].Substring(0, 2).ToString() ) 
+            // while ( ChkDataLevel == ChkCurrDataLevel  )
+            while ((   ChkDataLevel == ChkCurrDataLevel   )) 
+            {
+                LevelFlag = "";
+                tmp1 = arrayBOM1[v2, 31].ToString();
+                CurrDataLevel = arrayBOM1[v2, 31].ToString();
+                CurrLevelLong = 0;
+                if (arrayBOM1[v2, 32] != "")
+                    CurrLevelLong = Convert.ToInt32(arrayBOM1[v2, 32]);
+
+                if (tmp1 == "00")  // BOM Master
+                {
+                    CurrDataLevel = "";
+                    CurrLevelLong = 0;
+                    arrayLevel[0, 0] = arrayBOM1[v2, 11]; // ITEM
+                    arrayBOM1[v2, 22] = arrayBOM1[v2, 11]; // Parent ITEM in 22
+                    arrayBOM1[v2, 41] = arrayBOM1[v2, 12];  // 前一階為現階母料號Ver
+                    arrayBOM1[v2, 42] = arrayBOM1[v2, 37];  // 前一階為現階母料號 + Ver
+                    arrayBOM1[v2, 30] = "00";              // Phantom  00, 01, 11, 10 上下階
+                    arrayBOM1[v2, 15] = "0";  // DNdt.Tables[0].Rows[v1]["QTY"].ToString().Trim();
+                }
+                else
+                    if (CurrLevelLong == 1)  // tmp1 == "01")  // 第一階
+                    {
+                        arrayBOM1[v2, 22] = arrayBOM1[v2, 11];  // 前一階為現階母料號
+                        arrayBOM1[v2, 41] = arrayBOM1[v2, 12];  // 前一階為現階母料號Ver
+                        arrayBOM1[v2, 42] = arrayBOM1[v2, 37];  // 前一階為現階母料號 + Ver
+                        arrayLevel[CurrLevelLong, 0] = arrayBOM1[v2, 11];   // 目前為下一個母料號   
+                        arrayLevel[CurrLevelLong, 1] = arrayBOM1[v2, 12];   // 目前為下一個母料號 Ver
+                        arrayLevel[CurrLevelLong, 2] = arrayBOM1[v2, 37];   // 目前為下一個母料號 + Ver  
+                        arrayBOM1[v2, 30] = "01";              // Phantom  00, 01, 11, 10 上下階 
+                        arrayBOM1[v2, 15] = "0";  // DNdt.Tables[0].Rows[v1]["QTY"].ToString().Trim();
+                        // Pre Level must cloase
+                        if (v2 > 1)
+                        {
+                            tmp3 = arrayBOM1[v2 - 1 , 30].Substring(0, 1) + "0";
+                            arrayBOM1[v2 - 1, 30] = tmp3;  // 前一階 Close
+                        }                       
+
+
+                    }
+                    else
+                        if (PreLevelLong + 1 < CurrLevelLong)
+                        {
+                            LevelFlag = "F";
+                            v2 = DNCnt;
+                            arrayBOM1Item[v1 + 1, 29] = LevelFlag;  // flag = Level Error
+                        }
+                        else
+                            if ((PreLevelLong + 1) == CurrLevelLong)  // 下一階是連續
+                            {
+                                arrayBOM1[v2, 22] = arrayLevel[PreLevelLong, 0];  // 前一階為現階母料號
+                                arrayBOM1[v2, 41] = arrayLevel[PreLevelLong, 1];  // 目前為下一個母料號 Ver
+                                arrayBOM1[v2, 42] = arrayLevel[PreLevelLong, 2];  // 目前為下一個母料號 + Ver  ;                                  
+                                arrayLevel[CurrLevelLong, 0] = arrayBOM1[v2, 11];   // 目前為下一個母料號   
+                                arrayLevel[CurrLevelLong, 1] = arrayBOM1[v2, 12];   // 目前為下一個母料號 Ver
+                                arrayLevel[CurrLevelLong, 2] = arrayBOM1[v2, 37];   // 目前為下一個母料號 + Ver  
+                                arrayBOM1[v2, 30] = "11";              // Phantom  00, 01, 11, 10 上下階 
+                            }
+                            else // 下一階不是連續, 而是往前縮
+                            {
+                                PreLevelLong = CurrLevelLong - 1;
+                                arrayBOM1[v2, 22] = arrayLevel[PreLevelLong, 0];  // 前一階為現階母料號
+                                arrayBOM1[v2, 41] = arrayLevel[PreLevelLong, 1];  // 目前為下一個母料號 Ver
+                                arrayBOM1[v2, 42] = arrayLevel[PreLevelLong, 2];  // 目前為下一個母料號 + Ver  ;  
+
+                                arrayLevel[CurrLevelLong, 0] = arrayBOM1[v2, 11];   // 目前為下一個母料號 
+                                arrayLevel[CurrLevelLong, 1] = arrayBOM1[v2, 12];   // 目前為下一個母料號 Ver
+                                arrayLevel[CurrLevelLong, 2] = arrayBOM1[v2, 37];   // 目前為下一個母料號 + Ver 
+                                tmp3 = arrayBOM1[v2, 30].Substring(0, 1) + "0";
+                                arrayBOM1[v2 - 1, 30] = tmp3;  // 前一階 Close
+                                arrayBOM1[v2, 30] = "11";
+                            }
+
+                PreDataLevel = CurrDataLevel;
+                PreLevelLong = CurrLevelLong;
+                v2++;
+                if (v2 <= DNCnt)  // Get Next DataLevel
+                {
+                    ChkCurrDataLevel = arrayBOM1[v2, 31].ToString().Trim();
+                    ChkCurrDataLevel = ChkCurrDataLevel.Substring(0, 2);
+                }
+                else // end
+                    ChkCurrDataLevel = "";
+                    
+            }
+        } // end for loop check BOMTXT     (v1 = 0; v1 < ItemLen; v1++)
+
+        Decimal dqty = 0;
+        v6 = 0;
+        // Insert jbom2
+        ChkCurrDataLevel = "";
+        for (v1 = 0; v1 < ItemLen; v1++)
+        {
+            v5 = 100;
+            if ((arrayBOM1Item[v1 + 1, 29] == "") || (arrayBOM1Item[v1 + 1, 29] == null))
+            {
+                Currtime = DateTime.Now.ToString("yyyyMMddHHmmssmm");
+                tmp2 = arrayBOM1Item[v1 + 1, 33]; // BOM Detail Pointer 
+                ChkDataLevel = arrayBOM1Item[v1 + 1, 31].ToString();
+                v2 = Convert.ToInt32(tmp2);       // start BOM Array Loc 
+  
+
+                ChkCurrDataLevel = arrayBOM1[v2, 31].ToString().Trim();
+                ChkCurrDataLevel = ChkCurrDataLevel.Substring(0, 2);              
+                while ((ChkDataLevel == ChkCurrDataLevel)) 
+                // for (v2 = v3; v2 < DNCnt; v2++)
+                {
+                    v5++;
+                    dqty = 0;
+                    if (arrayBOM1[v2, 15].ToString().Trim() != "")
+                    {
+                        tmp1 = (arrayBOM1[v2, 15].ToString().Trim());  // 數量
+                        dqty = Convert.ToDecimal(tmp1);
+                    }
+
+                    if ("01" == arrayBOM1[v2, 31].ToString().Trim())
+                        tmp2 = tmp2;
+
+                    // '1511' = DataLevel and '7CA17-001' = H_H_PN
+                    tmpsqlW = "  SELECT  * from jbomm1  where  Osversion =  '" + arrayBOM1[v2, 1].ToString().Trim() + "'  "
+                    + "  and   Item1 =    '" + arrayBOM1[v2, 42].ToString().Trim() + "'   "
+                    + "  and   Part1 =    '" + arrayBOM1[v2, 37].ToString().Trim() + "'   ";
+                    dt4 = PDataBaseOperation.PSelectSQLDS(DBType, DBReadString, tmpsqlW );
+                    if ( ( dt4 != null) && (  ( v8 = dt4.Tables[0].Rows.Count )  <= 0 ) )  // check insert need
+                    {       
+
+                    tmpsqlW = "Insert into jbomm1  ( Osversion, Item, Part, UnitQty, UnitQtyStr, LevelCount, BeginDate, EndDate, DueDate, Phantom, CG, "
+                            + " Rseq, DocumentID, LineID, Mark, Note, Remark, ItemVer, PartVer,  Item1, Part1 ) values "
+       + " ( '" + arrayBOM1[v2, 1].ToString().Trim() + "' , '" + arrayBOM1[v2, 22].ToString().Trim() + "' , '" + arrayBOM1[v2, 11].ToString().Trim() + "' ,  "
+                        //+ " '" + arrayBOM1[v2, 15].ToString().Trim() + "' ,  '" + arrayBOM1[v2, 32].ToString().Trim() + "' , "
+                        //+ "   cast (  ' " + dqty + " ' as float )  ,  '" + arrayBOM1[v2, 15].ToString().Trim() + "' , '" + arrayBOM1[v2, 32].ToString().Trim() + "' , "
+       + "   " + dqty + " ,  '" + arrayBOM1[v2, 15].ToString().Trim() + "' , '" + arrayBOM1[v2, 32].ToString().Trim() + "' , "
+       + "   '" + tmpDate + "' , '" + sp1 + "' , '" + sp1 + "' , '" + arrayBOM1[v2, 30].ToString().Trim() + "' , '" + sp1 + "' ,"
+       + "   '" + arrayBOM1[v2, 6].ToString().Trim() + "' ,  '" + Currtime + "' , '" + v5.ToString() + "' ,  "
+       + "   '" + sp1 + "' , '" + arrayBOM1[v2, 4].ToString().Trim() + "' , '" + sp1 + "' , '" + arrayBOM1[v2, 41].ToString().Trim() + "',  "
+       + "   '" + arrayBOM1[v2, 12].ToString().Trim() + "', '" + arrayBOM1[v2, 42].ToString().Trim() + "', '" + arrayBOM1[v2, 37].ToString().Trim() + "' ) ";
+                    v4 = PDataBaseOperation.PExecSQL(DBType, DBWriString, tmpsqlW);
+                    if (v4 >= 0) // Successed, It could be not data
+                        v6++;
+
+                    }   // insert end 
+
+                    v2++;
+                    if (v2 <= DNCnt)  // Get Next DataLevel
+                    {
+                        ChkCurrDataLevel = arrayBOM1[v2, 31].ToString().Trim();
+                        ChkCurrDataLevel = ChkCurrDataLevel.Substring(0, 2);
+                    }
+                    else // end
+                        ChkCurrDataLevel = "";
+                }
+            }
+
+        } // end for loop check BOMTXT
+
+
+
+        return ("");
+
+    } // EV expand BOM
+
+
+
+
+
+}  // end public class BJNLVMODlib
+
+}  // end namespace SFC.TJWEB
+
+

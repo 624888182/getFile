@@ -1,0 +1,1571 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+using System.Text;
+using System.Data;
+using System.IO;
+using System.Data.OracleClient;
+using System.Drawing;    
+
+
+public partial class CreateMotoFile : System.Web.UI.Page
+{
+    #region 文件常量定義
+
+    const int ERROR_FILE_NOT_FOUND = 2;
+    const int ERROR_ACCESS_DENIED = 5;
+    public bool bInTimer = false;
+    public const string FACTORY_CODE = "FIHMLXTJ";
+    public const string CDMA_FACTORY_CODE = "FIHTJ";
+    public static string FactoryCode;
+    public const Int32 SINGLE_UPD_FILE_MAX_LENGTH = 20 * 1024 * 1024; // 20 MB 
+    public const Int32 UPLOAD_FAIL_WAIT_DURATION = 1 * 20 * 1000; // 2 minutes
+    public static readonly string UPD_UPLOAD_PROGRAM_PATH = @"C:\MCMS\PROGRAM\";
+    public static readonly string UPD_FILE_NAME = @"C:\mcms\upd_service\to_be_processed\AS_"
+                                                + FACTORY_CODE + "_UPD_IMEI_{0}_{1}.dat";
+    public static readonly string ASN_FILE_NAME = @"C:\mcms\DS_ASN_FIH_{0}_{1}.dat";
+    public static readonly string IMEI_FILE_NAME = @"d:\mcms\IMEI_{0}.xls";
+    public static readonly string IMEI_FILE_BAK = @"D:\MCMS\DataBack\IMEI";
+    public static readonly string ASN_FILE_BAK = @"D:\MCMS\DataBack\ASN";
+    public static readonly string UPD_FILE_BAK = @"D:\MCMS\DataBack\UPD";
+    public static readonly string CMD_UPD_FILE_BAK = @"D:\MCMS\DataBack\CDMA_UPD";
+    public static readonly string GFS_FILE_BAK = @"D:\MCMS\DataBack\GFS";
+    public static readonly string FTP_UPD_PATH = @"upd_service\to_be_processed";
+    public static readonly string FTP_IMEI_PATH = "IMEI";
+    public static readonly string[] DIRECTORY_ARRY = new string[] {  @"C:\MCMS\mototrak",
+                                                                         @"C:\MCMS\upd_service",
+                                                                         @"C:\MCMS\gfs",
+                                                                         @"C:\MCMS\program",
+                                                                         @"C:\MCMS\workspace",
+                                                                         @"C:\MCMS\mototrak\done",
+                                                                         @"C:\MCMS\mototrak\failed",
+                                                                         @"C:\MCMS\mototrak\log",
+                                                                         @"c:\MCMS\mototrak\to_be_processed",
+                                                                         @"c:\MCMS\upd_service\done",
+                                                                         @"C:\MCMS\upd_service\failed",
+                                                                         @"C:\MCMS\upd_service\log",
+                                                                         @"C:\MCMS\upd_service\to_be_processed",
+                                                                         @"C:\MCMS\gfs\done",
+                                                                         @"C:\MCMS\gfs\failed",
+                                                                         @"C:\MCMS\gfs\log",
+                                                                         @"C:\MCMS\gfs\to_be_processed"
+                                                                    };
+    public static readonly string CDMA_UPD_FILE_NAME = DIRECTORY_ARRY[DIRECTORY_ARRY.Length - 5]
+                                                + @"\AS_" + CDMA_FACTORY_CODE + "_UPD_MEID_" + "{0}_{1}.dat";
+    public static readonly string GFS_FILE_NAME = DIRECTORY_ARRY[DIRECTORY_ARRY.Length - 1] + @"\PROG_V01_" + CDMA_FACTORY_CODE + "_{0}_{1}-{2}.dat";
+    public static readonly string ZIP_CMD = @"e:\Program Files\7-Zip\7z.exe ";// a -tzip ";  
+
+    #endregion
+
+    CreateFile cf = new CreateFile();
+
+    private string strConnReadString = string.Empty;
+    private string strConnWriteString = string.Empty;
+    private OracleConnection ConnReadConnect;
+    private OracleConnection ConnWriteConnect;
+    
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session["Param1"].ToString() == "1")
+        {
+            strConnReadString = Session["Param2"].ToString();
+            strConnWriteString = Session["Param3"].ToString();
+        }
+        else if(Session["Param1"].ToString()=="")
+        {
+            
+        }
+        else
+        {
+            Response.Write("<script>alert('您所傳遞的字符串地址不正確，請重新傳遞!')</script>");
+            return;
+        }
+        if (!Page.IsPostBack)
+        {
+            if (!Directory.Exists(IMEI_FILE_BAK))
+            {
+                Directory.CreateDirectory(IMEI_FILE_BAK);
+            }
+            if (!Directory.Exists(ASN_FILE_BAK))
+            {
+                Directory.CreateDirectory(ASN_FILE_BAK);
+            }
+            if (!Directory.Exists(UPD_FILE_BAK))
+            {
+                Directory.CreateDirectory(UPD_FILE_BAK);
+            }
+            for (int i = 0; i < DIRECTORY_ARRY.Length; i++)
+            {
+                if (!Directory.Exists(DIRECTORY_ARRY[i]))
+                {
+                    Directory.CreateDirectory(DIRECTORY_ARRY[i]);
+                }
+
+            }
+            DisPlayTable();
+            //AjaxPro.Utility.RegisterTypeForAjax(typeof(CreateMotoFile));
+        }
+
+
+    }
+
+    /// <summary>
+    /// Table 隱藏
+    /// </summary>
+    private void DisPlayTable()
+    {
+        this.tablePo.Visible = false;
+        this.tableDN.Visible = false;
+        this.tberrorMessage.Visible = false;
+        this.tabHistoryList.Visible = false;
+        this.tdGSMTop.Visible = false;
+        this.tdCDMATop.Visible = false;
+        this.tdGsmList.Visible = false;
+        this.tdCdmaList.Visible = false;
+        this.tabDisaby.Visible = false;
+        this.tabHistoryCdmaList.Visible = false;
+        this.LabHistoryErroMessage.Visible = false;
+    }
+
+    /// <summary>
+    /// 分頁事件
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void RadioWitch_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (RadioWitch.SelectedValue == "PO")
+        {
+            this.tablePo.Visible = true;
+            this.tableDN.Visible = false;
+            this.tberrorMessage.Visible = false;
+            GetPoDN();
+        }
+        if (RadioWitch.SelectedValue == "DN")
+        {
+            this.tableDN.Visible = true;
+            this.tablePo.Visible = false;
+            this.tberrorMessage.Visible = false;
+        }
+    }
+
+    /// <summary>
+    /// Get DropDownList Items
+    /// </summary>
+    private void GetPoDN()
+    {
+        string strInvoice = string.Empty;
+        string strPo = string.Empty;
+        string strError = string.Empty;
+        int iRet = 0;
+        GetConnect(strConnReadString, strConnWriteString);
+        string StrSql = @"SELECT DISTINCT A.INVOICE_NUMBER, B.PO_NUMBER, C.LAST_SHIPMENT_DATE
+                                FROM SAP.CMCS_SFC_PACKING_LINES_ALL A,
+                                     SHP.UPD_ORDER_INFORMATION B,
+                                     SFC.MES_MIT_INVOICE C
+                               WHERE A.CUSTOMER_PO = B.PO_NUMBER
+                                     AND C.INVOICE = A.INVOICE_NUMBER
+                                     AND A.INTERNAL_CARTON IS NOT NULL
+                            ORDER BY C.LAST_SHIPMENT_DATE DESC";
+        try
+        {
+            System.Data.DataTable dt = new DataTable();
+            iRet = cf.GetPo(StrSql, ref dt,ConnReadConnect);
+            DropDownListPO.Items.Clear();
+            DropDownListPO.Items.Add(" ");
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    DropDownListPO.Items.Add(dr["INVOICE_NUMBER"].ToString() + "|" + dr["PO_NUMBER"].ToString());
+                }
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            iRet = -1;
+            strError = cf.GetFerror() + ex.Message.ToString();
+        }
+        if (iRet == -1)
+        {
+            this.tberrorMessage.Visible = true;
+            this.LabMessage.Text = strError;
+        }
+
+    }
+
+    /// <summary>
+    /// Mesasge Show
+    /// </summary>
+    /// <param name="strMessage"></param>
+    /// <param name="bRet"></param>
+    private void DisayError(string strMessage, bool bRet)
+    {
+        this.tberrorMessage.Visible = true;
+        if (bRet == false)
+        {
+            this.LabMessage.BackColor = Color.Red;
+            this.LabMessage.Text = strMessage;
+            return;
+        }
+        else
+        {
+            this.LabMessage.BackColor = Color.Green;
+            this.LabMessage.Text = strMessage;
+            this.TextInput.Text = "";
+            return;
+        }
+    }
+
+    private void DisayErrorHistory(string strMessage, bool bRet)
+    {
+        this.LabHistoryErroMessage.Visible = true;
+        if (bRet == false)
+        {
+            this.LabHistoryErroMessage.BackColor = Color.Red;
+            this.LabHistoryErroMessage.Text = strMessage;
+            this.TxtInputHistory.Focus();
+            return;
+        }
+        else
+        {
+            this.LabHistoryErroMessage.BackColor = Color.Green;
+            this.LabMessage.Text = strMessage;
+            this.TxtInputHistory.Text = "";
+  
+        }
+    }
+
+    /// <summary>
+    /// 選擇PO|DN,產生文件
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void ButPoCreate_Click(object sender, EventArgs e)
+    {
+        string PODN = DropDownListPO.SelectedValue;
+        string temDN = string.Empty;
+        string temPO = string.Empty;
+        string strError = string.Empty;
+        if (PODN.Equals("") || PODN.Equals(" "))
+        {
+            strError = "請選擇相應PO信息";
+            DisayError(strError, false);
+            GetPoDN();
+            DropDownListPO.Focus();
+            return;
+        }
+        else
+        {
+            temDN = PODN.Split('|')[0].Trim().ToString();
+            temPO = PODN.Split('|')[1].Trim().ToString();
+            CreateUPDIMEI(temPO, temDN);
+        }
+    }
+
+    /// <summary>
+    /// 產生文件過程方法
+    /// </summary>
+    /// <param name="temPO"></param>
+    /// <param name="temDN"></param>
+    private void CreateUPDIMEI(string temPO, string temDN)
+    {
+        GetConnect(strConnReadString, strConnWriteString);
+        string ErrorMessage = string.Empty;
+        int iRet = 0;
+
+        #region/*取得PO相關信息*/
+        string strInvoice = cf.GetAllInvoiceNumberHanle(temDN,ConnReadConnect);
+        if (strInvoice.Length == 0)
+        {
+            ErrorMessage = "無對應PO信息,請確認是否下載PO";
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        CreateFile.Write("[Create Begining]" + strInvoice);
+        string[] GetInvoiceWith = strInvoice.Split('#');
+        string strPlant = GetInvoiceWith[0].ToString();
+        string strInvoiceNumber = GetInvoiceWith[1].ToString();
+        string strCustomerName = GetInvoiceWith[2].ToString();
+        string strProductModel = GetInvoiceWith[3].ToString();
+        string strShipCountry = GetInvoiceWith[4].ToString();
+        string strProductQty = GetInvoiceWith[5].ToString();
+        string strShipDate = GetInvoiceWith[6].ToString();
+        string strCustomerType = GetInvoiceWith[7].ToString();
+        #endregion
+
+        #region/*取得程式對應的ProCode*/
+
+        string strWitchCode = string.Empty;
+        string strSfcModel = string.Empty;
+        iRet = cf.GetSfcModelType(strInvoiceNumber, ref strWitchCode, ref strSfcModel, ConnReadConnect);
+        if (iRet < 0)
+        {
+            ErrorMessage = "No Have SfcModelType,Please Make Sure Prdouct Packing";
+            CreateFile.Write("[No Have SfcModelType]" + strInvoiceNumber);
+            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        #endregion
+
+        #region/*判斷SHIP_TO_COUNTRY對應的ISO碼*/
+        int IsoCount = cf.IsoPresence(strInvoiceNumber,ConnReadConnect);
+        if (IsoCount <= 0)
+        {
+            ErrorMessage = "Find Not Iso,Please Make Sure SHIP_TO_COUNTRY Correspond whith ISO";
+            CreateFile.Write("[ISO]" + strInvoiceNumber);
+            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        #endregion
+
+        #region/*判斷是否是出拉美*/
+        string region = string.Empty;
+        int regionCount = cf.regionPresence(strInvoiceNumber,ConnReadConnect);
+        if (regionCount > 0)
+        {
+            region = "LA";
+        }
+        #endregion
+
+        #region/*判斷出貨前是否已經維護PO*/
+        if (strWitchCode != "UPD06")
+        {
+            string strCheckPo = cf.CheckPo(strInvoiceNumber, ConnReadConnect);
+            if (temPO.Equals(""))
+            {
+                temPO = strCheckPo;
+            }
+            if (strCheckPo.Length == 0)
+            {
+                ErrorMessage = "No have maintain PO";
+                CreateFile.Write("[No Have Maintain PO] " + strInvoiceNumber);
+                cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                DisayError(ErrorMessage, false);
+                return;
+            }
+        }
+        #endregion
+
+        #region/*判斷程式是否已經產生過文件*/
+        int sendCount = 1;
+        string strRepeat = cf.CheckRepeat(strInvoiceNumber,ConnWriteConnect);
+        string[] repeat = strRepeat.Split('#');
+        if (strRepeat.Length != 0)
+        {
+            CreateFile.Write("[Repeat] " + strInvoiceNumber);
+            sendCount = Convert.ToInt32(repeat[1]) + 1;
+            ErrorMessage = "DN have already Create this is repeat";
+            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+        }
+        #endregion
+
+        #region/*從數據庫中抓取相關DN信息*/
+        List<StringBuilder> lsb = null;
+        string SfcQty = string.Empty;
+        lsb = cf.GetUpdData(strInvoiceNumber, strProductModel, strWitchCode, strProductQty, ref SfcQty, ref ErrorMessage, ConnReadConnect, ConnWriteConnect);
+        if (strProductQty != SfcQty)
+        {
+            CreateFile.Write("[Qty not Equal] " + strInvoiceNumber);
+            ErrorMessage = "sap ship Qty is not equal Db Qty";
+            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        if (lsb.Count == 0)
+        {
+            if (ErrorMessage.Length > 0)
+            {
+                cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+                DisayError(ErrorMessage, false);
+                return;
+            }
+            CreateFile.Write("[No Query data] " + strInvoiceNumber);
+            ErrorMessage = "No Query Data,Please Information IT Dep";
+            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        #endregion
+
+        #region/*刪除臨時目錄里的文件,保證下載的文件是最新*/
+        string[] tempFilePath = new string[4];
+        tempFilePath[0] = AppDomain.CurrentDomain.BaseDirectory + "Upload\\UPD\\";
+        tempFilePath[1] = AppDomain.CurrentDomain.BaseDirectory + "Upload\\IMEI\\";
+        tempFilePath[2] = AppDomain.CurrentDomain.BaseDirectory + "Upload\\GFS\\";
+        tempFilePath[3] = AppDomain.CurrentDomain.BaseDirectory + "Upload\\CDMA_UPD\\";
+        foreach (string tempPath in tempFilePath)
+        {
+            if (Directory.Exists(tempPath))
+            {
+                string[] FileNameCount = Directory.GetFiles(tempPath);
+                if (FileNameCount.Length > 0)
+                {
+                    foreach (string FN in FileNameCount)
+                    {
+                        File.Delete(FN);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        /*UPD文件產生*/
+        for (int j = 0; j < lsb.Count; j++)
+        {
+       
+                    if (strWitchCode == "UPD06")
+                    {
+                        #region /*生成CDMA-UPD文件*/
+                        string strUPDFileName = string.Empty;
+                        string strUPDFIleCraPath = string.Empty;
+                        strUPDFIleCraPath = AppDomain.CurrentDomain.BaseDirectory + "Upload\\CDMA_UPD\\AS_" + CDMA_FACTORY_CODE + "_UPD_MEID_" + "{0}_{1}.dat";
+                        strUPDFileName = string.Format(strUPDFIleCraPath, DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss"), j + 1);
+                        string[] strTmp = strUPDFileName.Split('\\');
+                        string strFileName = strTmp[strTmp.Length - 1];
+                        if (!cf.CreateUpdFile(lsb[j], strUPDFileName))
+                        {
+                            ErrorMessage =cf.GetFerror();
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            continue;
+                        }
+                        #endregion
+
+                        File.Copy(strUPDFileName, CMD_UPD_FILE_BAK + "\\" + strFileName);
+                        cf.InsertResult(strFileName, strInvoiceNumber, strCustomerName, strProductModel, strShipCountry, strProductQty, strShipDate, sendCount, ConnWriteConnect);
+
+                        string CdmaPo=string.Empty;
+                        iRet = cf.GetCdmaPo(strInvoiceNumber, ref CdmaPo, ConnReadConnect);
+                        if (iRet < 0)
+                        {
+                            ErrorMessage = cf.GetFerror();
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                        }
+                        iRet = cf.UpdateMasterStatus(strInvoiceNumber, strFileName, CdmaPo, strProductQty, 1, ConnWriteConnect);
+                        if (iRet < 0)
+                        {
+                            ErrorMessage = cf.GetFerror();
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+
+                        #region /*取數據庫GFS文件需要的數據*/
+                        lsb.Clear();
+                        lsb = cf.GetGFS(strInvoiceNumber, ConnReadConnect);
+                        if (lsb.Count == 0)
+                        {
+                            File.Delete(strUPDFileName);
+                            ErrorMessage = strInvoiceNumber + ":GFS No Have Data";
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+                        #endregion
+
+                        #region /*生成GFS文件及更新數據庫*/
+                        for (int k = 0; k < lsb.Count; k++)
+                        {
+                            DateTime dt = DateTime.Now;
+                            string strGFSFileName = string.Empty;
+                            System.Random a = new Random(System.DateTime.Now.Millisecond);
+                            string strQty = lsb.Count.ToString();
+                            int RandKey = a.Next(100);
+                            string strRand = RandKey.ToString();
+                            strRand = strRand.PadLeft(3, '0');
+                            string strGFSFIleCraPath = string.Empty;
+                            strGFSFIleCraPath = AppDomain.CurrentDomain.BaseDirectory +"Upload\\GFS"+ @"\PROG_V01_" + CDMA_FACTORY_CODE + "_{0}_{1}-{2}.dat";
+                            strGFSFileName = string.Format(strGFSFIleCraPath, dt.ToString("yyyyMMddHHmmss"), strInvoiceNumber.Replace("'", ""), strRand);
+                            strTmp = strGFSFileName.Split('\\');
+                            strFileName = strTmp[strTmp.Length - 1];
+
+                            iRet = cf.CreateGFSFile(lsb[k], strGFSFileName, dt.ToString("yyyyMMddHHmmss"), strInvoiceNumber.Replace("'", "") + "-" + strRand, "FIHTJ", "V01", strInvoiceNumber, ConnWriteConnect);
+                            if (iRet < 0)
+                            {
+                                cf.AddMail(" GFS FILE", strGFSFileName, strFileName, "Create GFS File Error", "", ConnWriteConnect);
+                                File.Delete(strUPDFileName);
+                                ErrorMessage = cf.FERROR;
+                                cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                                DisayError(ErrorMessage, false);
+                                return;
+                            }
+                            File.Copy(strGFSFileName, GFS_FILE_BAK + "\\" + strFileName);
+                            iRet = cf.UpdateMasterStatus(strInvoiceNumber, strFileName, CdmaPo, strProductQty, 3, ConnWriteConnect);
+
+                            iRet = cf.MailGFS(strInvoiceNumber, strQty, "",GFS_FILE_BAK + "\\" + strFileName, strFileName, ConnWriteConnect);
+                            if (iRet < 0)
+                            {
+                                ErrorMessage = cf.GetFerror();
+                                cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                                DisayError(ErrorMessage, false);
+                                return;
+                            }
+
+                            iRet = cf.UpdateMasterStatus(strInvoiceNumber, "Y", temPO, strProductQty, 4, ConnWriteConnect);
+                            if (iRet < 0)
+                            {
+                                ErrorMessage = cf.GetFerror();
+                                cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                                DisayError(ErrorMessage, false);
+                                return;
+                            }
+                            iRet = cf.UpdateMasterDnModel(strInvoiceNumber, strSfcModel, strWitchCode, ConnWriteConnect);
+                        }
+                        #endregion
+
+                        #region/*顯示數據庫成功的記錄*/
+                        DataTable dtTop = new DataTable();
+                        DataTable dtList = new DataTable();
+                        dtTop = null;
+                        dtList = null;
+                        if (!cf.GrivwDisay(strInvoiceNumber, ref dtTop, ref dtList, ConnWriteConnect))
+                        {
+                            CreateFile.Write("[ERROR] No Query " + strInvoiceNumber);
+                            ErrorMessage = strInvoiceNumber + " :No Query";
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                        }
+                        else
+                        {
+                            GridwCount.DataSource = dtTop;
+                            GridwCount.DataBind();
+                            GridView.DataSource = dtList;
+                            GridView.DataBind();
+                            ErrorMessage = "Create File Sucessful!";
+                            CreateFile.Write("[SUCCEED] UPD & XLS end");
+                            this.tabDisaby.Visible = true;
+                            this.tdCDMATop.Visible = true;
+                            this.tdCdmaList.Visible = true;
+
+                            if (this.tabHistoryList.Visible == true)
+                                this.tabHistoryList.Visible = false;
+                            DisayError(ErrorMessage, true);
+                        }
+                        #endregion
+
+                    }
+                    else
+                    {
+                        string strUPDFileName = string.Empty;
+                        string strIMEIFileName = string.Empty;
+                        string strASNFileName = string.Empty;
+                        string strUPDFIleCraPath = string.Empty;
+                        strUPDFIleCraPath = AppDomain.CurrentDomain.BaseDirectory + "Upload\\UPD\\AS_" + FACTORY_CODE + "_UPD_IMEI_{0}_{1}.dat";
+                        //strUPDFileName = string.Format(UPD_FILE_NAME, DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss"), j + 1);
+                        strUPDFileName = string.Format(strUPDFIleCraPath, DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss"), j + 1);
+                        string[] strTmp = strUPDFileName.Split('\\');
+                        string strFileName = strTmp[strTmp.Length - 1];
+                        string strtempFileName = strFileName;
+                        if (!cf.CreateUpdFile(lsb[j], strUPDFileName))
+                        {
+                            CreateFile.Write("[UPD Create Error] " + strInvoiceNumber);
+                            ErrorMessage = "UPD Create Error";
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+                        File.Copy(strUPDFileName, UPD_FILE_BAK + "\\" + strFileName);
+                        cf.InsertResult(strFileName, strInvoiceNumber, strCustomerName, strProductModel, strShipCountry, strProductQty, strShipDate, sendCount,ConnWriteConnect);
+                        iRet = cf.UpdateMasterStatus(strInvoiceNumber, strFileName, temPO, strProductQty, 1, ConnWriteConnect);
+                        if (iRet < 0)
+                        {
+                            ErrorMessage = cf.GetFerror();
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+                        #region/*根據DN,SAPMODEL在SHP.UPD_COUNTRY_LINK_IMEICODE 取得相應的IMEICODE*/
+                        string ImeiCode = string.Empty;
+                        iRet = cf.GetImeiCode(region, strProductModel, ref ImeiCode,ConnReadConnect);
+                        if (iRet<0 )
+                        {
+                            ErrorMessage = cf.GetFerror();
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+                        #endregion
+
+                        #region/*生成IMEI文件*/
+                        //strIMEIFileName = cf.CreateIMEIFile(strInvoiceNumber, strProductModel, strShipCountry, region);
+                        strIMEIFileName = cf.CreateIMEIFile(strInvoiceNumber, strProductModel, ImeiCode,ConnReadConnect);
+                        if (strIMEIFileName.Equals("-"))
+                        {
+                            File.Delete(strUPDFileName);
+                            CreateFile.Write("[IMEI Create Error] " + strInvoiceNumber);
+                            ErrorMessage = strInvoiceNumber + ":IMEI Create Error";
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+                        else
+                        {
+                            cf.UpdateImeiTime(strInvoiceNumber, sendCount,ConnWriteConnect);
+                            CreateFile.Write("[SUCCESS] IMEI Create " + strInvoiceNumber);
+                        }
+                   
+                        #endregion
+
+                        strTmp = strIMEIFileName.Split('\\');
+                        strFileName = strTmp[strTmp.Length - 1];
+                        string tempImeiFile = strFileName;
+                        File.Copy(strIMEIFileName, IMEI_FILE_BAK + "\\" + strFileName);
+                        iRet = cf.UpdateMasterStatus(strInvoiceNumber, strFileName, temPO, strProductQty, 2, ConnWriteConnect);
+                        if (iRet < 0)
+                        {
+                            ErrorMessage = cf.GetFerror();
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+
+                        #region/*發送成功或失敗Mail*/
+                        iRet = cf.MailIMEI("IMEI FILE Invoice : " + strInvoiceNumber, IMEI_FILE_BAK + "\\" + strFileName, strFileName, "", strInvoiceNumber, strProductModel, strShipCountry, ConnWriteConnect);
+                        if (iRet<0)
+                        {
+                            File.Delete(strUPDFileName); // delete bad file
+                            File.Delete(strIMEIFileName);
+                            CreateFile.Write("[ERROR] Mail IMEI file error" + strInvoiceNumber);
+                            ErrorMessage = strInvoiceNumber + " :Mail IMEI file error";
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+                        #endregion
+
+                        #region/*更新已經生成文件的數據庫狀態*/
+                        iRet = cf.SetInvoiceStatus(strInvoiceNumber, ConnWriteConnect);
+                        if (iRet<0)
+                        {
+                            CreateFile.Write("[ERROR] Update Invoice Failed " + strInvoiceNumber);
+                            ErrorMessage = strInvoiceNumber + " :Update Invoice Failed";
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+                        #endregion
+
+                        #region/*發送成功Mail提醒*/
+                        iRet =cf.AddMail("UPD FILE Invoice : " + strInvoiceNumber, UPD_FILE_BAK + "\\" + strFileName, strFileName, "OK", "",ConnWriteConnect);
+                        if (iRet < 0)
+                        {
+                            ErrorMessage = cf.GetFerror();
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+
+                        #endregion
+                        iRet = cf.UpdateMasterStatus(strInvoiceNumber, "Y", temPO, strProductQty, 4, ConnWriteConnect);
+                        iRet = cf.UpdateMasterDnModel(strInvoiceNumber, strSfcModel, strWitchCode, ConnWriteConnect);
+                        if (iRet < 0)
+                        {
+                            ErrorMessage = cf.GetFerror();
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "", ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                            return;
+                        }
+
+                        #region/*顯示數據庫成功的記錄*/
+                        DataTable dtTop = new DataTable();
+                        DataTable dtList = new DataTable();
+                        dtTop = null;
+                        dtList = null;
+                        if (!cf.GrivwDisay(strInvoiceNumber, ref dtTop, ref dtList,ConnWriteConnect))
+                        {
+                            CreateFile.Write("[ERROR] No Query " + strInvoiceNumber);
+                            ErrorMessage = strInvoiceNumber + " :No Query";
+                            cf.InserterrorMessage(strInvoiceNumber, ErrorMessage, "",ConnWriteConnect);
+                            DisayError(ErrorMessage, false);
+                        }
+                        else
+                        {
+                            GridwCount.DataSource = dtTop;
+                            GridwCount.DataBind();
+                            GridView.DataSource = dtList;
+                            GridView.DataBind();
+                            ErrorMessage = "Create File Sucessful!";
+                            CreateFile.Write("[SUCCEED] UPD & XLS end");
+                            this.tabDisaby.Visible = true;
+                            this.tdGSMTop.Visible = true;
+                            this.tdGsmList.Visible = true;
+
+                            if (this.tabHistoryList.Visible == true)
+                                this.tabHistoryList.Visible = false;
+                            if (this.tabImeiDownList.Visible == true)
+                                this.tabImeiDownList.Visible = false;
+
+                            DisayError(ErrorMessage, true);
+                        }
+                        #endregion
+
+                    }
+
+
+        }
+    }
+
+    /// <summary>
+    /// 測試模擬環境
+    /// </summary>
+    /// <param name="temPO"></param>
+    /// <param name="temDN"></param>
+    private void TestCreateUPDIMEI(string temPO, string temDN)
+    {
+        GetConnect(strConnReadString, strConnWriteString);
+        string ErrorMessage = string.Empty;
+        int iRet = 0;
+
+        #region/*取得PO相關信息*/
+        string strInvoice = cf.GetAllInvoiceNumberHanle(temDN, ConnReadConnect);
+        if (strInvoice.Length == 0)
+        {
+            ErrorMessage = "無對應PO信息,請確認是否下載PO";
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        CreateFile.Write("[Create Begining]" + strInvoice);
+        string[] GetInvoiceWith = strInvoice.Split('#');
+        string strPlant = GetInvoiceWith[0].ToString();
+        string strInvoiceNumber = GetInvoiceWith[1].ToString();
+        string strCustomerName = GetInvoiceWith[2].ToString();
+        string strProductModel = GetInvoiceWith[3].ToString();
+        string strShipCountry = GetInvoiceWith[4].ToString();
+        string strProductQty = GetInvoiceWith[5].ToString();
+        string strShipDate = GetInvoiceWith[6].ToString();
+        string strCustomerType = GetInvoiceWith[7].ToString();
+        #endregion
+
+        #region/*取得程式對應的ProCode*/
+        string strWitchCode = string.Empty;
+        string strSfcModel = string.Empty;
+        iRet= cf.GetSfcModelType(strInvoiceNumber,ref strWitchCode,ref strSfcModel,ConnReadConnect);
+        if (iRet<0)
+        {
+            ErrorMessage = "No Have SfcModelType,Please Make Sure Prdouct Packing";
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        #endregion
+
+        #region/*判斷SHIP_TO_COUNTRY對應的ISO碼*/
+        int IsoCount = cf.IsoPresence(strInvoiceNumber, ConnReadConnect);
+        if (IsoCount <= 0)
+        {
+            ErrorMessage = "Find Not Iso,Please Make Sure SHIP_TO_COUNTRY Correspond whith ISO";
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        #endregion
+
+        #region/*判斷是否是出拉美*/
+        string region = string.Empty;
+        int regionCount = cf.regionPresence(strInvoiceNumber, ConnReadConnect);
+        if (regionCount > 0)
+        {
+            region = "LA";
+        }
+        #endregion
+
+        #region/*判斷出貨前是否已經維護PO*/
+        if (strWitchCode != "UPD06")
+        {
+            string strCheckPo = cf.CheckPo(strInvoiceNumber, ConnReadConnect);
+            if (temPO.Equals(""))
+            {
+                temPO = strCheckPo;
+            }
+            if (strCheckPo.Length == 0)
+            {
+                ErrorMessage = "No have maintain PO";
+                DisayError(ErrorMessage, false);
+                return;
+            }
+        }
+        #endregion
+
+        #region/*判斷程式是否已經產生過文件*/
+        int sendCount = 1;
+        string strRepeat = cf.CheckRepeat(strInvoiceNumber, ConnReadConnect);
+        string[] repeat = strRepeat.Split('#');
+        if (strRepeat.Length != 0)
+        {
+            CreateFile.Write("[Repeat] " + strInvoiceNumber);
+            sendCount = Convert.ToInt32(repeat[1]) + 1;
+        }
+        #endregion
+
+        #region/*從數據庫中抓取相關DN信息*/
+        List<StringBuilder> lsb = null;
+        string SfcQty = string.Empty;
+        lsb = cf.GetUpdData(strInvoiceNumber, strProductModel, strWitchCode, strProductQty, ref SfcQty, ref ErrorMessage, ConnReadConnect, ConnWriteConnect);
+        if (strProductQty != SfcQty)
+        {
+            ErrorMessage = "sap ship Qty is not equal Db Qty";
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        if (lsb.Count == 0)
+        {
+            if (ErrorMessage.Length > 0)
+            {
+                DisayError(ErrorMessage, false);
+                return;
+            }
+            ErrorMessage = "No Query Data,Please Information IT Dep";
+            DisayError(ErrorMessage, false);
+            return;
+        }
+        #endregion
+
+        #region/*刪除臨時目錄里的文件,保證下載的文件是最新*/
+        string[] tempFilePath = new string[4];
+        tempFilePath[0] = AppDomain.CurrentDomain.BaseDirectory + "Upload\\UPD\\";
+        tempFilePath[1] = AppDomain.CurrentDomain.BaseDirectory + "Upload\\IMEI\\";
+        tempFilePath[2] = AppDomain.CurrentDomain.BaseDirectory + "Upload\\GFS\\";
+        tempFilePath[3] = AppDomain.CurrentDomain.BaseDirectory + "Upload\\CDMA_UPD\\";
+        foreach (string tempPath in tempFilePath)
+        {
+            if (Directory.Exists(tempPath))
+            {
+                string[] FileNameCount = Directory.GetFiles(tempPath);
+                if (FileNameCount.Length > 0)
+                {
+                    foreach (string FN in FileNameCount)
+                    {
+                        File.Delete(FN);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        /*UPD文件產生*/
+        for (int j = 0; j < lsb.Count; j++)
+        {
+
+            if (strWitchCode == "UPD06")
+            {
+                #region /*生成CDMA-UPD文件*/
+                string strUPDFileName = string.Empty;
+                string strUPDFIleCraPath = string.Empty;
+                strUPDFIleCraPath = AppDomain.CurrentDomain.BaseDirectory + "Upload\\CDMA_UPD\\AS_" + CDMA_FACTORY_CODE + "_UPD_MEID_" + "{0}_{1}.dat";
+                strUPDFileName = string.Format(strUPDFIleCraPath, DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss"), j + 1);
+                string[] strTmp = strUPDFileName.Split('\\');
+                string strFileName = strTmp[strTmp.Length - 1];
+                if (!cf.CreateUpdFile(lsb[j], strUPDFileName))
+                {
+                    ErrorMessage = cf.GetFerror();
+                    DisayError(ErrorMessage, false);
+                    return;
+                }
+                #endregion
+
+                string CdmaPo = string.Empty;
+                iRet = cf.GetCdmaPo(strInvoiceNumber, ref CdmaPo, ConnReadConnect);
+                if (iRet < 0)
+                {
+                    ErrorMessage = cf.GetFerror();
+                    DisayError(ErrorMessage, false);
+                    return;
+                }
+                //iRet = cf.UpdateMasterStatus(strInvoiceNumber, strFileName, CdmaPo, strProductQty, 1, ConnWriteConnect);
+                if (iRet < 0)
+                {
+                    ErrorMessage = cf.GetFerror();
+                    DisayError(ErrorMessage, false);
+                    return;
+                }
+
+                #region /*取數據庫GFS文件需要的數據*/
+                lsb.Clear();
+                lsb = cf.GetGFS(strInvoiceNumber, ConnReadConnect);
+                if (lsb.Count == 0)
+                {
+                    File.Delete(strUPDFileName);
+                    ErrorMessage = strInvoiceNumber + ":GFS No Have Data";
+                    DisayError(ErrorMessage, false);
+                    return;
+                }
+                #endregion
+
+                #region /*生成GFS文件及更新數據庫*/
+                for (int k = 0; k < lsb.Count; k++)
+                {
+                    DateTime dt = DateTime.Now;
+                    string strGFSFileName = string.Empty;
+                    System.Random a = new Random(System.DateTime.Now.Millisecond);
+                    string strQty = lsb.Count.ToString();
+                    int RandKey = a.Next(100);
+                    string strRand = RandKey.ToString();
+                    strRand = strRand.PadLeft(3, '0');
+                    string strGFSFIleCraPath = string.Empty;
+                    strGFSFIleCraPath = AppDomain.CurrentDomain.BaseDirectory + "Upload\\GFS" + @"\PROG_V01_" + CDMA_FACTORY_CODE + "_{0}_{1}-{2}.dat";
+                    strGFSFileName = string.Format(strGFSFIleCraPath, dt.ToString("yyyyMMddHHmmss"), strInvoiceNumber.Replace("'", ""), strRand);
+                    strTmp = strGFSFileName.Split('\\');
+                    strFileName = strTmp[strTmp.Length - 1];
+
+                    iRet = cf.CreateGFSFile(lsb[k], strGFSFileName, dt.ToString("yyyyMMddHHmmss"), strInvoiceNumber.Replace("'", "") + "-" + strRand, "FIHTJ", "V01", strInvoiceNumber, ConnWriteConnect);
+                    if (iRet < 0)
+                    {
+                        File.Delete(strUPDFileName);
+                        ErrorMessage = cf.GetFerror();
+                        DisayError(ErrorMessage, false);
+                        return;
+                    }
+                    File.Copy(strGFSFileName, GFS_FILE_BAK + "\\" + strFileName);
+                    iRet = cf.UpdateMasterStatus(strInvoiceNumber, strFileName, CdmaPo, strProductQty, 3, ConnWriteConnect);
+
+                    iRet = cf.MailGFS(strInvoiceNumber, strQty, "", GFS_FILE_BAK + "\\" + strFileName, strFileName, ConnWriteConnect);
+                    if (iRet < 0)
+                    {
+                        ErrorMessage = cf.GetFerror();
+                        DisayError(ErrorMessage, false);
+                        return;
+                    }
+
+                    iRet = cf.UpdateMasterStatus(strInvoiceNumber, "Y", temPO, strProductQty, 4, ConnWriteConnect);
+                    if (iRet < 0)
+                    {
+                        ErrorMessage = cf.GetFerror();
+                        DisayError(ErrorMessage, false);
+                        return;
+                    }
+                }
+                #endregion
+                ErrorMessage = "Create File Sucessful!";
+                this.tdCDMATop.Visible = true;
+                this.tdCdmaList.Visible = true;
+
+                if (this.tabHistoryList.Visible == true)
+                    this.tabHistoryList.Visible = false;
+                DisayError(ErrorMessage, true);
+            }
+            else
+            {
+                string strUPDFileName = string.Empty;
+                string strIMEIFileName = string.Empty;
+                string strASNFileName = string.Empty;
+                string strUPDFIleCraPath = string.Empty;
+                strUPDFIleCraPath = AppDomain.CurrentDomain.BaseDirectory + "Upload\\UPD\\AS_" + FACTORY_CODE + "_UPD_IMEI_{0}_{1}.dat";
+                //strUPDFileName = string.Format(UPD_FILE_NAME, DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss"), j + 1);
+                strUPDFileName = string.Format(strUPDFIleCraPath, DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss"), j + 1);
+                string[] strTmp = strUPDFileName.Split('\\');
+                string strFileName = strTmp[strTmp.Length - 1];
+                string strtempFileName = strFileName;
+                if (!cf.CreateUpdFile(lsb[j], strUPDFileName))
+                {
+                    ErrorMessage = cf.GetFerror();
+                    DisayError(ErrorMessage, false);
+                    return;
+                }
+
+                #region/*根據DN,SAPMODEL在SHP.UPD_COUNTRY_LINK_IMEICODE 取得相應的IMEICODE*/
+                string ImeiCode = string.Empty;
+                iRet = cf.GetImeiCode(region, strProductModel, ref ImeiCode, ConnReadConnect);
+                if (iRet < 0)
+                {
+                    ErrorMessage = cf.GetFerror();
+                    DisayError(ErrorMessage, false);
+                    return;
+                }
+                #endregion
+
+                #region/*生成IMEI文件*/
+                //strIMEIFileName = cf.CreateIMEIFile(strInvoiceNumber, strProductModel, strShipCountry, region);
+                strIMEIFileName = cf.CreateIMEIFile(strInvoiceNumber, strProductModel, ImeiCode, ConnReadConnect);
+                if (strIMEIFileName.Equals("-"))
+                {
+                    File.Delete(strUPDFileName);
+                    ErrorMessage = cf.GetFerror();
+                    DisayError(ErrorMessage, false);
+                    return;
+                }
+                #endregion
+
+                strTmp = strIMEIFileName.Split('\\');
+                strFileName = strTmp[strTmp.Length - 1];
+                string tempImeiFile = strFileName;
+
+                ErrorMessage = "Create File Sucessful!";
+                this.tdGSMTop.Visible = true;
+                this.tdGsmList.Visible = true;
+                if (this.tabHistoryList.Visible == true)
+                    this.tabHistoryList.Visible = false;
+                if (this.tabHistoryCdmaList.Visible == true)
+                    this.tabHistoryCdmaList.Visible = false;
+
+                DisayError(ErrorMessage, true);
+
+            }
+
+
+        }
+    }
+
+    /// <summary>
+    /// 文件下載
+    /// </summary>
+    /// <param name="PathName"></param>
+    /// <param name="UpdFileName"></param>
+    private void DownLoadFile(string PathName, string UpdFileName)
+    {
+        if (File.Exists(PathName))
+        {
+            Response.Clear();
+            Response.ClearHeaders();
+            Response.Buffer = false;
+            Response.ContentType = "application/octet-stream";
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(UpdFileName, System.Text.Encoding.UTF8));
+            Response.TransmitFile(PathName);
+            Response.Flush();
+            Response.End();
+        }
+        else
+        {
+            Response.Write("<script language='javascript'>alert('無附件,請確認！');</script>");
+
+        }
+
+    }
+
+    protected void GridView_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        this.GridView.PageIndex = e.NewPageIndex;
+        GetBindGrivw();
+    }
+
+    /// <summary>
+    /// 輸入DN,產生文件
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void ButDnCreate_Click(object sender, EventArgs e)
+    {
+        string temDN = TextInput.Text.ToString().Trim();
+        string temPO = string.Empty;
+        string strError = string.Empty;
+        if (temDN.Equals(""))
+        {
+            strError = "請輸入要產生的DN";
+            DisayError(strError, false);
+            this.TextInput.Focus();
+            return;
+        }
+        else
+        {
+            CreateUPDIMEI(temPO, temDN);
+        }
+        this.TextInput.Focus();
+
+    }
+
+    /// <summary>
+    /// UPD文件下載
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void LinkUpdDown_Click(object sender, EventArgs e)
+    {
+        string strUpdPathName = AppDomain.CurrentDomain.BaseDirectory + "Upload\\UPD\\";
+        string[] GetPathList = Directory.GetFiles(strUpdPathName);
+        if (GetPathList.GetLength(0) > 0)
+        {
+            string UpdFileName = System.IO.Path.GetFileNameWithoutExtension(GetPathList[0].ToString());
+            UpdFileName += ".dat";
+            DownLoadFile(GetPathList[0], UpdFileName);
+        }
+    }
+
+    /// <summary>
+    /// IMEI 文件下載
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void LinkImeiDown_Click(object sender, EventArgs e)
+    {
+        string strIMEIPathName = AppDomain.CurrentDomain.BaseDirectory + "Upload\\IMEI\\";
+        string[] GetPathList = Directory.GetFiles(strIMEIPathName);
+        if (GetPathList.GetLength(0) > 0)
+        {
+            string IMEIFileName = System.IO.Path.GetFileNameWithoutExtension(GetPathList[0].ToString());
+            IMEIFileName += ".xls";
+            DownLoadFile(GetPathList[0], IMEIFileName);
+        }
+    }
+
+    protected void LinkCdmaUpdDown_Click(object sender, EventArgs e)
+    {
+        string strUpdPathName = AppDomain.CurrentDomain.BaseDirectory + "Upload\\CDMA_UPD\\";
+        string[] GetPathList = Directory.GetFiles(strUpdPathName);
+        if (GetPathList.GetLength(0) > 0)
+        {
+            string UpdFileName = System.IO.Path.GetFileNameWithoutExtension(GetPathList[0].ToString());
+            UpdFileName += ".dat";
+            DownLoadFile(GetPathList[0], UpdFileName);
+        }
+    }
+
+    protected void LinkGFSUpdDown_Click(object sender, EventArgs e)
+    {
+        string strGFSPathName = AppDomain.CurrentDomain.BaseDirectory + "Upload\\GFS\\";
+        string[] GetPathList = Directory.GetFiles(strGFSPathName);
+        if (GetPathList.GetLength(0) > 0)
+        {
+            string GFSFileName = System.IO.Path.GetFileNameWithoutExtension(GetPathList[0].ToString());
+            GFSFileName += ".dat";
+            DownLoadFile(GetPathList[0], GFSFileName);
+        }
+    }
+
+    /// <summary>
+    /// 獲取備份目錄UPD文件
+    /// </summary>
+    /// <param name="dtFile"></param>
+    /// <returns></returns>
+    private int GetFileDown(string PODN,ref DataTable dtUpdFile,ref DataTable dtImeiFile,ref DataTable dtCdmaFile,ref DataTable dtGfsFile)
+    {
+        int iRet;
+        string strSql = string.Empty;
+        string strUpdPathName = string.Empty;
+        string strImeiPathName = string.Empty;
+        string strGfsPathName = string.Empty;
+        string strCdmaUpdPathName = string.Empty;
+
+
+        string[] UpdLIst = new string [0];
+        string[] ImeiList = new string[0];
+        string[] GfsList = new string[0];
+
+        strUpdPathName = UPD_FILE_BAK;
+        strImeiPathName = IMEI_FILE_BAK;
+        strGfsPathName = GFS_FILE_BAK;
+        strCdmaUpdPathName = CMD_UPD_FILE_BAK;
+        GetConnect(strConnReadString, strConnWriteString);
+        string[] GetUpdPathList = Directory.GetFiles(strUpdPathName);
+        string[] GetIMeiPathList = Directory.GetFiles(strImeiPathName);
+        string[] GetCdmaUpdPathList = Directory.GetFiles(strCdmaUpdPathName);
+        string[] GetGfsPathList = Directory.GetFiles(strGfsPathName);
+        
+
+        try
+        {
+            strSql = "SELECT UPDFILENAME,IMEIFILENAME,GFSFILENAME FROM SHP.UPD_PODN_LIST_T WHERE UPDFLAG='Y' AND SAPFLAG='Y' AND (INVOICE='" + PODN + "' OR PO='" + PODN + "') ";
+            iRet = cf.GetFileName(strSql, ref UpdLIst, ref ImeiList, ref GfsList, ConnWriteConnect);
+            if (iRet <0)
+            {
+                return iRet;
+            }
+            if (UpdLIst.GetLength(0) == 0 && ImeiList.GetLength(0) == 0 && GfsList.GetLength(0) == 0)
+            {
+                return iRet;
+            }
+            if (UpdLIst.GetLength(0) > 0)
+            {
+                DataColumn FileName = new DataColumn("FileName", System.Type.GetType("System.String"));
+                dtUpdFile.Columns.Add(FileName);
+                DataColumn CreateTime = new DataColumn("CreateTime", System.Type.GetType("System.String"));
+                dtUpdFile.Columns.Add(CreateTime);
+                for (int i = 0; i < UpdLIst.Length; i++)
+                {
+                    string strUpdFileName = UpdLIst[i].ToString();
+                    for (int j = 0; j < GetUpdPathList.Length; j++)
+                    {
+                        string strUpdPathFileName = System.IO.Path.GetFileNameWithoutExtension(GetUpdPathList[j].ToString());
+                        strUpdPathFileName += ".dat";
+                        if (strUpdFileName == strUpdPathFileName)
+                        {
+                            DataRow dr = dtUpdFile.NewRow();//新增一行
+                            dr["FileName"] = strUpdPathFileName.ToString();//FIleName 列賦值
+                            System.IO.FileInfo file = new System.IO.FileInfo(GetUpdPathList[j]);
+                            string CreateFileTime = file.CreationTime.ToString();
+                            dr["CreateTime"] = CreateFileTime; //CreateTime 列賦值
+                            dtUpdFile.Rows.Add(dr);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (UpdLIst.GetLength(0) > 0)
+            {
+                DataColumn FileName = new DataColumn("FileName", System.Type.GetType("System.String"));
+                dtCdmaFile.Columns.Add(FileName);
+                DataColumn CreateTime = new DataColumn("CreateTime", System.Type.GetType("System.String"));
+                dtCdmaFile.Columns.Add(CreateTime);
+                for (int i = 0; i < UpdLIst.Length; i++)
+                {
+                    string strUpdFileName = UpdLIst[i].ToString();
+                    for (int j = 0; j < GetCdmaUpdPathList.Length; j++)
+                    {
+                        string strUpdPathFileName = System.IO.Path.GetFileNameWithoutExtension(GetCdmaUpdPathList[j].ToString());
+                        strUpdPathFileName += ".dat";
+                        if (strUpdFileName == strUpdPathFileName)
+                        {
+                            DataRow dr = dtCdmaFile.NewRow();//新增一行
+                            dr["FileName"] = strUpdPathFileName.ToString();//FIleName 列賦值
+                            System.IO.FileInfo file = new System.IO.FileInfo(GetCdmaUpdPathList[j]);
+                            string CreateFileTime = file.CreationTime.ToString();
+                            dr["CreateTime"] = CreateFileTime; //CreateTime 列賦值
+                            dtCdmaFile.Rows.Add(dr);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (ImeiList.GetLength(0) > 0)
+            {
+                DataColumn FileName = new DataColumn("FileName", System.Type.GetType("System.String"));
+                dtImeiFile.Columns.Add(FileName);
+                DataColumn CreateTime = new DataColumn("CreateTime", System.Type.GetType("System.String"));
+                dtImeiFile.Columns.Add(CreateTime);
+                for (int i = 0; i < ImeiList.Length; i++)
+                {
+                    string strImeiFileName = ImeiList[i].ToString();
+                    for (int j = 0; j < GetIMeiPathList.Length; j++)
+                    {
+                        string strImeiPathFileName = System.IO.Path.GetFileNameWithoutExtension(GetIMeiPathList[j].ToString());
+                        strImeiPathFileName += ".xls";
+                        if (strImeiFileName == strImeiPathFileName)
+                        {
+                            DataRow dr = dtImeiFile.NewRow();//新增一行
+                            dr["FileName"] = strImeiPathFileName.ToString();//FIleName 列賦值
+                            System.IO.FileInfo file = new System.IO.FileInfo(GetIMeiPathList[j]);
+                            string CreateFileTime = file.CreationTime.ToString();
+                            dr["CreateTime"] = CreateFileTime; //CreateTime 列賦值
+                            dtImeiFile.Rows.Add(dr);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (GfsList.GetLength(0) > 0)
+            {
+                DataColumn FileName = new DataColumn("FileName", System.Type.GetType("System.String"));
+                dtGfsFile.Columns.Add(FileName);
+                DataColumn CreateTime = new DataColumn("CreateTime", System.Type.GetType("System.String"));
+                dtGfsFile.Columns.Add(CreateTime);
+                for (int i = 0; i < GfsList.Length; i++)
+                {
+                    string strImeiFileName = GfsList[i].ToString();
+                    for (int j = 0; j < GetGfsPathList.Length; j++)
+                    {
+                        string strImeiPathFileName = System.IO.Path.GetFileNameWithoutExtension(GetGfsPathList[j].ToString());
+                        strImeiPathFileName += ".dat";
+                        if (strImeiFileName == strImeiPathFileName)
+                        {
+                            DataRow dr = dtGfsFile.NewRow();//新增一行
+                            dr["FileName"] = strImeiPathFileName.ToString();//FIleName 列賦值
+                            System.IO.FileInfo file = new System.IO.FileInfo(GetGfsPathList[j]);
+                            string CreateFileTime = file.CreationTime.ToString();
+                            dr["CreateTime"] = CreateFileTime; //CreateTime 列賦值
+                            dtGfsFile.Rows.Add(dr);
+                            break;
+                        }
+                    }
+                }
+            }
+            iRet = 0;
+        }
+        catch (Exception ex)
+        {
+            iRet = -1;
+            ex.ToString();
+        }
+
+        return iRet;
+    }
+
+    protected void GridwCount_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        this.GridwCount.PageIndex = e.NewPageIndex;
+        GetBindRecord();
+    }
+
+    protected void GetBindRecord()
+    {
+        string strSql = string.Empty;
+        DataTable dtPage = new DataTable();
+        dtPage = null;
+        strSql = @"SELECT INVOICE AS DN,SHIP_QTY AS 數量,MODEL AS 幾種,SHIP_TO AS 收貨地,CUSTOMER AS 客戶,SHIP_DATE AS 出貨日期,FILENAME AS 文件名,CREATE_DATE AS 產生日期 ,ASN_FTP_TIME AS ASN,IMEI_FILE_TIME AS IMEI,COUNTRE AS 產生次數 FROM SHP.UPD_DATALOAD_DETAIL_T ";
+        dtPage = cf.GetDataSet(strSql,ConnReadConnect).Tables[0];
+        GridwCount.DataSource = dtPage;
+        GridwCount.DataBind();
+    }
+
+    protected void GetBindGrivw()
+    {
+        string strSql = string.Empty;
+        DataTable dtPage = new DataTable();
+        dtPage = null;
+        strSql = @"SELECT INVOICE AS DN,PO AS PO,SHIP_QTY AS 數量,FILENAME AS 文件名,CREATE_DATE AS 產生日期,TRY_TIMES AS 產生次數 FROM SHP.UPD_PODN_LIST_T";
+        dtPage = cf.GetDataSet(strSql,ConnReadConnect).Tables[0];
+        GridView.DataSource = dtPage;
+        GridView.DataBind();
+    }
+
+    protected void ButPOTest_Click(object sender, EventArgs e)
+    {
+        string PODN = DropDownListPO.SelectedValue;
+        string temDN = string.Empty;
+        string temPO = string.Empty;
+        string strError = string.Empty;
+        if (this.tabDisaby.Visible ==true) this.tabDisaby.Visible = false;
+        if (this.tabHistoryList.Visible == true) this.tabHistoryList.Visible = false;
+        if (PODN.Equals("") || PODN.Equals(" "))
+        {
+            strError = "請選擇相應PO信息";
+            DisayError(strError, false);
+            GetPoDN();
+            DropDownListPO.Focus();
+            return;
+        }
+        else
+        {
+            temDN = PODN.Split('|')[0].Trim().ToString();
+            temPO = PODN.Split('|')[1].Trim().ToString();
+            TestCreateUPDIMEI(temPO, temDN);
+        }
+    }
+
+    protected void ButDNTest_Click(object sender, EventArgs e)
+    {
+        string temDN = TextInput.Text.ToString().Trim();
+        string temPO = string.Empty;
+        string strError = string.Empty;
+        if (this.tabDisaby.Visible == true) this.tabDisaby.Visible = false;
+        if (temDN.Equals(""))
+        {
+            strError = "請輸入要產生的DN";
+            DisayError(strError, false);
+            this.TextInput.Focus();
+            return;
+        }
+        else
+        {
+            TestCreateUPDIMEI(temPO, temDN);
+        }
+        this.TextInput.Focus();
+    }
+
+    protected void GVDownList_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        foreach (GridViewRow gvr in GVDownList.Rows)
+        {
+            if (gvr.RowType == DataControlRowType.DataRow)
+            {
+                gvr.Attributes.Add("onmouseover", "currentcolor=this.style.backgroundColor;this.style.backgroundColor='#F2F2F2';");
+                gvr.Attributes.Add("onmouseout", "this.style.backgroundColor=currentcolor");
+            }
+        }
+        string UpdBakPath = UPD_FILE_BAK;
+        for (int i = 0; i < GVDownList.Rows.Count; i++)
+        {
+            string UpdFilePath = UpdBakPath + "\\" + GVDownList.Rows[i].Cells[0].Text.ToString();
+            if (File.Exists(UpdFilePath))
+            {
+
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+
+    protected void GVDownList_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+    {
+        string UpdFileName = GVDownList.Rows[e.NewSelectedIndex].Cells[1].Text.ToString();
+        string UpdFilePath = UPD_FILE_BAK + "\\" + UpdFileName;
+        System.IO.FileInfo fi = new FileInfo(UpdFilePath);
+
+        if (File.Exists(UpdFilePath))
+        {
+            Response.Clear();
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Server.UrlPathEncode(UpdFileName));
+            Response.AddHeader("Content-Length", fi.Length.ToString());
+            Response.ContentType = "application/octet-stream";
+            Response.Filter.Close();
+            Response.WriteFile(fi.FullName);
+            Response.End();
+        }
+        else
+        {
+            GVDownList.Rows[e.NewSelectedIndex].Cells[0].Text = "File Lost!";
+        }
+    }
+
+    protected void GVImeiDownList_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+    {
+        string ImeiFileName = GVImeiDownList.Rows[e.NewSelectedIndex].Cells[1].Text.ToString();
+        string ImeiFilePath = IMEI_FILE_BAK + "\\" + ImeiFileName;
+        System.IO.FileInfo fi = new FileInfo(ImeiFilePath);
+
+        if (File.Exists(ImeiFilePath))
+        {
+            Response.Clear();
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Server.UrlPathEncode(ImeiFileName));
+            Response.AddHeader("Content-Length", fi.Length.ToString());
+            Response.ContentType = "application/octet-stream";
+            Response.Filter.Close();
+            Response.WriteFile(fi.FullName);
+            Response.End();
+        }
+        else
+        {
+            GVImeiDownList.Rows[e.NewSelectedIndex].Cells[0].Text = "File Lost!";
+        }
+    }
+
+    protected void GVImeiDownList_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        foreach (GridViewRow gvr in GVImeiDownList.Rows)
+        {
+            if (gvr.RowType == DataControlRowType.DataRow)
+            {
+                gvr.Attributes.Add("onmouseover", "currentcolor=this.style.backgroundColor;this.style.backgroundColor='#F2F2F2';");
+                gvr.Attributes.Add("onmouseout", "this.style.backgroundColor=currentcolor");
+            }
+        }
+        string ImeiBakPath = IMEI_FILE_BAK;
+        for (int i = 0; i < GVImeiDownList.Rows.Count; i++)
+        {
+            string ImeiFilePath = ImeiBakPath + "\\" + GVImeiDownList.Rows[i].Cells[0].Text.ToString();
+            if (File.Exists(ImeiFilePath))
+            {
+
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+
+    protected void GetConnect(string strDbReadConnectString, string strDbWriteConnectString)
+    {
+        ConnReadConnect = new OracleConnection(strDbReadConnectString);
+        ConnWriteConnect = new OracleConnection(strDbWriteConnectString);
+    }
+
+    /// <summary>
+    /// 歷史記錄查詢
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected void BtnHistoryDisapy_Click(object sender, EventArgs e)
+    {
+
+        string strPoDn = string.Empty;
+        string ErrorMessage = string.Empty;
+        strPoDn = this.TxtInputHistory.Text.Trim().ToString();
+        if (strPoDn.Equals(""))
+        {
+            ErrorMessage = "文本框為空值!";
+            DisayErrorHistory(ErrorMessage, false);
+            return;
+        }
+        if (!(strPoDn.Length == 8 || strPoDn.Length == 10))
+        {
+            ErrorMessage = "字符串長度應為8為或10位!";
+            DisayErrorHistory(ErrorMessage, false);
+            return;
+        }
+        DataTable dtUpdFile = new DataTable();
+        DataTable dtImeiFile = new DataTable();
+        DataTable dtCdmaUpdFile = new DataTable();
+        DataTable dtGfsFile = new DataTable();
+        int iRet = GetFileDown(strPoDn,ref dtUpdFile, ref dtImeiFile,ref dtCdmaUpdFile,ref dtGfsFile);
+        if (iRet<0)
+        {
+            ErrorMessage = cf.GetFerror();
+            DisayErrorHistory(ErrorMessage, false);
+            return;
+        }
+        if (dtUpdFile.Rows.Count == 0 && dtImeiFile.Rows.Count == 0 && dtCdmaUpdFile.Rows.Count == 0 && dtGfsFile.Rows.Count == 0)
+        {
+            ErrorMessage = "沒有對應的文件！"; ;
+            DisayErrorHistory(ErrorMessage,false);
+            return;
+        }
+        if (dtUpdFile.Rows.Count > 0 || dtImeiFile.Rows.Count > 0)
+        {
+            DataView dvupd = dtUpdFile.DefaultView;
+            dvupd.Sort = "CreateTime Desc";
+            GVDownList.DataSource = dvupd;
+            GVDownList.DataBind();
+
+            DataView dvimei = dtImeiFile.DefaultView;
+            dvimei.Sort = "CreateTime Desc";
+            GVImeiDownList.DataSource = dvimei;
+            GVImeiDownList.DataBind();
+            this.tabHistoryList.Visible = true;
+
+        }
+        if (dtCdmaUpdFile.Rows.Count > 0 || dtGfsFile.Rows.Count > 0)
+        {
+            DataView dvupd = dtGfsFile.DefaultView;
+            dvupd.Sort = "CreateTime Desc";
+            GvCdmaUpdDownList.DataSource = dvupd;
+            GvCdmaUpdDownList.DataBind();
+
+            DataView dvgfs = dtCdmaUpdFile.DefaultView;
+            dvgfs.Sort = "CreateTime Desc";
+            GvGfsDownList.DataSource = dvgfs;
+            GvGfsDownList.DataBind();
+            this.tabHistoryCdmaList.Visible = true;
+        }
+    }
+
+    protected void GvCdmaUpdDownList_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+    {
+        string UpdFileName = GVDownList.Rows[e.NewSelectedIndex].Cells[1].Text.ToString();
+        string UpdFilePath = CMD_UPD_FILE_BAK + "\\" + UpdFileName;
+        System.IO.FileInfo fi = new FileInfo(UpdFilePath);
+
+        if (File.Exists(UpdFilePath))
+        {
+            Response.Clear();
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Server.UrlPathEncode(UpdFileName));
+            Response.AddHeader("Content-Length", fi.Length.ToString());
+            Response.ContentType = "application/octet-stream";
+            Response.Filter.Close();
+            Response.WriteFile(fi.FullName);
+            Response.End();
+        }
+        else
+        {
+            GVDownList.Rows[e.NewSelectedIndex].Cells[0].Text = "File Lost!";
+        }
+    }
+
+    protected void GvGfsDownList_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+    {
+        string GfsFileName = GVDownList.Rows[e.NewSelectedIndex].Cells[1].Text.ToString();
+        string UpdFilePath = GFS_FILE_BAK + "\\" + GfsFileName;
+        System.IO.FileInfo fi = new FileInfo(UpdFilePath);
+
+        if (File.Exists(UpdFilePath))
+        {
+            Response.Clear();
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Server.UrlPathEncode(GfsFileName));
+            Response.AddHeader("Content-Length", fi.Length.ToString());
+            Response.ContentType = "application/octet-stream";
+            Response.Filter.Close();
+            Response.WriteFile(fi.FullName);
+            Response.End();
+        }
+        else
+        {
+            GVDownList.Rows[e.NewSelectedIndex].Cells[0].Text = "File Lost!";
+        }
+    }
+}

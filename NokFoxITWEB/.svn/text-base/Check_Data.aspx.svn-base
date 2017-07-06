@@ -1,0 +1,342 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Check_Data.aspx.cs" Inherits="Check_Data" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+
+    <style type="text/css">
+        .style1
+        {
+            width: 7px;
+        }
+    </style>
+
+</head>
+<body>
+    <form id="form1" runat="server" >
+        <table cellspacing="1" cellpadding="1" border="0" >
+             <tr align="center"> 
+                  <td rowspan="4"></td>
+                  <td align="center"><asp:Button ID="btnCheckData" runat="server" Text="核對數據" 
+                          onclick="btnCheckData_Click"/></td>
+                  <td rowspan="4"></td>
+                  <td align="center">
+                      <asp:Button ID="btnUpLoad" runat="server" Text=".上傳數據" 
+                          onclick="btnUpLoad_Click" Enabled="False"/></td>
+                  <td rowspan="4"></td>
+                  <td bgcolor="red">請確保Excel的名稱與以下的完全相同，否則無法核對數據</td>
+             </tr>
+        </table>
+        <hr />
+        <table>
+            <tr bgcolor="#CCFFFF">
+                <td>
+                    <table cellspacing="1" cellpadding="1" border="1" bgcolor="#CCFFFF">
+                        <tr>
+                            <td colspan=2 bgcolor="#99CCFF">----SFC.MES_ ASSY_WIP----</td>
+                        </tr>
+                        <tr>
+                            <td>數量總數</td>
+                            <td class="style1">
+                                <asp:Label ID="L1ALL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>符合條件</td>
+                            <td class="style1">
+                                <asp:Label ID="L1PASS" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>不符條件</td>
+                            <td class="style1">
+                                <asp:Label ID="L1FAIL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>檢查結果</td>
+                            <td class="style1">
+                                <asp:Label ID="L1RESULT" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table cellspacing="1" cellpadding="1" border="1">
+                        <tr>
+                            <td colspan=2 bgcolor="#99CCFF">SFC.MES_ASSY_HISTORY</td>
+                        </tr>
+                        <tr>
+                            <td>數量總數</td>
+                            <td>
+                                <asp:Label ID="L2ALL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>符合條件</td>
+                            <td>
+                                <asp:Label ID="L2PASS" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>不符條件</td>
+                            <td>
+                                <asp:Label ID="L2FAIL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>檢查結果</td>
+                            <td>
+                                <asp:Label ID="L2RESULT" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td>
+                    <table cellspacing="1" cellpadding="1" border="1">
+                        <tr>
+                            <td colspan=2 bgcolor="#99CCFF">SFC.MES_ASSY_PID_JOIN</td>
+                        </tr>
+                        <tr>
+                            <td>數量總數</td>
+                            <td>
+                                <asp:Label ID="L3ALL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>符合條件</td>
+                            <td>
+                                <asp:Label ID="L3PASS" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>不符條件</td>
+                            <td>
+                                <asp:Label ID="L3FAIL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>檢查結果</td>
+                            <td>
+                                <asp:Label ID="L3RESULT" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td>
+                    <table cellspacing="1" cellpadding="1" border="1">
+                        <tr>
+                            <td colspan=2 bgcolor="#99CCFF">SFC.MES_PCBA_HISTORY</td>
+                        </tr>
+                        <tr>
+                            <td>數量總數</td>
+                            <td>
+                                <asp:Label ID="L4ALL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>符合條件</td>
+                            <td>
+                                <asp:Label ID="L4PASS" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>不符條件</td>
+                            <td>
+                                <asp:Label ID="L4FAIL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>檢查結果</td>
+                            <td>
+                                <asp:Label ID="L4RESULT" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td>
+                    <table cellspacing="1" cellpadding="1" border="1">
+                        <tr>
+                            <td colspan=2 bgcolor="#99CCFF">SFC.R_WIP_TRACKING_T_PID</td>
+                        </tr>
+                        <tr>
+                            <td>數量總數</td>
+                            <td>
+                                <asp:Label ID="L5ALL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>符合條件</td>
+                            <td>
+                                <asp:Label ID="L5PASS" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>不符條件</td>
+                            <td>
+                                <asp:Label ID="L5FAIL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>檢查結果</td>
+                            <td>
+                                <asp:Label ID="L5RESULT" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+            <tr bgcolor="#CCFFFF">
+            <td>
+                    <table cellspacing="1" cellpadding="1" border="1">
+                        <tr>
+                            <td colspan=2 bgcolor="#99CCFF">TESTINFO.TESTINFO_HEAD</td>
+                        </tr>
+                        <tr>
+                            <td>數量總數</td>
+                            <td>
+                                <asp:Label ID="L6ALL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>符合條件</td>
+                            <td>
+                                <asp:Label ID="L6PASS" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>不符條件</td>
+                            <td>
+                                <asp:Label ID="L6FAIL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>檢查結果</td>
+                            <td>
+                                <asp:Label ID="L6RESULT" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            <td>
+                    <table cellspacing="1" cellpadding="1" border="1">
+                        <tr>
+                            <td colspan=2 bgcolor="#99CCFF">-----SHP.ROS_TCH_PN----</td>
+                        </tr>
+                        <tr>
+                            <td>數量總數</td>
+                            <td>
+                                <asp:Label ID="L7ALL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>符合條件</td>
+                            <td>
+                                <asp:Label ID="L7PASS" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>不符條件</td>
+                            <td>
+                                <asp:Label ID="L7FAIL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>檢查結果</td>
+                            <td>
+                                <asp:Label ID="L7RESULT" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+                <td>
+                    <table cellspacing="1" cellpadding="1" border="1">
+                        <tr>
+                            <td colspan=2 bgcolor="#99CCFF">SHP.CMCS_SFC_AORDER</td>
+                        </tr>
+                        <tr>
+                            <td>數量總數</td>
+                            <td>
+                                <asp:Label ID="L8ALL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>符合條件</td>
+                            <td>
+                                <asp:Label ID="L8PASS" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>不符條件</td>
+                            <td>
+                                <asp:Label ID="L8FAIL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>檢查結果</td>
+                            <td>
+                                <asp:Label ID="L8RESULT" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table cellspacing="1" cellpadding="1" border="1">
+                        <tr>
+                            <td colspan=2 bgcolor="#99CCFF">SFC. R_WIP_TRACKING_T</td>
+                        </tr>
+                        <tr>
+                            <td>數量總數</td>
+                            <td>
+                                <asp:Label ID="L9ALL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>符合條件</td>
+                            <td>
+                                <asp:Label ID="L9PASS" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>不符條件</td>
+                            <td>
+                                <asp:Label ID="L9FAIL" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>檢查結果</td>
+                            <td>
+                                <asp:Label ID="L9RESULT" runat="server" Text="N/A"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<asp:Label ID="lblResult" 
+                        runat="server" Font-Size="50pt" Text="Info"></asp:Label>
+                </td>
+            </tr>
+            
+        </table>
+        
+        <hr />
+        <div class="DIVScrolling" id="divsize" style="WIDTH: 100%; HEIGHT: 500px">
+             <asp:GridView ID="gvData" runat="server"  AllowPaging="false"  
+                 BackColor="White" UserID="Any"  BorderWidth="1px" Font-Names="Verdana" 
+                 BorderStyle="None" Visible="False">
+                 <RowStyle BackColor="#F1F8F1"/>
+                 <HeaderStyle  HorizontalAlign="Center" Font-Size="15px" Font-Bold="true" />
+                 <AlternatingRowStyle BackColor="White" />        
+                 <PagerSettings Visible="true"  />  
+             </asp:GridView>
+        </div>
+    </form>
+</body>
+</html>

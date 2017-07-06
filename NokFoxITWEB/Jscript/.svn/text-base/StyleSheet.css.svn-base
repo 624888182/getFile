@@ -1,0 +1,7 @@
+﻿.DataGrid
+{
+	width: 100%;
+	border: 0px;
+	border-top: 1px solid #DBD7CF;
+	border-left: 1px solid #DBD7CF;
+}

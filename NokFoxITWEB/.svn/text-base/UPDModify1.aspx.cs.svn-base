@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+
+public partial class UPDModify1 : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+    }
+    protected void checkname_Click(object sender, EventArgs e)
+    {
+        if ((namebox.Text == "Foxconn88") && (passwordbox.Text == "Foxconn88"))
+            Response.Write("<script>window.open( 'UPDModify.aspx','one','width=1000,height=600,status=yes,resizable=yes,scrollbars=yes,titlebar=yes,toolbar=yes,top=30,left=30');</script>");
+        else
+        {
+            Response.Write("<script>alert('用户名或密码错误')</script>");
+            passwordbox.Text = "";
+        }
+    }
+}

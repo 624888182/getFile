@@ -1,0 +1,234 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Threading;
+using System.IO;
+using System.Management;
+using System.Configuration;
+using EconomyUser;
+using SCM.GSCMDKen;
+
+public partial class TransferL6ToL8Auto : System.Web.UI.Page
+{
+    public static string DBType = "oracle";
+    public static string DBFlag = "";
+    public static string L6Connection = "SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.171.79)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=smtsfc)));uid=sfis1;pwd=sfis1";
+    //public static string L8Connection = "SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.186.19.20)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=tjsfc)));uid=sfis1;pwd=sfis1";
+    public static string[,] L8Connection;
+    public static int[] LastRunCount = new int[5];
+    public static string NetSqlDB4 = ConfigurationManager.AppSettings["Sql221String"];
+    public static bool bRun;
+    public static DateTime RunStart;
+    public static int iStatusQty;
+    
+    FPubLib FPubLibPointer = new FPubLib();
+
+    private int StrToIntDef(string str, int Default)
+    {
+        int iRet;
+        try
+        {
+            iRet = Convert.ToInt32(str);
+        }
+        catch
+        {
+            iRet = Default;
+        }
+        return iRet;
+    }
+
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        //Timer2.Enabled = false; // Stop Interrupt
+        if (!Page.IsPostBack)
+        {
+            // 
+            //Session["Param1"] = 1;
+            //Session["Param2"] = "oracle";
+            //Session["Param3"] = L6Connection;
+            //Session["Param4"] = L8Connection;
+            //Session["Param5"] = "auto";
+            try
+            {
+                string r7 = ReadParaTxt("WebReadParam.txt", "20200");
+                if (r7.ToLower() == "auto")
+                {
+                    Timer2.Enabled = true;
+                    txt_Head.Text = "TransferL6 Data To L8 auto run";
+                    Button1.Enabled = false;
+                }
+            }
+            catch
+            {
+                txt_Head.Text = "TransferL6 Data To L8 Not auto run";
+            }
+
+
+            /*
+            try
+            {
+                int s1 = (int)Session["Param1"];         // Data Process I/O
+                string s2 = (string)Session["Param2"];         // = "oracle";  // 數據庫
+                string s3 = (string)Session["Param3"];         // = str1;      // DBReadString
+                string s4 = (string)Session["Param4"];          //= str2;      // DBWriString
+                string s5 = (string)Session["Param5"];          //  = "auto";    // 自動或手動執行
+                if (s1 == 1)
+                {
+                    if (s5.ToLower() == "auto")
+                    {
+                        DBType = s2;
+                        L6Connection = s3;
+                        L8Connection = s4;
+                        MainLoop();
+                    }
+                }
+                else
+                {
+                    txt_Head.Text = "TransferL6 Data To L8 Not auto run";
+                }
+            }
+            catch
+            { txt_Head.Text = "TransferL6 Data To L8 Not auto run"; }
+             */
+        }
+
+        
+    }
+
+    private void MainLoop()
+    {
+        Timer2.Enabled = false; // Stop Interrupt
+        if (iStatusQty == null) iStatusQty = 0;
+        string IP = Request.UserHostAddress;
+        int iParam = 20000;
+        string L6Name = "";
+        txt_STATUS.Text = "Run Application " + "\r\n";
+        while (ReadParam(iParam, ref L6Name,ref L6Connection, ref L8Connection, ref DBFlag) == 0)
+        {
+            string MO;
+            if ((iStatusQty % 40) == 0) MO = "Y"; else MO = "N";
+            FPubLibPointer.PubWri_MessLog("L6TOL8", iStatusQty.ToString(), "1", "0", "L6ToL8LoopS", IP, L6Connection.Substring(1, 100), L6Name, "", NetSqlDB4, "sql");
+            int iCount = 0;
+            
+            while (iCount < 500)
+            {
+                int iTmp = SMTDataTransfer.SMTL6DataToL8Auto(DBFlag, L6Connection, L8Connection, MO, 100);
+                txt_STATUS.Text += "Run " + L6Name + " Count: " + iTmp + "\r\n";
+                if (iTmp == 0) break;
+                iCount += iTmp;
+            }
+             
+            FPubLibPointer.PubWri_MessLog("L6TOL8", iStatusQty.ToString(), "2", iCount.ToString(), "L6ToL8LoopE", IP, L6Connection.Substring(1, 100), L6Name, "", NetSqlDB4, "sql");
+            
+            txt_STATUS.Text += "Application Exit. Next Run will " + DateTime.Now.AddMilliseconds(Timer2.Interval).ToString("HH:mm:ss");
+            iStatusQty++;
+
+            iParam += 1000;
+        }
+        Timer2.Enabled = true;
+    }
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        //string r1 = ReadParaTxt("WebReadParam.txt", "20003");
+        //string r2 = ReadParaTxt("WebReadParam.txt", "20002");
+        //L6Connection = ConfigurationManager.AppSettings[r1];
+        //L8Connection = ConfigurationManager.AppSettings[r2];
+        MainLoop();
+    }
+
+
+    /* WriteDB 
+     * 0: DBString
+     * 1: L8Type : Default Blank, GLM
+     * 2: L6Line: When L8Type is GLM, used.
+     */
+    private int ReadParam(int Input, ref string L6Name,ref string ReadDB, ref string[,] WriteDB, ref string DataFlag)
+    {
+        int iRet = 0;
+        try
+        {
+            string r1 = ReadParaTxt("WebReadParam.txt", (Input + 3).ToString());
+            L6Name = r1;
+            ReadDB = ConfigurationManager.AppSettings[r1];
+            string r2 = ReadParaTxt("WebReadParam.txt", (Input + 101).ToString());
+            int iR2 = StrToIntDef(r2, 1);
+            WriteDB = new string[iR2,3];
+            for (int i = 1; i <= iR2; i++)
+            {
+                int r4 = Input + 101;
+                string r5 = (r4 + i).ToString();
+                string r6 = ReadParaTxt("WebReadParam.txt", r5);
+                WriteDB[i - 1,0] = ConfigurationManager.AppSettings[r6];
+                int iL8Type = r4+ i + 100;
+                int iL6Line = r4 + i + 110;
+                string rL8Type = ReadParaTxt("WebReadParam.txt", iL8Type.ToString());
+                string rL6Line = ReadParaTxt("WebReadParam.txt", iL6Line.ToString());
+                WriteDB[i - 1, 1] = rL8Type;
+                WriteDB[i - 1, 2] = rL6Line;
+            }
+
+            string r8 = ReadParaTxt("WebReadParam.txt", (Input + 300).ToString());
+            if ((r8 != null) && (r8 != "")) DataFlag = r8; else DataFlag = "LF";
+            if ((ReadDB == null) || (ReadDB.Trim() == "")) iRet = 1;
+        }
+        catch
+        {
+            iRet = -1;
+        }
+        return iRet;
+    }
+
+    private string ReadParaTxt(string FilePara, string ParaNum)
+    {
+        string retPara = "";
+        int ArrMax = 100;
+        string[] ReadTxtArray = new string[ArrMax];
+        string FileName = "SetReadParam.txt";
+        if (FilePara != "") FileName = FilePara;
+        string ServerPath = Server.MapPath("~\\" + FileName);
+        FileInfo fi = new FileInfo(ServerPath);
+        StreamReader sr = fi.OpenText();
+        string InString = "";
+        int i = 0, strlen = 0;
+
+        while (((InString = sr.ReadLine()) != null) && (i < ArrMax))
+        {
+            ReadTxtArray[i] = InString;
+            //             Response.Write(ReadTxtArray[i]);
+            //             Response.Write("<br>");
+            if ((InString != "") && (InString != " ") && (InString.Substring(0, 2) != "//"))
+            {
+                strlen = InString.Length - 1;
+                if ((InString.Substring(0, 5) == ParaNum) && (strlen >= 6))
+                {
+                    retPara = InString.Substring(6, strlen - 5);
+                    i = ArrMax;  // Break
+                }
+
+            }
+            i++;
+
+        }
+
+        sr.Close();
+        return (retPara);
+    }
+
+    protected void Timer2_Tick(object sender, EventArgs e)
+    {
+        if (bRun == null) bRun = false;
+
+        if ((bRun == false) || (RunStart.AddHours(1) < DateTime.Now))
+        {
+            bRun = true;
+            RunStart = DateTime.Now;
+            MainLoop();
+            bRun = false;
+        }
+    }
+}

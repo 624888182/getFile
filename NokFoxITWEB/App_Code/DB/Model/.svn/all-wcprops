@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model
+END
+vssver2.scc
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model/vssver2.scc
+END
+ApplyPurchaseHeadInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model/ApplyPurchaseHeadInfo.cs
+END
+PubAttachmentsInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model/PubAttachmentsInfo.cs
+END
+ApplyPurchaseDetailInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model/ApplyPurchaseDetailInfo.cs
+END
+EnterFactReasonInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model/EnterFactReasonInfo.cs
+END
+EnterFactApplyDetailInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model/EnterFactApplyDetailInfo.cs
+END
+GatehouseInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model/GatehouseInfo.cs
+END
+PubNoticeInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model/PubNoticeInfo.cs
+END
+EnterFactApplyMasterInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/MainMot/!svn/ver/1/App_Code/DB/Model/EnterFactApplyMasterInfo.cs
+END
